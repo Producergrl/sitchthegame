@@ -1,4 +1,4 @@
-export type AgeBand = '5-7' | '8-10' | '11-13';
+export type AgeBand = '4-6' | '5-7' | '7-11' | '8-10' | '11-13' | '12+';
 export type PlayStyle = 'discussion' | 'quiz' | 'roleplay';
 export type CardStatus = 'draft' | 'published';
 
@@ -26,11 +26,13 @@ export interface Card {
 
 export interface Deck {
   id: string;
+  slug: string;
   name: string;
   description: string;
   age_band: AgeBand;
   tags: string[];
   is_default: boolean;
+  is_free: boolean;
   card_count: number;
   icon: string;
   color: string;

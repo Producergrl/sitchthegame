@@ -1,65 +1,215 @@
 import { Card, Deck } from '@/types/game';
 
 export const decks: Deck[] = [
+  // ── 4-6 age band ──
+  {
+    id: 'body-boundaries-4-6',
+    slug: 'body-boundaries-4-6',
+    name: 'Body Boundaries (4–6)',
+    description: 'Learn about your body, safe and unsafe touches, and saying no.',
+    age_band: '4-6',
+    tags: ['consent', 'body-safety'],
+    is_default: true,
+    is_free: true,
+    card_count: 1,
+    icon: '🛡️',
+    color: 'primary',
+  },
+  {
+    id: 'trusted-adults-4-6',
+    slug: 'trusted-adults-4-6',
+    name: 'Trusted Adults (4–6)',
+    description: 'Know who to turn to and how to stay safe with strangers.',
+    age_band: '4-6',
+    tags: ['stranger-safety'],
+    is_default: true,
+    is_free: false,
+    card_count: 1,
+    icon: '🏠',
+    color: 'safe',
+  },
+  {
+    id: 'secrets-4-6',
+    slug: 'secrets-4-6',
+    name: 'Safe & Unsafe Secrets (4–6)',
+    description: 'Learn the difference between surprises and secrets that should be told.',
+    age_band: '4-6',
+    tags: ['body-safety', 'secrets'],
+    is_default: true,
+    is_free: false,
+    card_count: 1,
+    icon: '🤫',
+    color: 'caution',
+  },
+
+  // ── 5-7 age band ──
   {
     id: 'body-boundaries',
+    slug: 'body-boundaries',
     name: 'Body Boundaries & Consent',
     description: 'Learn about personal space, safe and unsafe touches, and how to speak up.',
     age_band: '5-7',
     tags: ['boundaries', 'consent'],
     is_default: true,
-    card_count: 8,
+    is_free: true,
+    card_count: 4,
     icon: '🛡️',
     color: 'primary',
   },
   {
-    id: 'online-safety',
-    name: 'Online & Device Safety',
-    description: 'Stay safe while using phones, tablets, and the internet.',
-    age_band: '8-10',
-    tags: ['online safety', 'devices'],
-    is_default: true,
-    card_count: 8,
-    icon: '📱',
-    color: 'help',
-  },
-  {
-    id: 'bullying',
-    name: 'Bullying & Peer Pressure',
-    description: 'Handle tough social situations and stand up for yourself and others.',
-    age_band: '8-10',
-    tags: ['bullying', 'peer pressure'],
-    is_default: true,
-    card_count: 8,
-    icon: '💪',
-    color: 'secondary',
-  },
-  {
     id: 'trusted-adults',
+    slug: 'trusted-adults',
     name: 'Trusted Adults & Safe Places',
     description: 'Know who to turn to and where to go when you need help.',
     age_band: '5-7',
     tags: ['trusted adults', 'safe places'],
     is_default: true,
-    card_count: 8,
+    is_free: false,
+    card_count: 4,
     icon: '🏠',
     color: 'safe',
   },
+
+  // ── 7-11 age band ──
+  {
+    id: 'peer-pressure-7-11',
+    slug: 'peer-pressure-7-11',
+    name: 'Peer Pressure (7–11)',
+    description: 'Handle dares, vapes, and pressure from friends.',
+    age_band: '7-11',
+    tags: ['peer-pressure', 'substance-risk'],
+    is_default: true,
+    is_free: true,
+    card_count: 1,
+    icon: '🫸',
+    color: 'caution',
+  },
+  {
+    id: 'digital-safety-7-11',
+    slug: 'digital-safety-7-11',
+    name: 'Digital Safety (7–11)',
+    description: 'Stay safe from strangers and scams online.',
+    age_band: '7-11',
+    tags: ['online-safety'],
+    is_default: true,
+    is_free: false,
+    card_count: 1,
+    icon: '💻',
+    color: 'help',
+  },
+
+  // ── 8-10 age band ──
+  {
+    id: 'online-safety',
+    slug: 'online-safety',
+    name: 'Online & Device Safety',
+    description: 'Stay safe while using phones, tablets, and the internet.',
+    age_band: '8-10',
+    tags: ['online safety', 'devices'],
+    is_default: true,
+    is_free: true,
+    card_count: 4,
+    icon: '📱',
+    color: 'help',
+  },
+  {
+    id: 'bullying',
+    slug: 'bullying',
+    name: 'Bullying & Peer Pressure',
+    description: 'Handle tough social situations and stand up for yourself and others.',
+    age_band: '8-10',
+    tags: ['bullying', 'peer pressure'],
+    is_default: true,
+    is_free: false,
+    card_count: 4,
+    icon: '💪',
+    color: 'secondary',
+  },
+
+  // ── 11-13 age band ──
   {
     id: 'emergencies',
+    slug: 'emergencies',
     name: 'Emergencies & Getting Help',
     description: 'Learn what to do in scary or dangerous situations.',
     age_band: '11-13',
     tags: ['emergencies', 'help'],
     is_default: true,
-    card_count: 8,
+    is_free: true,
+    card_count: 4,
     icon: '🚨',
     color: 'caution',
+  },
+
+  // ── 12+ age band ──
+  {
+    id: 'real-world-judgment-12plus',
+    slug: 'real-world-judgment-12plus',
+    name: 'Real-World Judgment (12+)',
+    description: 'Navigate adult-ish situations with confidence and common sense.',
+    age_band: '12+',
+    tags: ['judgment', 'digital-awareness'],
+    is_default: true,
+    is_free: false,
+    card_count: 1,
+    icon: '🧭',
+    color: 'gentle',
   },
 ];
 
 export const cards: Card[] = [
-  // Body Boundaries & Consent
+  // ── 4-6: Body Boundaries ──
+  {
+    id: '4-6-001', deck_id: 'body-boundaries-4-6', title: 'The Lap You Don\'t Want',
+    scenario: 'You are watching TV and a grown-up says, "Come sit on my lap." But your tummy feels tight and you don\'t want to.',
+    options: [
+      { label: 'A', text: 'Sit anyway so they aren\'t sad.' },
+      { label: 'B', text: 'Say "No thank you" and move away.' },
+      { label: 'C', text: 'Stay quiet and freeze.' },
+    ],
+    correct_option: 'B',
+    guidance_text: 'You are allowed to say no to touches you don\'t want.',
+    why_text: 'Your body belongs to you. Safe grown-ups listen when you say no.',
+    practice_phrase: 'No thank you. I don\'t want to.',
+    help_prompt: 'What did your tummy tell you? Who could you tell if they don\'t listen?',
+    difficulty: 1, age_band: '4-6', tags: ['consent', 'body-safety'], status: 'published',
+  },
+
+  // ── 4-6: Trusted Adults ──
+  {
+    id: '4-6-002', deck_id: 'trusted-adults-4-6', title: 'The Candy at the Park',
+    scenario: 'You are playing at the park. A grown-up you don\'t know says they have candy in their bag.',
+    options: [
+      { label: 'A', text: 'Go with them to see.' },
+      { label: 'B', text: 'Say no and run to your grown-up.' },
+      { label: 'C', text: 'Take the candy and leave.' },
+    ],
+    correct_option: 'B',
+    guidance_text: 'Never go with someone you don\'t know.',
+    why_text: 'Safe grown-ups do not ask kids to go somewhere alone or give secret treats.',
+    practice_phrase: 'No! I\'m going to my grown-up!',
+    help_prompt: 'Where is your safe grown-up? Why is it important to stay where others can see you?',
+    difficulty: 1, age_band: '4-6', tags: ['stranger-safety'], status: 'published',
+  },
+
+  // ── 4-6: Secrets ──
+  {
+    id: '4-6-003', deck_id: 'secrets-4-6', title: 'The Yucky Secret',
+    scenario: 'A friend whispers, "Don\'t tell anyone, but this is our secret about touching."',
+    options: [
+      { label: 'A', text: 'Keep the secret.' },
+      { label: 'B', text: 'Tell a trusted grown-up right away.' },
+      { label: 'C', text: 'Pretend it didn\'t happen.' },
+    ],
+    correct_option: 'B',
+    guidance_text: 'Secrets about touching are never okay.',
+    why_text: 'Safe secrets are surprises like birthdays. Unsafe secrets about bodies must be told.',
+    practice_phrase: 'I don\'t keep secrets about touching.',
+    help_prompt: 'What makes a secret unsafe? Who can you tell?',
+    difficulty: 2, age_band: '4-6', tags: ['body-safety', 'secrets'], status: 'published',
+  },
+
+  // ── 5-7: Body Boundaries & Consent ──
   {
     id: 'bb-1', deck_id: 'body-boundaries', title: 'The Unwanted Hug',
     scenario: 'A family friend wants to give you a big hug, but you don\'t feel like being hugged right now. What would you do?',
@@ -121,7 +271,41 @@ export const cards: Card[] = [
     difficulty: 1, age_band: '5-7', tags: ['boundaries', 'consent'], status: 'published',
   },
 
-  // Online & Device Safety
+  // ── 7-11: Peer Pressure ──
+  {
+    id: '7-11-001', deck_id: 'peer-pressure-7-11', title: 'The Vape Dare',
+    scenario: 'A friend says, "Try this vape. Don\'t be a baby."',
+    options: [
+      { label: 'A', text: 'Try it once.' },
+      { label: 'B', text: 'Say no and walk away.' },
+      { label: 'C', text: 'Pretend to try it.' },
+    ],
+    correct_option: 'B',
+    guidance_text: 'It\'s okay to say no, even if someone teases you.',
+    why_text: 'Real friends respect your choices. Protecting your health is more important than fitting in.',
+    practice_phrase: 'No thanks, I\'m good.',
+    help_prompt: 'Why is saying no hard here? How would you say no confidently?',
+    difficulty: 2, age_band: '7-11', tags: ['peer-pressure', 'substance-risk'], status: 'published',
+  },
+
+  // ── 7-11: Digital Safety ──
+  {
+    id: '7-11-002', deck_id: 'digital-safety-7-11', title: 'The Stranger Online',
+    scenario: 'Someone you met in a game asks where you live.',
+    options: [
+      { label: 'A', text: 'Tell them your city only.' },
+      { label: 'B', text: 'Ignore and block them.' },
+      { label: 'C', text: 'Ask why they want to know.' },
+    ],
+    correct_option: 'B',
+    guidance_text: 'Never share personal details online.',
+    why_text: 'You don\'t know who is really behind the screen.',
+    practice_phrase: 'I don\'t share personal info online.',
+    help_prompt: 'What information is private? Who should you tell?',
+    difficulty: 1, age_band: '7-11', tags: ['online-safety'], status: 'published',
+  },
+
+  // ── 8-10: Online & Device Safety ──
   {
     id: 'os-1', deck_id: 'online-safety', title: 'The Friend Request',
     scenario: 'Someone you don\'t know sends you a friend request on a game and says they\'re a kid your age. What would you do?',
@@ -183,7 +367,7 @@ export const cards: Card[] = [
     difficulty: 2, age_band: '8-10', tags: ['online safety', 'privacy'], status: 'published',
   },
 
-  // Bullying & Peer Pressure
+  // ── 8-10: Bullying & Peer Pressure ──
   {
     id: 'bp-1', deck_id: 'bullying', title: 'The Lunchtime Bully',
     scenario: 'A kid at school keeps taking your snack at lunch and says "it\'s just a joke." What would you do?',
@@ -245,7 +429,7 @@ export const cards: Card[] = [
     difficulty: 1, age_band: '8-10', tags: ['bullying', 'kindness'], status: 'published',
   },
 
-  // Trusted Adults & Safe Places
+  // ── 5-7: Trusted Adults & Safe Places ──
   {
     id: 'ta-1', deck_id: 'trusted-adults', title: 'Who Do You Trust?',
     scenario: 'Something is making you worried and you need to talk to someone. Who would be the best person to tell?',
@@ -307,7 +491,7 @@ export const cards: Card[] = [
     difficulty: 2, age_band: '5-7', tags: ['trusted adults'], status: 'published',
   },
 
-  // Emergencies & Getting Help
+  // ── 11-13: Emergencies & Getting Help ──
   {
     id: 'em-1', deck_id: 'emergencies', title: 'Someone Is Hurt',
     scenario: 'Your friend falls off their bike and is bleeding badly. What would you do?',
@@ -368,7 +552,28 @@ export const cards: Card[] = [
     help_prompt: 'Being a good bystander means getting help, not ignoring the situation.',
     difficulty: 2, age_band: '11-13', tags: ['emergencies', 'help'], status: 'published',
   },
+
+  // ── 12+: Real-World Judgment ──
+  {
+    id: '12-PLUS-001', deck_id: 'real-world-judgment-12plus', title: 'The Uber Bag',
+    scenario: 'You realize you left your bag in the Uber after you get home.',
+    options: [
+      { label: 'A', text: 'Post on social media asking if anyone found it.' },
+      { label: 'B', text: 'Open the app and contact the driver through the official system.' },
+      { label: 'C', text: 'Assume it\'s gone.' },
+    ],
+    correct_option: 'B',
+    guidance_text: 'Use official channels to recover lost property.',
+    why_text: 'It protects your privacy and gives you a record of communication.',
+    practice_phrase: 'I\'ll use the app to contact the driver safely.',
+    help_prompt: 'What should you avoid posting publicly? How do you stay calm in stressful situations?',
+    difficulty: 1, age_band: '12+', tags: ['judgment', 'digital-awareness'], status: 'published',
+  },
 ];
+
+export function getDeckBySlug(slug: string): Deck | undefined {
+  return decks.find(d => d.slug === slug || d.id === slug);
+}
 
 export function getCardsByDeck(deckId: string): Card[] {
   return cards.filter(c => c.deck_id === deckId && c.status === 'published');
@@ -376,4 +581,13 @@ export function getCardsByDeck(deckId: string): Card[] {
 
 export function getCardsByAgeBand(ageBand: string): Card[] {
   return cards.filter(c => c.age_band === ageBand && c.status === 'published');
+}
+
+export function getFreeDecks(): Deck[] {
+  return decks.filter(d => d.is_free);
+}
+
+export function isFreeDeck(deckId: string): boolean {
+  const deck = decks.find(d => d.id === deckId);
+  return deck?.is_free ?? false;
 }

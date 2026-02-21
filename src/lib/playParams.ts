@@ -1,7 +1,7 @@
 import { decks } from '@/data/seedData';
 import type { AgeBand, PlayStyle } from '@/types/game';
 
-const VALID_AGE_BANDS: AgeBand[] = ['5-7', '8-10', '11-13'];
+const VALID_AGE_BANDS: AgeBand[] = ['4-6', '5-7', '7-11', '8-10', '11-13', '12+'];
 const VALID_MODES: PlayStyle[] = ['discussion', 'quiz', 'roleplay'];
 
 export interface PlayParams {
@@ -15,8 +15,8 @@ export interface ParseResult {
   isValid: boolean;
 }
 
-/** Available deck slugs (ids) */
-export const getAvailableDeckSlugs = (): string[] => decks.map(d => d.id);
+/** Available deck slugs */
+export const getAvailableDeckSlugs = (): string[] => decks.map(d => d.slug);
 
 /** Parse raw query string values into structured params with defaults */
 export function parsePlayParams(raw: {
@@ -24,11 +24,12 @@ export function parsePlayParams(raw: {
   age?: string | null;
   mode?: string | null;
 }): ParseResult {
-  const availableSlugs = getAvailableDeckSlugs();
-
-  // Parse decks
+  // Parse decks – match by slug or id
   const rawDecks = (raw.decks || '').split(',').map(s => s.trim()).filter(Boolean);
-  const validDecks = rawDecks.filter(slug => availableSlugs.includes(slug));
+  const validDecks = rawDecks
+    .map(slug => decks.find(d => d.slug === slug || d.id === slug))
+    .filter(Boolean)
+    .map(d => d!.id);
 
   // Parse age
   const rawAge = raw.age as AgeBand;

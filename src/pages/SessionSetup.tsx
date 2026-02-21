@@ -1,15 +1,18 @@
 import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { ArrowLeft, Play } from 'lucide-react';
+import { ArrowLeft, Play, Lock } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { decks } from '@/data/seedData';
 import type { AgeBand, PlayStyle } from '@/types/game';
 
 const ageBands: { value: AgeBand; label: string }[] = [
+  { value: '4-6', label: '4–6 years' },
   { value: '5-7', label: '5–7 years' },
+  { value: '7-11', label: '7–11 years' },
   { value: '8-10', label: '8–10 years' },
   { value: '11-13', label: '11–13 years' },
+  { value: '12+', label: '12+ years' },
 ];
 
 const playStyles: { value: PlayStyle; label: string; desc: string; icon: string }[] = [
@@ -24,17 +27,21 @@ const SessionSetup = () => {
   const [playStyle, setPlayStyle] = useState<PlayStyle>('discussion');
   const [selectedDecks, setSelectedDecks] = useState<string[]>([]);
 
-  const filteredDecks = decks;
-
   const toggleDeck = (id: string) => {
+    const deck = decks.find(d => d.id === id);
+    if (!deck?.is_free) return; // locked decks can't be selected
     setSelectedDecks(prev =>
       prev.includes(id) ? prev.filter(d => d !== id) : [...prev, id]
     );
   };
 
   const startSession = () => {
+    const slugs = selectedDecks.map(id => {
+      const d = decks.find(dk => dk.id === id);
+      return d?.slug ?? id;
+    });
     const params = new URLSearchParams({
-      decks: selectedDecks.join(','),
+      decks: slugs.join(','),
       age: ageBand,
       mode: playStyle,
     });
@@ -101,23 +108,37 @@ const SessionSetup = () => {
         <motion.section initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2 }}>
           <h2 className="mb-3 text-lg font-bold">Choose Decks</h2>
           <div className="grid gap-3 sm:grid-cols-2">
-            {filteredDecks.map(deck => (
-              <button
-                key={deck.id}
-                onClick={() => toggleDeck(deck.id)}
-                className={`flex items-center gap-3 rounded-2xl border-2 p-4 text-left transition-all ${
-                  selectedDecks.includes(deck.id)
-                    ? 'border-primary bg-primary/5 shadow-sm'
-                    : 'border-border bg-card hover:border-primary/40'
-                }`}
-              >
-                <span className="text-3xl">{deck.icon}</span>
-                <div>
-                  <div className="font-bold text-card-foreground">{deck.name}</div>
-                  <div className="text-xs text-muted-foreground">Ages {deck.age_band}</div>
-                </div>
-              </button>
-            ))}
+            {decks.map(deck => {
+              const isLocked = !deck.is_free;
+              return (
+                <button
+                  key={deck.id}
+                  onClick={() => toggleDeck(deck.id)}
+                  disabled={isLocked}
+                  className={`relative flex items-center gap-3 rounded-2xl border-2 p-4 text-left transition-all ${
+                    isLocked
+                      ? 'cursor-not-allowed border-border bg-muted/50 opacity-60'
+                      : selectedDecks.includes(deck.id)
+                      ? 'border-primary bg-primary/5 shadow-sm'
+                      : 'border-border bg-card hover:border-primary/40'
+                  }`}
+                >
+                  {isLocked && (
+                    <div className="absolute right-3 top-3">
+                      <Lock className="h-4 w-4 text-muted-foreground" />
+                    </div>
+                  )}
+                  <span className="text-3xl">{deck.icon}</span>
+                  <div>
+                    <div className="font-bold text-card-foreground">{deck.name}</div>
+                    <div className="text-xs text-muted-foreground">
+                      Ages {deck.age_band}
+                      {isLocked && <span className="ml-1 text-caution">• Full Access</span>}
+                    </div>
+                  </div>
+                </button>
+              );
+            })}
           </div>
         </motion.section>
 
