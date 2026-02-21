@@ -1,20 +1,56 @@
 import { useState, useMemo, useCallback } from 'react';
-import { Link, useSearchParams } from 'react-router-dom';
+import { Link, useSearchParams, useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
-import { ArrowLeft, ChevronRight, Volume2, Eye, CheckCircle2, Flag, RotateCcw } from 'lucide-react';
+import { ArrowLeft, ChevronRight, Volume2, Eye, CheckCircle2, Flag, RotateCcw, Share2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { cards as allCards, decks } from '@/data/seedData';
-import type { PlayStyle } from '@/types/game';
+import type { AgeBand, PlayStyle } from '@/types/game';
+import { parsePlayParams, buildPlayUrl } from '@/lib/playParams';
+import { toast } from '@/hooks/use-toast';
+
+const ageBands: { value: AgeBand; label: string }[] = [
+  { value: '5-7', label: '5–7 years' },
+  { value: '8-10', label: '8–10 years' },
+  { value: '11-13', label: '11–13 years' },
+];
+
+const playStyles: { value: PlayStyle; label: string; desc: string; icon: string }[] = [
+  { value: 'discussion', label: 'Discussion', desc: 'Talk through scenarios together', icon: '💬' },
+  { value: 'quiz', label: 'Quiz', desc: 'Light scoring for fun', icon: '🎯' },
+  { value: 'roleplay', label: 'Roleplay', desc: 'Act out your responses', icon: '🎭' },
+];
 
 const PlaySession = () => {
   const [searchParams] = useSearchParams();
-  const deckIds = (searchParams.get('decks') || '').split(',').filter(Boolean);
-  const mode = (searchParams.get('mode') || 'discussion') as PlayStyle;
+  const navigate = useNavigate();
+
+  const { params: parsed, isValid: autoStart } = useMemo(
+    () =>
+      parsePlayParams({
+        decks: searchParams.get('decks'),
+        age: searchParams.get('age'),
+        mode: searchParams.get('mode'),
+      }),
+    [searchParams],
+  );
+
+  // Setup state – pre-filled from parsed params
+  const [setupAgeBand, setSetupAgeBand] = useState<AgeBand>(parsed.age);
+  const [setupMode, setSetupMode] = useState<PlayStyle>(parsed.mode);
+  const [setupDecks, setSetupDecks] = useState<string[]>(parsed.deckIds);
+  const [manualStarted, setManualStarted] = useState(false);
+
+  const isPlaying = autoStart || manualStarted;
+
+  // Active session params
+  const activeDeckIds = isPlaying ? (autoStart ? parsed.deckIds : setupDecks) : [];
+  const activeMode = isPlaying ? (autoStart ? parsed.mode : setupMode) : 'discussion';
+  const activeAge = isPlaying ? (autoStart ? parsed.age : setupAgeBand) : '8-10';
 
   const sessionCards = useMemo(() => {
-    if (deckIds.length === 0) return allCards.filter(c => c.status === 'published');
-    return allCards.filter(c => deckIds.includes(c.deck_id) && c.status === 'published');
-  }, [deckIds]);
+    if (activeDeckIds.length === 0) return allCards.filter(c => c.status === 'published');
+    return allCards.filter(c => activeDeckIds.includes(c.deck_id) && c.status === 'published');
+  }, [activeDeckIds]);
 
   const [index, setIndex] = useState(0);
   const [showGuidance, setShowGuidance] = useState(false);
@@ -39,7 +75,7 @@ const PlaySession = () => {
 
   const handleSelectOption = (label: string) => {
     setSelectedOption(label);
-    if (mode === 'quiz' && card?.correct_option === label) {
+    if (activeMode === 'quiz' && card?.correct_option === label) {
       setScore(s => s + 1);
     }
   };
@@ -71,17 +107,134 @@ const PlaySession = () => {
     });
   };
 
-  if (sessionCards.length === 0) {
+  const handleShare = () => {
+    const url = buildPlayUrl(
+      { deckIds: activeDeckIds, age: activeAge, mode: activeMode },
+      window.location.origin,
+    );
+    navigator.clipboard.writeText(url).then(() => {
+      toast({ title: 'Link copied!', description: 'Share this URL to jump right into the session.' });
+    });
+  };
+
+  const handleManualStart = () => {
+    const sp = new URLSearchParams({ decks: setupDecks.join(','), age: setupAgeBand, mode: setupMode });
+    navigate(`/play?${sp.toString()}`, { replace: true });
+    setManualStarted(true);
+  };
+
+  const toggleSetupDeck = (id: string) => {
+    setSetupDecks(prev => (prev.includes(id) ? prev.filter(d => d !== id) : [...prev, id]));
+  };
+
+  // ── Setup screen (no valid deep-link) ──
+  if (!isPlaying) {
     return (
-      <div className="flex min-h-screen items-center justify-center bg-background p-4">
-        <div className="text-center">
-          <p className="text-lg font-bold text-foreground">No cards found for this selection.</p>
-          <Link to="/session/setup" className="mt-4 inline-block text-primary underline">Go back</Link>
+      <div className="min-h-screen bg-background">
+        <div className="bg-primary px-4 py-6 text-primary-foreground">
+          <div className="mx-auto flex max-w-2xl items-center gap-3">
+            <Link to="/">
+              <Button variant="ghost" size="icon" className="text-primary-foreground hover:bg-primary-foreground/10">
+                <ArrowLeft className="h-5 w-5" />
+              </Button>
+            </Link>
+            <h1 className="text-2xl font-black">Start a Session</h1>
+          </div>
+        </div>
+
+        <div className="mx-auto max-w-2xl space-y-8 px-4 py-8">
+          {/* Age Band */}
+          <section>
+            <h2 className="mb-3 text-lg font-bold">Age Group</h2>
+            <div className="flex flex-wrap gap-2">
+              {ageBands.map(ab => (
+                <button
+                  key={ab.value}
+                  onClick={() => setSetupAgeBand(ab.value)}
+                  className={`rounded-xl border-2 px-5 py-3 text-sm font-bold transition-all ${
+                    setupAgeBand === ab.value
+                      ? 'border-primary bg-primary text-primary-foreground'
+                      : 'border-border bg-card text-card-foreground hover:border-primary/40'
+                  }`}
+                >
+                  {ab.label}
+                </button>
+              ))}
+            </div>
+          </section>
+
+          {/* Play Style */}
+          <section>
+            <h2 className="mb-3 text-lg font-bold">Play Style</h2>
+            <div className="grid gap-3 sm:grid-cols-3">
+              {playStyles.map(ps => (
+                <button
+                  key={ps.value}
+                  onClick={() => setSetupMode(ps.value)}
+                  className={`rounded-2xl border-2 p-4 text-left transition-all ${
+                    setupMode === ps.value
+                      ? 'border-primary bg-primary/5 shadow-sm'
+                      : 'border-border bg-card hover:border-primary/40'
+                  }`}
+                >
+                  <div className="mb-1 text-2xl">{ps.icon}</div>
+                  <div className="font-bold text-card-foreground">{ps.label}</div>
+                  <div className="text-xs text-muted-foreground">{ps.desc}</div>
+                </button>
+              ))}
+            </div>
+          </section>
+
+          {/* Deck Selection */}
+          <section>
+            <h2 className="mb-3 text-lg font-bold">Choose Decks</h2>
+            <div className="grid gap-3 sm:grid-cols-2">
+              {decks.map(d => (
+                <button
+                  key={d.id}
+                  onClick={() => toggleSetupDeck(d.id)}
+                  className={`flex items-center gap-3 rounded-2xl border-2 p-4 text-left transition-all ${
+                    setupDecks.includes(d.id)
+                      ? 'border-primary bg-primary/5 shadow-sm'
+                      : 'border-border bg-card hover:border-primary/40'
+                  }`}
+                >
+                  <span className="text-3xl">{d.icon}</span>
+                  <div>
+                    <div className="font-bold text-card-foreground">{d.name}</div>
+                    <div className="text-xs text-muted-foreground">Ages {d.age_band}</div>
+                  </div>
+                </button>
+              ))}
+            </div>
+          </section>
+
+          <Button
+            size="lg"
+            onClick={handleManualStart}
+            disabled={setupDecks.length === 0}
+            className="w-full gap-2 text-lg font-bold"
+          >
+            Start Session ({setupDecks.length} deck{setupDecks.length !== 1 ? 's' : ''})
+          </Button>
         </div>
       </div>
     );
   }
 
+  // ── No cards ──
+  if (sessionCards.length === 0) {
+    return (
+      <div className="flex min-h-screen items-center justify-center bg-background p-4">
+        <div className="text-center">
+          <p className="text-lg font-bold text-foreground">No cards found for this selection.</p>
+          <Link to="/play" className="mt-4 inline-block text-primary underline">Go back</Link>
+        </div>
+      </div>
+    );
+  }
+
+  // ── Session done ──
   if (sessionDone) {
     return (
       <div className="min-h-screen bg-background p-4">
@@ -93,7 +246,7 @@ const PlaySession = () => {
           </motion.div>
           <h1 className="text-3xl font-black text-foreground">Great Job!</h1>
           <p className="mt-2 text-muted-foreground">You covered {sessionCards.length} cards together.</p>
-          {mode === 'quiz' && (
+          {activeMode === 'quiz' && (
             <p className="mt-1 text-lg font-bold text-primary">Score: {score} / {sessionCards.length}</p>
           )}
           <div className="mt-6 space-y-2 rounded-2xl border bg-card p-4 text-left">
@@ -102,7 +255,7 @@ const PlaySession = () => {
             <p className="text-sm text-muted-foreground">🚩 Flagged for review: {flagged.size} cards</p>
           </div>
           <div className="mt-6 flex flex-col gap-2">
-            <Link to="/session/setup">
+            <Link to="/play">
               <Button className="w-full gap-2 font-bold"><RotateCcw className="h-4 w-4" /> New Session</Button>
             </Link>
             <Link to="/">
@@ -114,22 +267,33 @@ const PlaySession = () => {
     );
   }
 
+  // ── Active play ──
   return (
     <div className="min-h-screen bg-background">
       {/* Header */}
       <div className="bg-primary px-4 py-4 text-primary-foreground">
         <div className="mx-auto flex max-w-2xl items-center justify-between">
           <div className="flex items-center gap-2">
-            <Link to="/session/setup">
+            <Link to="/play">
               <Button variant="ghost" size="icon" className="text-primary-foreground hover:bg-primary-foreground/10">
                 <ArrowLeft className="h-5 w-5" />
               </Button>
             </Link>
             <span className="text-sm font-bold opacity-80">{deck?.icon} {deck?.name}</span>
           </div>
-          <span className="rounded-full bg-primary-foreground/20 px-3 py-1 text-sm font-bold">
-            {index + 1} / {sessionCards.length}
-          </span>
+          <div className="flex items-center gap-2">
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={handleShare}
+              className="gap-1.5 text-primary-foreground hover:bg-primary-foreground/10"
+            >
+              <Share2 className="h-4 w-4" /> Share
+            </Button>
+            <span className="rounded-full bg-primary-foreground/20 px-3 py-1 text-sm font-bold">
+              {index + 1} / {sessionCards.length}
+            </span>
+          </div>
         </div>
         {/* Progress bar */}
         <div className="mx-auto mt-3 max-w-2xl">
