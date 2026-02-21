@@ -1,0 +1,63 @@
+import { decks } from '@/data/seedData';
+import type { AgeBand, PlayStyle } from '@/types/game';
+
+const VALID_AGE_BANDS: AgeBand[] = ['5-7', '8-10', '11-13'];
+const VALID_MODES: PlayStyle[] = ['discussion', 'quiz', 'roleplay'];
+
+export interface PlayParams {
+  deckIds: string[];
+  age: AgeBand;
+  mode: PlayStyle;
+}
+
+export interface ParseResult {
+  params: PlayParams;
+  isValid: boolean;
+}
+
+/** Available deck slugs (ids) */
+export const getAvailableDeckSlugs = (): string[] => decks.map(d => d.id);
+
+/** Parse raw query string values into structured params with defaults */
+export function parsePlayParams(raw: {
+  decks?: string | null;
+  age?: string | null;
+  mode?: string | null;
+}): ParseResult {
+  const availableSlugs = getAvailableDeckSlugs();
+
+  // Parse decks
+  const rawDecks = (raw.decks || '').split(',').map(s => s.trim()).filter(Boolean);
+  const validDecks = rawDecks.filter(slug => availableSlugs.includes(slug));
+
+  // Parse age
+  const rawAge = raw.age as AgeBand;
+  const validAge = VALID_AGE_BANDS.includes(rawAge) ? rawAge : null;
+
+  // Parse mode
+  const rawMode = raw.mode as PlayStyle;
+  const validMode = VALID_MODES.includes(rawMode) ? rawMode : null;
+
+  // Determine if we have enough valid params for auto-start
+  const hasDecks = validDecks.length > 0;
+  const isValid = hasDecks && validAge !== null && validMode !== null;
+
+  return {
+    params: {
+      deckIds: hasDecks ? validDecks : [],
+      age: validAge ?? '8-10',
+      mode: validMode ?? 'discussion',
+    },
+    isValid,
+  };
+}
+
+/** Build a shareable URL from current params */
+export function buildPlayUrl(params: PlayParams, origin: string): string {
+  const sp = new URLSearchParams({
+    decks: params.deckIds.join(','),
+    age: params.age,
+    mode: params.mode,
+  });
+  return `${origin}/play?${sp.toString()}`;
+}
