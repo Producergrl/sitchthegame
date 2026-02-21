@@ -4,6 +4,12 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Index from "./pages/Index";
+import BrowseDecks from "./pages/BrowseDecks";
+import DeckDetail from "./pages/DeckDetail";
+import SessionSetup from "./pages/SessionSetup";
+import PlaySession from "./pages/PlaySession";
+import Resources from "./pages/Resources";
+import AdminPage from "./pages/AdminPage";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -16,7 +22,12 @@ const App = () => (
       <BrowserRouter>
         <Routes>
           <Route path="/" element={<Index />} />
-          {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
+          <Route path="/decks" element={<BrowseDecks />} />
+          <Route path="/decks/:deckId" element={<DeckDetail />} />
+          <Route path="/session/setup" element={<SessionSetup />} />
+          <Route path="/play" element={<PlaySession />} />
+          <Route path="/resources" element={<Resources />} />
+          <Route path="/admin" element={<AdminPage />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
       </BrowserRouter>
