@@ -1,12 +1,12 @@
 import { Link, useParams } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { ArrowLeft, Play } from 'lucide-react';
+import { ArrowLeft, Play, Lock } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import { decks, getCardsByDeck } from '@/data/seedData';
+import { getDeckBySlug, getCardsByDeck } from '@/data/seedData';
 
 const DeckDetail = () => {
   const { deckId } = useParams();
-  const deck = decks.find(d => d.id === deckId);
+  const deck = deckId ? getDeckBySlug(deckId) : undefined;
   const deckCards = deck ? getCardsByDeck(deck.id) : [];
 
   if (!deck) {
@@ -26,8 +26,15 @@ const DeckDetail = () => {
               <ArrowLeft className="h-5 w-5" />
             </Button>
           </Link>
-          <div>
-            <h1 className="text-2xl font-black">{deck.icon} {deck.name}</h1>
+          <div className="flex-1">
+            <div className="flex items-center gap-2">
+              <h1 className="text-2xl font-black">{deck.icon} {deck.name}</h1>
+              {!deck.is_free && (
+                <span className="flex items-center gap-1 rounded-full bg-primary-foreground/20 px-2.5 py-1 text-xs font-bold">
+                  <Lock className="h-3 w-3" /> Full Access
+                </span>
+              )}
+            </div>
             <p className="text-sm opacity-80">Ages {deck.age_band} • {deckCards.length} cards</p>
           </div>
         </div>
@@ -36,11 +43,19 @@ const DeckDetail = () => {
       <div className="mx-auto max-w-2xl px-4 py-8">
         <p className="mb-6 text-muted-foreground">{deck.description}</p>
 
-        <Link to={`/play?decks=${deck.id}&mode=discussion&age=${deck.age_band}`}>
-          <Button className="mb-8 w-full gap-2 text-lg font-bold" size="lg">
-            <Play className="h-5 w-5" /> Play This Deck
-          </Button>
-        </Link>
+        {deck.is_free ? (
+          <Link to={`/play?decks=${deck.slug}&mode=discussion&age=${deck.age_band}`}>
+            <Button className="mb-8 w-full gap-2 text-lg font-bold" size="lg">
+              <Play className="h-5 w-5" /> Play This Deck
+            </Button>
+          </Link>
+        ) : (
+          <div className="mb-8 rounded-2xl border-2 border-dashed border-caution/40 bg-caution/5 p-6 text-center">
+            <Lock className="mx-auto mb-2 h-8 w-8 text-caution" />
+            <p className="font-bold text-card-foreground">Full Access Required</p>
+            <p className="mt-1 text-sm text-muted-foreground">This deck is part of the full collection. Coming soon!</p>
+          </div>
+        )}
 
         <h2 className="mb-4 text-lg font-bold">Cards in this Deck</h2>
         <div className="space-y-3">

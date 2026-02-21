@@ -1,6 +1,6 @@
 import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { ArrowLeft } from 'lucide-react';
+import { ArrowLeft, Lock } from 'lucide-react';
 import { decks, getCardsByDeck } from '@/data/seedData';
 import { Button } from '@/components/ui/button';
 
@@ -29,18 +29,28 @@ const BrowseDecks = () => {
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: i * 0.08 }}
               >
-                <Link to={`/decks/${deck.id}`}>
-                  <div className="group cursor-pointer rounded-2xl border bg-card p-6 shadow-sm transition-all hover:shadow-md hover:-translate-y-1">
+                <Link to={`/decks/${deck.slug}`}>
+                  <div className={`group relative cursor-pointer rounded-2xl border bg-card p-6 shadow-sm transition-all hover:shadow-md hover:-translate-y-1 ${!deck.is_free ? 'opacity-80' : ''}`}>
+                    {!deck.is_free && (
+                      <div className="absolute right-3 top-3 flex items-center gap-1 rounded-full bg-caution/15 px-2.5 py-1 text-xs font-bold text-caution">
+                        <Lock className="h-3 w-3" /> Full Access
+                      </div>
+                    )}
                     <div className="mb-3 text-4xl">{deck.icon}</div>
                     <h3 className="text-lg font-bold text-card-foreground">{deck.name}</h3>
                     <p className="mt-1 text-sm text-muted-foreground">{deck.description}</p>
-                    <div className="mt-4 flex items-center gap-2">
+                    <div className="mt-4 flex flex-wrap items-center gap-2">
                       <span className="rounded-full bg-muted px-3 py-1 text-xs font-semibold text-muted-foreground">
                         Ages {deck.age_band}
                       </span>
                       <span className="rounded-full bg-primary/10 px-3 py-1 text-xs font-semibold text-primary">
                         {cardCount} cards
                       </span>
+                      {deck.is_free && (
+                        <span className="rounded-full bg-safe/15 px-3 py-1 text-xs font-bold text-safe">
+                          Free
+                        </span>
+                      )}
                     </div>
                   </div>
                 </Link>
