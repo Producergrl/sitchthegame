@@ -23,7 +23,7 @@ const Index = () => {
   return (
     <div className="min-h-screen bg-background">
       {/* Hero */}
-      <div className="relative overflow-hidden hero-gradient px-4 pb-20 pt-16 text-primary-foreground">
+      <div className="relative overflow-hidden hero-gradient px-4 pb-20 pt-16 text-primary-foreground grain-overlay vignette">
         {/* Decorative orbs */}
         <div className="absolute inset-0 overflow-hidden">
           {[...Array(6)].map((_, i) => (
@@ -45,15 +45,15 @@ const Index = () => {
           />
         </div>
 
-        <div className="relative mx-auto max-w-2xl text-center">
+        <div className="relative z-10 mx-auto max-w-2xl text-center">
           <motion.div
             initial={{ scale: 0 }}
             animate={{ scale: 1 }}
             transition={{ type: 'spring', bounce: 0.5 }}
-            className="mx-auto mb-5 flex h-22 w-22 items-center justify-center rounded-3xl gold-glow animate-glow-pulse"
+            className="mx-auto mb-5 flex h-22 w-22 items-center justify-center rounded-3xl gold-glow animate-glow-pulse gold-sweep"
             style={{ background: 'linear-gradient(135deg, hsl(42 78% 50%), hsl(42 90% 62%))' }}
           >
-            <Shield className="h-11 w-11 text-white" />
+            <Shield className="relative z-10 h-11 w-11 text-white" />
           </motion.div>
           <motion.h1
             initial={{ opacity: 0, y: 20 }}
@@ -110,7 +110,7 @@ const Index = () => {
           {features.map((f) => (
             <motion.div key={f.title} variants={item}>
               <Link to={f.to}>
-                <div className="group flex items-center gap-4 rounded-2xl card-elevated bg-card p-5 transition-all duration-200 hover:shadow-lg hover:-translate-y-1 hover:scale-[1.02] active:animate-btn-press">
+                <div className="group flex items-center gap-4 rounded-2xl card-edge-lit bg-card p-5 transition-all duration-200 hover:shadow-lg hover:-translate-y-1 hover:scale-[1.02] active:animate-btn-press">
                   <div className={`flex h-14 w-14 shrink-0 items-center justify-center rounded-xl ${f.color} text-primary-foreground shadow-md`}>
                     <f.icon className="h-7 w-7" />
                   </div>
@@ -129,7 +129,7 @@ const Index = () => {
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ delay: 0.5 }}
-          className="mt-12 rounded-2xl border border-gold/30 bg-gold/5 p-6 text-center gold-glow"
+          className="mt-12 rounded-2xl card-edge-lit bg-gold/5 p-6 text-center gold-glow"
           style={{ boxShadow: '0 0 30px hsl(42 90% 62% / 0.1)' }}
         >
           <Shield className="mx-auto mb-2 h-8 w-8 text-gold" />
