@@ -341,7 +341,7 @@ const PlaySession = () => {
             className="space-y-5"
           >
             {/* Scenario */}
-            <div className="rounded-2xl card-elevated bg-card p-6">
+            <div className="rounded-2xl card-edge-lit bg-card p-6">
               <h2 className="mb-3 text-xl font-black text-card-foreground">{card.title}</h2>
               <p className="text-base leading-relaxed text-card-foreground">{card.scenario}</p>
               <Button variant="ghost" size="sm" onClick={handleReadAloud} className="mt-3 gap-1.5 text-primary">
@@ -360,11 +360,11 @@ const PlaySession = () => {
                     key={opt.label}
                     onClick={() => handleSelectOption(opt.label)}
                     disabled={showGuidance}
-                    className={`w-full rounded-xl border-2 p-4 text-left transition-all ${
+                    className={`w-full rounded-xl border p-4 text-left transition-all ${
                       isCorrect ? 'border-safe bg-safe/10' :
                       isWrong ? 'border-destructive bg-destructive/5' :
                       isSelected ? 'border-primary bg-primary/5' :
-                      'border-border bg-card hover:border-primary/40'
+                      'card-edge-lit bg-card hover:border-gold/30'
                     }`}
                   >
                     <span className="mr-2 inline-flex h-7 w-7 items-center justify-center rounded-full bg-muted text-sm font-bold text-muted-foreground">
