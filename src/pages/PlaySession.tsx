@@ -7,6 +7,7 @@ import { cards as allCards, decks } from '@/data/seedData';
 import type { AgeBand, PlayStyle } from '@/types/game';
 import { parsePlayParams, buildPlayUrl } from '@/lib/playParams';
 import { toast } from '@/hooks/use-toast';
+import ThemeToggle from '@/components/ThemeToggle';
 
 const ageBands: { value: AgeBand; label: string }[] = [
   { value: '4-6', label: '4–6 years' },
@@ -141,13 +142,16 @@ const PlaySession = () => {
     return (
       <div className="min-h-screen bg-background">
         <div className="hero-gradient px-4 py-6 text-primary-foreground">
-          <div className="mx-auto flex max-w-2xl items-center gap-3">
-            <Link to="/">
-              <Button variant="ghost" size="icon" className="text-primary-foreground hover:bg-white/10 active:animate-btn-press">
-                <ArrowLeft className="h-5 w-5" />
-              </Button>
-            </Link>
-            <h1 className="text-2xl font-black">Start a Session</h1>
+          <div className="mx-auto flex max-w-2xl items-center justify-between">
+            <div className="flex items-center gap-3">
+              <Link to="/">
+                <Button variant="ghost" size="icon" className="text-primary-foreground hover:bg-white/10 active:animate-btn-press">
+                  <ArrowLeft className="h-5 w-5" />
+                </Button>
+              </Link>
+              <h1 className="text-2xl font-black">Start a Session</h1>
+            </div>
+            <ThemeToggle className="text-primary-foreground hover:bg-white/10" />
           </div>
         </div>
 
@@ -305,6 +309,7 @@ const PlaySession = () => {
             <span className="text-sm font-bold opacity-80">{deck?.icon} {deck?.name}</span>
           </div>
           <div className="flex items-center gap-2">
+            <ThemeToggle className="text-primary-foreground hover:bg-white/10" />
             <Button
               variant="ghost"
               size="sm"

@@ -3,6 +3,7 @@ import { motion } from 'framer-motion';
 import { ArrowLeft, Play, Lock } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { getDeckBySlug, getCardsByDeck } from '@/data/seedData';
+import ThemeToggle from '@/components/ThemeToggle';
 
 const DeckDetail = () => {
   const { deckId } = useParams();
@@ -20,23 +21,26 @@ const DeckDetail = () => {
   return (
     <div className="min-h-screen bg-background">
       <div className="hero-gradient px-4 py-6 text-primary-foreground">
-        <div className="mx-auto flex max-w-2xl items-center gap-3">
-          <Link to="/decks">
-            <Button variant="ghost" size="icon" className="text-primary-foreground hover:bg-white/10 active:animate-btn-press">
-              <ArrowLeft className="h-5 w-5" />
-            </Button>
-          </Link>
-          <div className="flex-1">
-            <div className="flex items-center gap-2">
-              <h1 className="text-2xl font-black">{deck.icon} {deck.name}</h1>
-              {!deck.is_free && (
-                <span className="flex items-center gap-1 rounded-full bg-primary-foreground/20 px-2.5 py-1 text-xs font-bold">
-                  <Lock className="h-3 w-3" /> Full Access
-                </span>
-              )}
+        <div className="mx-auto flex max-w-2xl items-center justify-between">
+          <div className="flex items-center gap-3">
+            <Link to="/decks">
+              <Button variant="ghost" size="icon" className="text-primary-foreground hover:bg-white/10 active:animate-btn-press">
+                <ArrowLeft className="h-5 w-5" />
+              </Button>
+            </Link>
+            <div>
+              <div className="flex items-center gap-2">
+                <h1 className="text-2xl font-black">{deck.icon} {deck.name}</h1>
+                {!deck.is_free && (
+                  <span className="flex items-center gap-1 rounded-full bg-primary-foreground/20 px-2.5 py-1 text-xs font-bold">
+                    <Lock className="h-3 w-3" /> Full Access
+                  </span>
+                )}
+              </div>
+              <p className="text-sm opacity-80">Ages {deck.age_band} • {deckCards.length} cards</p>
             </div>
-            <p className="text-sm opacity-80">Ages {deck.age_band} • {deckCards.length} cards</p>
           </div>
+          <ThemeToggle className="text-primary-foreground hover:bg-white/10" />
         </div>
       </div>
 

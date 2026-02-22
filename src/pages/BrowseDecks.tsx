@@ -3,18 +3,22 @@ import { motion } from 'framer-motion';
 import { ArrowLeft, Lock } from 'lucide-react';
 import { decks, getCardsByDeck } from '@/data/seedData';
 import { Button } from '@/components/ui/button';
+import ThemeToggle from '@/components/ThemeToggle';
 
 const BrowseDecks = () => {
   return (
     <div className="min-h-screen bg-background">
       <div className="hero-gradient px-4 py-6 text-primary-foreground">
-        <div className="mx-auto flex max-w-4xl items-center gap-3">
-          <Link to="/">
-            <Button variant="ghost" size="icon" className="text-primary-foreground hover:bg-white/10 active:animate-btn-press">
-              <ArrowLeft className="h-5 w-5" />
-            </Button>
-          </Link>
-          <h1 className="text-2xl font-black drop-shadow-sm">Browse Decks</h1>
+        <div className="mx-auto flex max-w-4xl items-center justify-between">
+          <div className="flex items-center gap-3">
+            <Link to="/">
+              <Button variant="ghost" size="icon" className="text-primary-foreground hover:bg-white/10 active:animate-btn-press">
+                <ArrowLeft className="h-5 w-5" />
+              </Button>
+            </Link>
+            <h1 className="text-2xl font-black drop-shadow-sm">Browse Decks</h1>
+          </div>
+          <ThemeToggle className="text-primary-foreground hover:bg-white/10" />
         </div>
       </div>
 

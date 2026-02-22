@@ -2,6 +2,7 @@ import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { Play, BookOpen, Settings, Heart, Shield, Sparkles } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import ThemeToggle from '@/components/ThemeToggle';
 
 const features = [
   { icon: Play, title: 'Start Session', desc: 'Begin a guided discussion', to: '/session/setup', color: 'bg-primary' },
@@ -24,6 +25,9 @@ const Index = () => {
     <div className="min-h-screen bg-background">
       {/* Hero */}
       <div className="relative overflow-hidden hero-gradient px-4 pb-20 pt-16 text-primary-foreground grain-overlay vignette">
+        <div className="absolute right-3 top-3 z-20">
+          <ThemeToggle className="text-primary-foreground hover:bg-white/10" />
+        </div>
         {/* Decorative orbs */}
         <div className="absolute inset-0 overflow-hidden">
           {[...Array(6)].map((_, i) => (
