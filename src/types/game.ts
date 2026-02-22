@@ -14,6 +14,7 @@ export interface Card {
   scenario: string;
   options: CardOption[];
   correct_option?: string;
+  worst_option?: string;
   guidance_text: string;
   why_text: string;
   practice_phrase: string;
