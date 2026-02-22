@@ -7,14 +7,14 @@ import { Button } from '@/components/ui/button';
 const BrowseDecks = () => {
   return (
     <div className="min-h-screen bg-background">
-      <div className="bg-primary px-4 py-6 text-primary-foreground">
+      <div className="hero-gradient px-4 py-6 text-primary-foreground">
         <div className="mx-auto flex max-w-4xl items-center gap-3">
           <Link to="/">
-            <Button variant="ghost" size="icon" className="text-primary-foreground hover:bg-primary-foreground/10">
+            <Button variant="ghost" size="icon" className="text-primary-foreground hover:bg-white/10 active:animate-btn-press">
               <ArrowLeft className="h-5 w-5" />
             </Button>
           </Link>
-          <h1 className="text-2xl font-black">Browse Decks</h1>
+          <h1 className="text-2xl font-black drop-shadow-sm">Browse Decks</h1>
         </div>
       </div>
 
@@ -30,9 +30,9 @@ const BrowseDecks = () => {
                 transition={{ delay: i * 0.08 }}
               >
                 <Link to={`/decks/${deck.slug}`}>
-                  <div className={`group relative cursor-pointer rounded-2xl border bg-card p-6 shadow-sm transition-all hover:shadow-md hover:-translate-y-1 ${!deck.is_free ? 'opacity-80' : ''}`}>
+                  <div className={`group relative cursor-pointer rounded-2xl card-elevated bg-card p-6 transition-all duration-200 hover:shadow-lg hover:-translate-y-1.5 hover:scale-[1.02] active:animate-btn-press ${!deck.is_free ? 'opacity-75' : ''}`}>
                     {!deck.is_free && (
-                      <div className="absolute right-3 top-3 flex items-center gap-1 rounded-full bg-caution/15 px-2.5 py-1 text-xs font-bold text-caution">
+                      <div className="absolute right-3 top-3 flex items-center gap-1 rounded-full bg-gold/15 px-2.5 py-1 text-xs font-bold text-gold">
                         <Lock className="h-3 w-3" /> Full Access
                       </div>
                     )}

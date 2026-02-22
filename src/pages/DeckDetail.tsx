@@ -19,10 +19,10 @@ const DeckDetail = () => {
 
   return (
     <div className="min-h-screen bg-background">
-      <div className="bg-primary px-4 py-6 text-primary-foreground">
+      <div className="hero-gradient px-4 py-6 text-primary-foreground">
         <div className="mx-auto flex max-w-2xl items-center gap-3">
           <Link to="/decks">
-            <Button variant="ghost" size="icon" className="text-primary-foreground hover:bg-primary-foreground/10">
+            <Button variant="ghost" size="icon" className="text-primary-foreground hover:bg-white/10 active:animate-btn-press">
               <ArrowLeft className="h-5 w-5" />
             </Button>
           </Link>
@@ -45,13 +45,13 @@ const DeckDetail = () => {
 
         {deck.is_free ? (
           <Link to={`/play?decks=${deck.slug}&mode=discussion&age=${deck.age_band}`}>
-            <Button className="mb-8 w-full gap-2 text-lg font-bold" size="lg">
+            <Button className="mb-8 w-full gap-2 text-lg font-bold cta-glow bg-secondary text-secondary-foreground hover:bg-secondary/90 active:animate-btn-press transition-all duration-200 hover:scale-[1.02]" size="lg">
               <Play className="h-5 w-5" /> Play This Deck
             </Button>
           </Link>
         ) : (
-          <div className="mb-8 rounded-2xl border-2 border-dashed border-caution/40 bg-caution/5 p-6 text-center">
-            <Lock className="mx-auto mb-2 h-8 w-8 text-caution" />
+          <div className="mb-8 rounded-2xl border-2 border-dashed border-gold/40 bg-gold/5 p-6 text-center">
+            <Lock className="mx-auto mb-2 h-8 w-8 text-gold" />
             <p className="font-bold text-card-foreground">Full Access Required</p>
             <p className="mt-1 text-sm text-muted-foreground">This deck is part of the full collection. Coming soon!</p>
           </div>
@@ -65,7 +65,7 @@ const DeckDetail = () => {
               initial={{ opacity: 0, y: 10 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: i * 0.05 }}
-              className="rounded-xl border bg-card p-4"
+              className="rounded-xl card-elevated bg-card p-4"
             >
               <div className="flex items-start justify-between">
                 <div>

@@ -4,80 +4,92 @@
 
 @layer base {
   :root {
-    --background: 38 33% 96%;
-    --foreground: 220 20% 18%;
+    --background: 0 0% 98%;
+    --foreground: 160 10% 10%;
 
     --card: 0 0% 100%;
-    --card-foreground: 220 20% 18%;
+    --card-foreground: 160 10% 10%;
 
     --popover: 0 0% 100%;
-    --popover-foreground: 220 20% 18%;
+    --popover-foreground: 160 10% 10%;
 
-    --primary: 174 50% 38%;
+    --primary: 160 84% 28%;
     --primary-foreground: 0 0% 100%;
 
-    --secondary: 16 78% 62%;
+    --secondary: 24 95% 52%;
     --secondary-foreground: 0 0% 100%;
 
-    --muted: 38 20% 91%;
-    --muted-foreground: 220 10% 46%;
+    --muted: 160 10% 93%;
+    --muted-foreground: 160 10% 40%;
 
-    --accent: 45 92% 55%;
-    --accent-foreground: 220 20% 18%;
+    --accent: 42 78% 50%;
+    --accent-foreground: 0 0% 100%;
 
-    --destructive: 0 72% 55%;
+    --destructive: 0 72% 50%;
     --destructive-foreground: 0 0% 100%;
 
-    --border: 38 20% 87%;
-    --input: 38 20% 87%;
-    --ring: 174 50% 38%;
+    --border: 160 10% 88%;
+    --input: 160 10% 88%;
+    --ring: 160 84% 28%;
 
     --radius: 1rem;
 
     --sidebar-background: 0 0% 98%;
-    --sidebar-foreground: 240 5.3% 26.1%;
-    --sidebar-primary: 174 50% 38%;
+    --sidebar-foreground: 160 10% 20%;
+    --sidebar-primary: 160 84% 28%;
     --sidebar-primary-foreground: 0 0% 100%;
-    --sidebar-accent: 38 20% 91%;
-    --sidebar-accent-foreground: 220 20% 18%;
-    --sidebar-border: 38 20% 87%;
-    --sidebar-ring: 174 50% 38%;
+    --sidebar-accent: 160 10% 93%;
+    --sidebar-accent-foreground: 160 10% 10%;
+    --sidebar-border: 160 10% 88%;
+    --sidebar-ring: 160 84% 28%;
 
     /* Custom tokens */
-    --safe-green: 155 60% 45%;
-    --caution-amber: 38 90% 55%;
-    --help-blue: 210 70% 55%;
-    --gentle-purple: 270 40% 65%;
+    --safe-green: 155 70% 38%;
+    --caution-amber: 24 95% 52%;
+    --help-blue: 210 80% 50%;
+    --gentle-purple: 270 50% 55%;
+
+    /* Vibrant extras */
+    --gold: 42 78% 50%;
+    --gold-glow: 42 90% 62%;
+    --hero-from: 160 84% 28%;
+    --hero-to: 160 30% 8%;
   }
 
   .dark {
-    --background: 220 20% 12%;
-    --foreground: 38 20% 95%;
+    --background: 160 15% 8%;
+    --foreground: 0 0% 95%;
 
-    --card: 220 18% 16%;
-    --card-foreground: 38 20% 95%;
+    --card: 160 12% 12%;
+    --card-foreground: 0 0% 95%;
 
-    --popover: 220 18% 16%;
-    --popover-foreground: 38 20% 95%;
+    --popover: 160 12% 12%;
+    --popover-foreground: 0 0% 95%;
 
-    --primary: 174 50% 45%;
+    --primary: 160 70% 40%;
     --primary-foreground: 0 0% 100%;
 
-    --secondary: 16 65% 55%;
+    --secondary: 24 85% 55%;
     --secondary-foreground: 0 0% 100%;
 
-    --muted: 220 15% 22%;
-    --muted-foreground: 220 10% 60%;
+    --muted: 160 10% 18%;
+    --muted-foreground: 160 10% 55%;
 
-    --accent: 45 80% 50%;
-    --accent-foreground: 220 20% 12%;
+    --accent: 42 78% 50%;
+    --accent-foreground: 0 0% 100%;
 
     --destructive: 0 62.8% 30.6%;
     --destructive-foreground: 0 0% 100%;
 
-    --border: 220 15% 25%;
-    --input: 220 15% 25%;
-    --ring: 174 50% 45%;
+    --border: 160 10% 20%;
+    --input: 160 10% 20%;
+    --ring: 160 70% 40%;
+
+    /* Dark extras */
+    --gold: 42 78% 50%;
+    --gold-glow: 42 90% 62%;
+    --hero-from: 160 70% 25%;
+    --hero-to: 160 20% 5%;
   }
 }
 
@@ -94,6 +106,25 @@
   h1, h2, h3, h4, h5, h6 {
     font-family: 'Nunito', system-ui, -apple-system, sans-serif;
     font-weight: 800;
+  }
+}
+
+@layer utilities {
+  .gold-glow {
+    box-shadow: 0 0 20px hsl(42 90% 62% / 0.4), 0 0 60px hsl(42 90% 62% / 0.15);
+  }
+
+  .cta-glow {
+    box-shadow: 0 4px 20px hsl(24 95% 52% / 0.45), 0 0 40px hsl(24 95% 52% / 0.15);
+  }
+
+  .hero-gradient {
+    background: linear-gradient(165deg, hsl(var(--hero-from)) 0%, hsl(var(--hero-to)) 100%);
+  }
+
+  .card-elevated {
+    box-shadow: 0 1px 3px hsl(160 10% 10% / 0.06), 0 8px 24px hsl(160 10% 10% / 0.06);
+    border: 1px solid hsl(var(--border));
   }
 }
 
