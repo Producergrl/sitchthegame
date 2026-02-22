@@ -379,6 +379,28 @@ const PlaySession = () => {
                   </button>
                 );
               })}
+              {/* Critical thinking option */}
+              {(() => {
+                const noneLabel = '✨';
+                const isSelected = selectedOption === noneLabel;
+                const isWrong = showGuidance && isSelected && card.correct_option !== noneLabel;
+                return (
+                  <button
+                    onClick={() => handleSelectOption(noneLabel)}
+                    disabled={showGuidance}
+                    className={`w-full rounded-xl border p-4 text-left transition-all ${
+                      isWrong ? 'border-destructive bg-destructive/5' :
+                      isSelected ? 'border-primary bg-primary/5' :
+                      'card-edge-lit bg-card hover:border-gold/30'
+                    }`}
+                  >
+                    <span className="mr-2 inline-flex h-7 w-7 items-center justify-center rounded-full bg-gradient-to-br from-primary to-accent text-sm font-bold text-primary-foreground">
+                      ✨
+                    </span>
+                    <span className="font-semibold text-card-foreground">None of the above — I'm going to wow you with my answer!</span>
+                  </button>
+                );
+              })()}
             </div>
 
             {/* Guidance */}
