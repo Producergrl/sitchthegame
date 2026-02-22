@@ -140,10 +140,10 @@ const PlaySession = () => {
   if (!isPlaying) {
     return (
       <div className="min-h-screen bg-background">
-        <div className="bg-primary px-4 py-6 text-primary-foreground">
+        <div className="hero-gradient px-4 py-6 text-primary-foreground">
           <div className="mx-auto flex max-w-2xl items-center gap-3">
             <Link to="/">
-              <Button variant="ghost" size="icon" className="text-primary-foreground hover:bg-primary-foreground/10">
+              <Button variant="ghost" size="icon" className="text-primary-foreground hover:bg-white/10 active:animate-btn-press">
                 <ArrowLeft className="h-5 w-5" />
               </Button>
             </Link>
@@ -236,7 +236,7 @@ const PlaySession = () => {
             size="lg"
             onClick={handleManualStart}
             disabled={setupDecks.length === 0}
-            className="w-full gap-2 text-lg font-bold"
+            className="w-full gap-2 text-lg font-bold cta-glow bg-secondary text-secondary-foreground hover:bg-secondary/90 active:animate-btn-press transition-all duration-200 hover:scale-[1.02]"
           >
             Start Session ({setupDecks.length} deck{setupDecks.length !== 1 ? 's' : ''})
           </Button>
@@ -294,11 +294,11 @@ const PlaySession = () => {
   return (
     <div className="min-h-screen bg-background">
       {/* Header */}
-      <div className="bg-primary px-4 py-4 text-primary-foreground">
+      <div className="hero-gradient px-4 py-4 text-primary-foreground">
         <div className="mx-auto flex max-w-2xl items-center justify-between">
           <div className="flex items-center gap-2">
             <Link to="/play">
-              <Button variant="ghost" size="icon" className="text-primary-foreground hover:bg-primary-foreground/10">
+              <Button variant="ghost" size="icon" className="text-primary-foreground hover:bg-white/10 active:animate-btn-press">
                 <ArrowLeft className="h-5 w-5" />
               </Button>
             </Link>
@@ -341,7 +341,7 @@ const PlaySession = () => {
             className="space-y-5"
           >
             {/* Scenario */}
-            <div className="rounded-2xl border bg-card p-6 shadow-sm">
+            <div className="rounded-2xl card-elevated bg-card p-6">
               <h2 className="mb-3 text-xl font-black text-card-foreground">{card.title}</h2>
               <p className="text-base leading-relaxed text-card-foreground">{card.scenario}</p>
               <Button variant="ghost" size="sm" onClick={handleReadAloud} className="mt-3 gap-1.5 text-primary">

@@ -50,10 +50,10 @@ const SessionSetup = () => {
 
   return (
     <div className="min-h-screen bg-background">
-      <div className="bg-primary px-4 py-6 text-primary-foreground">
+      <div className="hero-gradient px-4 py-6 text-primary-foreground">
         <div className="mx-auto flex max-w-2xl items-center gap-3">
           <Link to="/">
-            <Button variant="ghost" size="icon" className="text-primary-foreground hover:bg-primary-foreground/10">
+            <Button variant="ghost" size="icon" className="text-primary-foreground hover:bg-white/10 active:animate-btn-press">
               <ArrowLeft className="h-5 w-5" />
             </Button>
           </Link>
@@ -148,7 +148,7 @@ const SessionSetup = () => {
             size="lg"
             onClick={startSession}
             disabled={selectedDecks.length === 0}
-            className="w-full gap-2 text-lg font-bold"
+            className="w-full gap-2 text-lg font-bold cta-glow bg-secondary text-secondary-foreground hover:bg-secondary/90 active:animate-btn-press transition-all duration-200 hover:scale-[1.02]"
           >
             <Play className="h-5 w-5" />
             Start Session ({selectedDecks.length} deck{selectedDecks.length !== 1 ? 's' : ''})
