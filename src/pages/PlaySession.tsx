@@ -62,7 +62,13 @@ const PlaySession = () => {
   const [discussed, setDiscussed] = useState<Set<string>>(new Set());
   const [flagged, setFlagged] = useState<Set<string>>(new Set());
   const [score, setScore] = useState(0);
+  const [demerits, setDemerits] = useState(0);
+  const [bonusPoints, setBonusPoints] = useState(0);
+  const [customAnswer, setCustomAnswer] = useState('');
+  const [customAnswerSubmitted, setCustomAnswerSubmitted] = useState(false);
   const [sessionDone, setSessionDone] = useState(false);
+
+  const NONE_LABEL = '✨';
 
   const card = sessionCards[index];
   const deck = card ? decks.find(d => d.id === card.deck_id) : null;
@@ -74,13 +80,30 @@ const PlaySession = () => {
       setIndex(i => i + 1);
       setShowGuidance(false);
       setSelectedOption(null);
+      setCustomAnswer('');
+      setCustomAnswerSubmitted(false);
     }
   }, [index, sessionCards.length]);
 
   const handleSelectOption = (label: string) => {
     setSelectedOption(label);
-    if (activeMode === 'quiz' && card?.correct_option === label) {
-      setScore(s => s + 1);
+    setCustomAnswerSubmitted(false);
+    if (activeMode === 'quiz') {
+      if (card?.correct_option === label) {
+        setScore(s => s + 1);
+      }
+      if (card?.worst_option === label) {
+        setDemerits(d => d + 1);
+      }
+    }
+  };
+
+  const handleSubmitCustomAnswer = () => {
+    if (customAnswer.trim().length >= 10) {
+      setCustomAnswerSubmitted(true);
+      if (activeMode === 'quiz') {
+        setBonusPoints(b => b + 1);
+      }
     }
   };
 
@@ -274,12 +297,22 @@ const PlaySession = () => {
           <h1 className="text-3xl font-black text-foreground">Great Job!</h1>
           <p className="mt-2 text-muted-foreground">You covered {sessionCards.length} cards together.</p>
           {activeMode === 'quiz' && (
-            <p className="mt-1 text-lg font-bold text-primary">Score: {score} / {sessionCards.length}</p>
+            <div className="mt-3 space-y-1">
+              <p className="text-lg font-bold text-primary">Score: {score + bonusPoints - demerits} pts</p>
+              <div className="flex justify-center gap-4 text-sm">
+                <span className="text-safe">✅ Correct: {score}</span>
+                <span className="text-primary">✨ Bonus: {bonusPoints}</span>
+                <span className="text-destructive">⚠️ Demerits: {demerits}</span>
+              </div>
+            </div>
           )}
           <div className="mt-6 space-y-2 rounded-2xl border bg-card p-4 text-left">
             <p className="text-sm font-bold text-card-foreground">Session Summary</p>
             <p className="text-sm text-muted-foreground">✅ Discussed: {discussed.size} cards</p>
             <p className="text-sm text-muted-foreground">🚩 Flagged for review: {flagged.size} cards</p>
+            {bonusPoints > 0 && (
+              <p className="text-sm text-primary">✨ Critical thinking answers: {bonusPoints}</p>
+            )}
           </div>
           <div className="mt-6 flex flex-col gap-2">
             <Link to="/play">
@@ -332,6 +365,14 @@ const PlaySession = () => {
               animate={{ width: `${((index + 1) / sessionCards.length) * 100}%` }}
             />
           </div>
+          {activeMode === 'quiz' && (
+            <div className="mt-2 flex justify-center gap-4 text-xs font-bold text-primary-foreground/80">
+              <span>✅ {score}</span>
+              <span>✨ {bonusPoints}</span>
+              <span>⚠️ -{demerits}</span>
+              <span className="text-primary-foreground">= {score + bonusPoints - demerits} pts</span>
+            </div>
+          )}
         </div>
       </div>
 
@@ -359,7 +400,8 @@ const PlaySession = () => {
               {card.options.map(opt => {
                 const isSelected = selectedOption === opt.label;
                 const isCorrect = showGuidance && card.correct_option === opt.label;
-                const isWrong = showGuidance && isSelected && card.correct_option !== opt.label;
+                const isWorst = showGuidance && card.worst_option === opt.label;
+                const isWrong = showGuidance && isSelected && card.correct_option !== opt.label && !isWorst;
                 return (
                   <button
                     key={opt.label}
@@ -367,6 +409,7 @@ const PlaySession = () => {
                     disabled={showGuidance}
                     className={`w-full rounded-xl border p-4 text-left transition-all ${
                       isCorrect ? 'border-safe bg-safe/10' :
+                      isWorst ? 'border-destructive bg-destructive/10 ring-2 ring-destructive/30' :
                       isWrong ? 'border-destructive bg-destructive/5' :
                       isSelected ? 'border-primary bg-primary/5' :
                       'card-edge-lit bg-card hover:border-gold/30'
@@ -376,35 +419,79 @@ const PlaySession = () => {
                       {opt.label}
                     </span>
                     <span className="font-semibold text-card-foreground">{opt.text}</span>
+                    {isWorst && (
+                      <span className="ml-2 inline-flex items-center gap-1 rounded-full bg-destructive/20 px-2 py-0.5 text-xs font-bold text-destructive">
+                        ⚠️ Worst choice
+                      </span>
+                    )}
                   </button>
                 );
               })}
               {/* Critical thinking option */}
               {(() => {
-                const noneLabel = '✨';
-                const isSelected = selectedOption === noneLabel;
-                const isWrong = showGuidance && isSelected && card.correct_option !== noneLabel;
+                const isSelected = selectedOption === NONE_LABEL;
                 return (
-                  <button
-                    onClick={() => handleSelectOption(noneLabel)}
-                    disabled={showGuidance}
-                    className={`w-full rounded-xl border p-4 text-left transition-all ${
-                      isWrong ? 'border-destructive bg-destructive/5' :
-                      isSelected ? 'border-primary bg-primary/5' :
-                      'card-edge-lit bg-card hover:border-gold/30'
-                    }`}
-                  >
-                    <span className="mr-2 inline-flex h-7 w-7 items-center justify-center rounded-full bg-gradient-to-br from-primary to-accent text-sm font-bold text-primary-foreground">
-                      ✨
-                    </span>
-                    <span className="font-semibold text-card-foreground">None of the above — I'm going to wow you with my answer!</span>
-                  </button>
+                  <>
+                    <button
+                      onClick={() => handleSelectOption(NONE_LABEL)}
+                      disabled={showGuidance}
+                      className={`w-full rounded-xl border p-4 text-left transition-all ${
+                        showGuidance && isSelected && customAnswerSubmitted ? 'border-primary bg-primary/10 ring-2 ring-primary/30' :
+                        showGuidance && isSelected ? 'border-caution bg-caution/5' :
+                        isSelected ? 'border-primary bg-primary/5' :
+                        'card-edge-lit bg-card hover:border-gold/30'
+                      }`}
+                    >
+                      <span className="mr-2 inline-flex h-7 w-7 items-center justify-center rounded-full bg-gradient-to-br from-primary to-accent text-sm font-bold text-primary-foreground">
+                        ✨
+                      </span>
+                      <span className="font-semibold text-card-foreground">None of the above — I'm going to wow you with my answer!</span>
+                      {showGuidance && isSelected && customAnswerSubmitted && (
+                        <span className="ml-2 inline-flex items-center gap-1 rounded-full bg-primary/20 px-2 py-0.5 text-xs font-bold text-primary">
+                          ✨ +1 Bonus
+                        </span>
+                      )}
+                    </button>
+                    {/* Custom answer input */}
+                    {isSelected && !showGuidance && (
+                      <motion.div
+                        initial={{ opacity: 0, height: 0 }}
+                        animate={{ opacity: 1, height: 'auto' }}
+                        className="rounded-xl border border-primary/30 bg-card p-4 space-y-3"
+                      >
+                        <p className="text-sm font-bold text-card-foreground">💭 Share your answer:</p>
+                        <textarea
+                          value={customAnswer}
+                          onChange={e => setCustomAnswer(e.target.value)}
+                          placeholder="What would YOU do in this situation? (at least 10 characters)"
+                          className="w-full rounded-lg border border-border bg-background p-3 text-sm text-foreground placeholder:text-muted-foreground focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary min-h-[80px] resize-none"
+                        />
+                        <div className="flex items-center justify-between">
+                          <span className={`text-xs ${customAnswer.trim().length >= 10 ? 'text-safe' : 'text-muted-foreground'}`}>
+                            {customAnswer.trim().length}/10 characters minimum
+                          </span>
+                          {!customAnswerSubmitted ? (
+                            <Button
+                              size="sm"
+                              onClick={handleSubmitCustomAnswer}
+                              disabled={customAnswer.trim().length < 10}
+                              className="gap-1 font-bold"
+                            >
+                              <CheckCircle2 className="h-4 w-4" /> Submit Answer
+                            </Button>
+                          ) : (
+                            <span className="text-sm font-bold text-safe">✅ Answer submitted!</span>
+                          )}
+                        </div>
+                      </motion.div>
+                    )}
+                  </>
                 );
               })()}
             </div>
 
             {/* Guidance */}
-            {!showGuidance && selectedOption && (
+            {!showGuidance && selectedOption && (selectedOption !== NONE_LABEL || customAnswerSubmitted) && (
               <Button onClick={() => setShowGuidance(true)} className="w-full gap-2 font-bold" variant="outline">
                 <Eye className="h-4 w-4" /> Reveal Guidance
               </Button>
@@ -417,6 +504,33 @@ const PlaySession = () => {
                   animate={{ opacity: 1, height: 'auto' }}
                   className="space-y-3"
                 >
+                  {/* Demerit warning */}
+                  {activeMode === 'quiz' && selectedOption && card.worst_option === selectedOption && (
+                    <motion.div
+                      initial={{ scale: 0.9, opacity: 0 }}
+                      animate={{ scale: 1, opacity: 1 }}
+                      className="rounded-2xl border-2 border-destructive bg-destructive/10 p-5"
+                    >
+                      <p className="mb-1 text-sm font-bold text-destructive">⚠️ Demerit Point (-1)</p>
+                      <p className="text-sm text-card-foreground">
+                        This was the most dangerous choice. In real life, this could put you or others at serious risk. Let's learn why the better option matters!
+                      </p>
+                    </motion.div>
+                  )}
+                  {/* Bonus acknowledgment */}
+                  {activeMode === 'quiz' && selectedOption === NONE_LABEL && customAnswerSubmitted && (
+                    <motion.div
+                      initial={{ scale: 0.9, opacity: 0 }}
+                      animate={{ scale: 1, opacity: 1 }}
+                      className="rounded-2xl border-2 border-primary bg-primary/10 p-5"
+                    >
+                      <p className="mb-1 text-sm font-bold text-primary">✨ Bonus Point (+1)</p>
+                      <p className="text-sm text-card-foreground">
+                        Amazing critical thinking! You went beyond the options and thought for yourself. That's a powerful skill.
+                      </p>
+                      <p className="mt-2 text-sm italic text-muted-foreground">Your answer: "{customAnswer}"</p>
+                    </motion.div>
+                  )}
                   <div className="rounded-2xl border border-safe/30 bg-safe/5 p-5">
                     <p className="mb-1 text-sm font-bold text-safe">✅ Best Next Step</p>
                     <p className="text-sm text-card-foreground">{card.guidance_text}</p>
