@@ -18,6 +18,7 @@ export interface Card {
   why_text: string;
   practice_phrase: string;
   help_prompt: string;
+  reflection_prompts?: string[];
   difficulty: 1 | 2 | 3;
   age_band: AgeBand;
   tags: string[];
