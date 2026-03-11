@@ -74,12 +74,42 @@ const PlaySession = () => {
   const [customAnswerSubmitted, setCustomAnswerSubmitted] = useState(false);
   const [sessionDone, setSessionDone] = useState(false);
 
+  // Progression state
+  const [playerProgress, setPlayerProgress] = useState<PlayerProgress>(loadProgress);
+  const [sessionXP, setSessionXP] = useState(0);
+  const [newBadgesThisSession, setNewBadgesThisSession] = useState<BadgeDef[]>([]);
+  const [showLevelUp, setShowLevelUp] = useState(false);
+  const [missionXPEarned, setMissionXPEarned] = useState(0);
+
   const NONE_LABEL = '✨';
 
   const card = sessionCards[index];
   const deck = card ? decks.find(d => d.id === card.deck_id) : null;
 
+  // Complete a mission when moving to next card (after guidance revealed)
+  const finishCurrentMission = useCallback(() => {
+    if (!card) return;
+    const result = completeMission(playerProgress, card.id, missionXPEarned);
+    setPlayerProgress(result.progress);
+    setSessionXP(prev => prev + missionXPEarned + 5); // +5 for mission complete base
+    if (result.newBadges.length > 0) {
+      setNewBadgesThisSession(prev => [...prev, ...result.newBadges]);
+      result.newBadges.forEach(b => {
+        toast({ title: `🏅 Badge Unlocked: ${b.name}!`, description: b.description });
+      });
+    }
+    if (result.levelledUp) {
+      setShowLevelUp(true);
+      const newLvl = getCurrentLevel(result.progress.totalXP);
+      toast({ title: `🎉 Level Up!`, description: `You're now a ${newLvl.title}!` });
+    }
+    setMissionXPEarned(0);
+  }, [card, playerProgress, missionXPEarned]);
+
   const handleNext = useCallback(() => {
+    // Award mission XP before advancing
+    if (showGuidance) finishCurrentMission();
+
     if (index + 1 >= sessionCards.length) {
       setSessionDone(true);
     } else {
@@ -88,8 +118,9 @@ const PlaySession = () => {
       setSelectedOption(null);
       setCustomAnswer('');
       setCustomAnswerSubmitted(false);
+      setShowLevelUp(false);
     }
-  }, [index, sessionCards.length]);
+  }, [index, sessionCards.length, showGuidance, finishCurrentMission]);
 
   const handleSelectOption = (label: string) => {
     if (selectedOption !== null) return; // Lock in first choice only
