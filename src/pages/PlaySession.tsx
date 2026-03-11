@@ -327,18 +327,30 @@ const PlaySession = () => {
 
   // ── Session done ──
   if (sessionDone) {
+    const level = getCurrentLevel(playerProgress.totalXP);
     return (
       <div className="min-h-screen bg-background p-4">
-        <div className="mx-auto max-w-lg pt-12 text-center">
-          <motion.div initial={{ scale: 0 }} animate={{ scale: 1 }} transition={{ type: 'spring', bounce: 0.5 }}>
+        <div className="mx-auto max-w-lg space-y-6 pt-8">
+          <motion.div initial={{ scale: 0 }} animate={{ scale: 1 }} transition={{ type: 'spring', bounce: 0.5 }} className="text-center">
             <div className="mx-auto mb-4 flex h-20 w-20 items-center justify-center rounded-full bg-safe text-4xl text-primary-foreground">
               🎉
             </div>
+            <h1 className="text-3xl font-black text-foreground">Mission Complete!</h1>
+            <p className="mt-2 text-muted-foreground">You completed {sessionCards.length} missions this session.</p>
+            {sessionXP > 0 && (
+              <motion.p
+                initial={{ scale: 0 }}
+                animate={{ scale: 1 }}
+                transition={{ delay: 0.3, type: 'spring' }}
+                className="mt-2 text-xl font-black text-primary"
+              >
+                +{sessionXP} XP earned!
+              </motion.p>
+            )}
           </motion.div>
-          <h1 className="text-3xl font-black text-foreground">Great Job!</h1>
-          <p className="mt-2 text-muted-foreground">You covered {sessionCards.length} cards together.</p>
+
           {activeMode === 'quiz' && (
-            <div className="mt-3 space-y-1">
+            <div className="space-y-1 text-center">
               <p className="text-lg font-bold text-primary">Score: {score + bonusPoints - demerits} pts</p>
               <div className="flex justify-center gap-4 text-sm">
                 <span className="text-safe">✅ Correct: {score}</span>
@@ -347,17 +359,40 @@ const PlaySession = () => {
               </div>
             </div>
           )}
-          <div className="mt-6 space-y-2 rounded-2xl border bg-card p-4 text-left">
+
+          {/* Player Progression Card */}
+          <MissionProgress progress={playerProgress} />
+
+          {/* Session summary */}
+          {newBadgesThisSession.length > 0 && (
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              className="rounded-2xl border-2 border-accent bg-accent/10 p-5 text-center"
+            >
+              <p className="text-sm font-bold text-accent-foreground mb-2">🏅 Badges Unlocked This Session!</p>
+              <div className="flex justify-center gap-3">
+                {newBadgesThisSession.map(b => (
+                  <div key={b.id} className="flex flex-col items-center gap-1">
+                    <span className="text-2xl">{b.icon}</span>
+                    <span className="text-xs font-bold text-card-foreground">{b.name}</span>
+                  </div>
+                ))}
+              </div>
+            </motion.div>
+          )}
+
+          <div className="space-y-2 rounded-2xl border bg-card p-4 text-left">
             <p className="text-sm font-bold text-card-foreground">Session Summary</p>
-            <p className="text-sm text-muted-foreground">✅ Discussed: {discussed.size} cards</p>
-            <p className="text-sm text-muted-foreground">🚩 Flagged for review: {flagged.size} cards</p>
+            <p className="text-sm text-muted-foreground">✅ Discussed: {discussed.size} missions</p>
+            <p className="text-sm text-muted-foreground">🚩 Flagged for review: {flagged.size} missions</p>
             {bonusPoints > 0 && (
               <p className="text-sm text-primary">✨ Critical thinking answers: {bonusPoints}</p>
             )}
           </div>
-          <div className="mt-6 flex flex-col gap-2">
+          <div className="flex flex-col gap-2">
             <Link to="/play">
-              <Button className="w-full gap-2 font-bold"><RotateCcw className="h-4 w-4" /> New Session</Button>
+              <Button className="w-full gap-2 font-bold"><RotateCcw className="h-4 w-4" /> New Mission</Button>
             </Link>
             <Link to="/">
               <Button variant="outline" className="w-full font-bold">Home</Button>
