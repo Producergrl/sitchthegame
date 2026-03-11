@@ -86,6 +86,7 @@ const PlaySession = () => {
   }, [index, sessionCards.length]);
 
   const handleSelectOption = (label: string) => {
+    if (selectedOption !== null) return; // Lock in first choice only
     setSelectedOption(label);
     setCustomAnswerSubmitted(false);
     if (activeMode === 'quiz') {
