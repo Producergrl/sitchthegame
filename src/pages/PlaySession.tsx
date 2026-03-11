@@ -107,8 +107,8 @@ const PlaySession = () => {
   }, [card, playerProgress, missionXPEarned]);
 
   const handleNext = useCallback(() => {
-    // Award mission XP before advancing
-    if (showGuidance) finishCurrentMission();
+    // Award mission XP before advancing (whenever an option was selected)
+    if (selectedOption !== null) finishCurrentMission();
 
     if (index + 1 >= sessionCards.length) {
       setSessionDone(true);
@@ -120,7 +120,7 @@ const PlaySession = () => {
       setCustomAnswerSubmitted(false);
       setShowLevelUp(false);
     }
-  }, [index, sessionCards.length, showGuidance, finishCurrentMission]);
+  }, [index, sessionCards.length, selectedOption, finishCurrentMission]);
 
   const handleSelectOption = (label: string) => {
     if (selectedOption !== null) return;
