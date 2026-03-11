@@ -415,7 +415,7 @@ const PlaySession = () => {
                 <ArrowLeft className="h-5 w-5" />
               </Button>
             </Link>
-            <span className="text-sm font-bold opacity-80">{deck?.icon} {deck?.name}</span>
+            <span className="text-sm font-bold opacity-80">{deck?.icon} Mission {index + 1}</span>
           </div>
           <div className="flex items-center gap-2">
             <ThemeToggle className="text-primary-foreground hover:bg-white/10" />
