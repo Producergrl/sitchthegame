@@ -1,12 +1,15 @@
+import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { Play, BookOpen, Settings, Heart, Shield, Sparkles } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import ThemeToggle from '@/components/ThemeToggle';
+import MissionProgress from '@/components/MissionProgress';
+import { loadProgress, type PlayerProgress } from '@/lib/progression';
 
 const features = [
-  { icon: Play, title: 'Start Session', desc: 'Begin a guided discussion', to: '/session/setup', color: 'bg-primary' },
-  { icon: BookOpen, title: 'Browse Decks', desc: 'Explore card collections', to: '/decks', color: 'bg-secondary' },
+  { icon: Play, title: 'Start Mission', desc: 'Begin a guided mission', to: '/session/setup', color: 'bg-primary' },
+  { icon: BookOpen, title: 'Browse Decks', desc: 'Explore mission packs', to: '/decks', color: 'bg-secondary' },
   { icon: Settings, title: 'Manage Cards', desc: 'Create & edit content', to: '/admin', color: 'bg-gentle' },
   { icon: Heart, title: 'Resources', desc: 'Help & safety info', to: '/resources', color: 'bg-help' },
 ];
@@ -21,6 +24,12 @@ const item = {
 };
 
 const Index = () => {
+  const [progress, setProgress] = useState<PlayerProgress>(loadProgress);
+
+  useEffect(() => {
+    setProgress(loadProgress());
+  }, []);
+
   return (
     <div className="min-h-screen bg-background">
       {/* Hero */}
@@ -103,8 +112,19 @@ const Index = () => {
         </div>
       </div>
 
+      {/* Player Progression */}
+      <div className="mx-auto max-w-4xl px-4 pb-4">
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.15 }}
+        >
+          <MissionProgress progress={progress} />
+        </motion.div>
+      </div>
+
       {/* Features */}
-      <div className="mx-auto max-w-4xl px-4 py-12">
+      <div className="mx-auto max-w-4xl px-4 py-8">
         <motion.div
           variants={container}
           initial="hidden"

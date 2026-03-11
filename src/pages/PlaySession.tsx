@@ -1,4 +1,4 @@
-import { useState, useMemo, useCallback } from 'react';
+import { useState, useMemo, useCallback, useEffect } from 'react';
 import { Link, useSearchParams, useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { ArrowLeft, ChevronRight, Volume2, Eye, CheckCircle2, Flag, RotateCcw, Share2, Lock } from 'lucide-react';
@@ -8,6 +8,12 @@ import type { AgeBand, PlayStyle } from '@/types/game';
 import { parsePlayParams, buildPlayUrl } from '@/lib/playParams';
 import { toast } from '@/hooks/use-toast';
 import ThemeToggle from '@/components/ThemeToggle';
+import MissionProgress from '@/components/MissionProgress';
+import {
+  loadProgress, completeMission, getCurrentLevel, getXPProgress,
+  XP_CORRECT, XP_BONUS, XP_DEMERIT,
+  type PlayerProgress, type Badge as BadgeDef,
+} from '@/lib/progression';
 
 const ageBands: { value: AgeBand; label: string }[] = [
   { value: '4-6', label: '4–6 years' },
@@ -68,12 +74,42 @@ const PlaySession = () => {
   const [customAnswerSubmitted, setCustomAnswerSubmitted] = useState(false);
   const [sessionDone, setSessionDone] = useState(false);
 
+  // Progression state
+  const [playerProgress, setPlayerProgress] = useState<PlayerProgress>(loadProgress);
+  const [sessionXP, setSessionXP] = useState(0);
+  const [newBadgesThisSession, setNewBadgesThisSession] = useState<BadgeDef[]>([]);
+  const [showLevelUp, setShowLevelUp] = useState(false);
+  const [missionXPEarned, setMissionXPEarned] = useState(0);
+
   const NONE_LABEL = '✨';
 
   const card = sessionCards[index];
   const deck = card ? decks.find(d => d.id === card.deck_id) : null;
 
+  // Complete a mission when moving to next card (after guidance revealed)
+  const finishCurrentMission = useCallback(() => {
+    if (!card) return;
+    const result = completeMission(playerProgress, card.id, missionXPEarned);
+    setPlayerProgress(result.progress);
+    setSessionXP(prev => prev + missionXPEarned + 5); // +5 for mission complete base
+    if (result.newBadges.length > 0) {
+      setNewBadgesThisSession(prev => [...prev, ...result.newBadges]);
+      result.newBadges.forEach(b => {
+        toast({ title: `🏅 Badge Unlocked: ${b.name}!`, description: b.description });
+      });
+    }
+    if (result.levelledUp) {
+      setShowLevelUp(true);
+      const newLvl = getCurrentLevel(result.progress.totalXP);
+      toast({ title: `🎉 Level Up!`, description: `You're now a ${newLvl.title}!` });
+    }
+    setMissionXPEarned(0);
+  }, [card, playerProgress, missionXPEarned]);
+
   const handleNext = useCallback(() => {
+    // Award mission XP before advancing
+    if (showGuidance) finishCurrentMission();
+
     if (index + 1 >= sessionCards.length) {
       setSessionDone(true);
     } else {
@@ -82,19 +118,22 @@ const PlaySession = () => {
       setSelectedOption(null);
       setCustomAnswer('');
       setCustomAnswerSubmitted(false);
+      setShowLevelUp(false);
     }
-  }, [index, sessionCards.length]);
+  }, [index, sessionCards.length, showGuidance, finishCurrentMission]);
 
   const handleSelectOption = (label: string) => {
-    if (selectedOption !== null) return; // Lock in first choice only
+    if (selectedOption !== null) return;
     setSelectedOption(label);
     setCustomAnswerSubmitted(false);
     if (activeMode === 'quiz') {
       if (card?.correct_option === label) {
         setScore(s => s + 1);
+        setMissionXPEarned(prev => prev + XP_CORRECT);
       }
       if (card?.worst_option === label) {
         setDemerits(d => d + 1);
+        setMissionXPEarned(prev => prev + XP_DEMERIT);
       }
     }
   };
@@ -104,6 +143,7 @@ const PlaySession = () => {
       setCustomAnswerSubmitted(true);
       if (activeMode === 'quiz') {
         setBonusPoints(b => b + 1);
+        setMissionXPEarned(prev => prev + XP_BONUS);
       }
     }
   };
@@ -287,18 +327,30 @@ const PlaySession = () => {
 
   // ── Session done ──
   if (sessionDone) {
+    const level = getCurrentLevel(playerProgress.totalXP);
     return (
       <div className="min-h-screen bg-background p-4">
-        <div className="mx-auto max-w-lg pt-12 text-center">
-          <motion.div initial={{ scale: 0 }} animate={{ scale: 1 }} transition={{ type: 'spring', bounce: 0.5 }}>
+        <div className="mx-auto max-w-lg space-y-6 pt-8">
+          <motion.div initial={{ scale: 0 }} animate={{ scale: 1 }} transition={{ type: 'spring', bounce: 0.5 }} className="text-center">
             <div className="mx-auto mb-4 flex h-20 w-20 items-center justify-center rounded-full bg-safe text-4xl text-primary-foreground">
               🎉
             </div>
+            <h1 className="text-3xl font-black text-foreground">Mission Complete!</h1>
+            <p className="mt-2 text-muted-foreground">You completed {sessionCards.length} missions this session.</p>
+            {sessionXP > 0 && (
+              <motion.p
+                initial={{ scale: 0 }}
+                animate={{ scale: 1 }}
+                transition={{ delay: 0.3, type: 'spring' }}
+                className="mt-2 text-xl font-black text-primary"
+              >
+                +{sessionXP} XP earned!
+              </motion.p>
+            )}
           </motion.div>
-          <h1 className="text-3xl font-black text-foreground">Great Job!</h1>
-          <p className="mt-2 text-muted-foreground">You covered {sessionCards.length} cards together.</p>
+
           {activeMode === 'quiz' && (
-            <div className="mt-3 space-y-1">
+            <div className="space-y-1 text-center">
               <p className="text-lg font-bold text-primary">Score: {score + bonusPoints - demerits} pts</p>
               <div className="flex justify-center gap-4 text-sm">
                 <span className="text-safe">✅ Correct: {score}</span>
@@ -307,17 +359,40 @@ const PlaySession = () => {
               </div>
             </div>
           )}
-          <div className="mt-6 space-y-2 rounded-2xl border bg-card p-4 text-left">
+
+          {/* Player Progression Card */}
+          <MissionProgress progress={playerProgress} />
+
+          {/* Session summary */}
+          {newBadgesThisSession.length > 0 && (
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              className="rounded-2xl border-2 border-accent bg-accent/10 p-5 text-center"
+            >
+              <p className="text-sm font-bold text-accent-foreground mb-2">🏅 Badges Unlocked This Session!</p>
+              <div className="flex justify-center gap-3">
+                {newBadgesThisSession.map(b => (
+                  <div key={b.id} className="flex flex-col items-center gap-1">
+                    <span className="text-2xl">{b.icon}</span>
+                    <span className="text-xs font-bold text-card-foreground">{b.name}</span>
+                  </div>
+                ))}
+              </div>
+            </motion.div>
+          )}
+
+          <div className="space-y-2 rounded-2xl border bg-card p-4 text-left">
             <p className="text-sm font-bold text-card-foreground">Session Summary</p>
-            <p className="text-sm text-muted-foreground">✅ Discussed: {discussed.size} cards</p>
-            <p className="text-sm text-muted-foreground">🚩 Flagged for review: {flagged.size} cards</p>
+            <p className="text-sm text-muted-foreground">✅ Discussed: {discussed.size} missions</p>
+            <p className="text-sm text-muted-foreground">🚩 Flagged for review: {flagged.size} missions</p>
             {bonusPoints > 0 && (
               <p className="text-sm text-primary">✨ Critical thinking answers: {bonusPoints}</p>
             )}
           </div>
-          <div className="mt-6 flex flex-col gap-2">
+          <div className="flex flex-col gap-2">
             <Link to="/play">
-              <Button className="w-full gap-2 font-bold"><RotateCcw className="h-4 w-4" /> New Session</Button>
+              <Button className="w-full gap-2 font-bold"><RotateCcw className="h-4 w-4" /> New Mission</Button>
             </Link>
             <Link to="/">
               <Button variant="outline" className="w-full font-bold">Home</Button>
@@ -340,7 +415,7 @@ const PlaySession = () => {
                 <ArrowLeft className="h-5 w-5" />
               </Button>
             </Link>
-            <span className="text-sm font-bold opacity-80">{deck?.icon} {deck?.name}</span>
+            <span className="text-sm font-bold opacity-80">{deck?.icon} Mission {index + 1}</span>
           </div>
           <div className="flex items-center gap-2">
             <ThemeToggle className="text-primary-foreground hover:bg-white/10" />
@@ -353,7 +428,7 @@ const PlaySession = () => {
               <Share2 className="h-4 w-4" /> Share
             </Button>
             <span className="rounded-full bg-primary-foreground/20 px-3 py-1 text-sm font-bold">
-              {index + 1} / {sessionCards.length}
+              🎯 {index + 1} / {sessionCards.length}
             </span>
           </div>
         </div>
@@ -387,8 +462,14 @@ const PlaySession = () => {
             exit={{ opacity: 0, x: -40 }}
             className="space-y-5"
           >
-            {/* Scenario */}
+            {/* Mission briefing */}
             <div className="rounded-2xl card-edge-lit bg-card p-6">
+              <div className="mb-2 flex items-center gap-2">
+                <span className="rounded-full bg-primary/15 px-2.5 py-0.5 text-xs font-bold text-primary uppercase tracking-wider">
+                  Mission {index + 1}
+                </span>
+                <span className="text-xs text-muted-foreground">{deck?.name}</span>
+              </div>
               <h2 className="mb-3 text-xl font-black text-card-foreground">{card.title}</h2>
               <p className="text-base leading-relaxed text-card-foreground">{card.scenario}</p>
               <Button variant="ghost" size="sm" onClick={handleReadAloud} className="mt-3 gap-1.5 text-primary">
