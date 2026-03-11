@@ -24,6 +24,12 @@ const item = {
 };
 
 const Index = () => {
+  const [progress, setProgress] = useState<PlayerProgress>(loadProgress);
+
+  useEffect(() => {
+    setProgress(loadProgress());
+  }, []);
+
   return (
     <div className="min-h-screen bg-background">
       {/* Hero */}
