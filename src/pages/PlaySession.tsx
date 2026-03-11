@@ -428,7 +428,7 @@ const PlaySession = () => {
               <Share2 className="h-4 w-4" /> Share
             </Button>
             <span className="rounded-full bg-primary-foreground/20 px-3 py-1 text-sm font-bold">
-              {index + 1} / {sessionCards.length}
+              🎯 {index + 1} / {sessionCards.length}
             </span>
           </div>
         </div>
