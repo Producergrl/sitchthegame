@@ -462,8 +462,14 @@ const PlaySession = () => {
             exit={{ opacity: 0, x: -40 }}
             className="space-y-5"
           >
-            {/* Scenario */}
+            {/* Mission briefing */}
             <div className="rounded-2xl card-edge-lit bg-card p-6">
+              <div className="mb-2 flex items-center gap-2">
+                <span className="rounded-full bg-primary/15 px-2.5 py-0.5 text-xs font-bold text-primary uppercase tracking-wider">
+                  Mission {index + 1}
+                </span>
+                <span className="text-xs text-muted-foreground">{deck?.name}</span>
+              </div>
               <h2 className="mb-3 text-xl font-black text-card-foreground">{card.title}</h2>
               <p className="text-base leading-relaxed text-card-foreground">{card.scenario}</p>
               <Button variant="ghost" size="sm" onClick={handleReadAloud} className="mt-3 gap-1.5 text-primary">
