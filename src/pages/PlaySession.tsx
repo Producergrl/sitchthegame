@@ -1,4 +1,4 @@
-import { useState, useMemo, useCallback } from 'react';
+import { useState, useMemo, useCallback, useEffect } from 'react';
 import { Link, useSearchParams, useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { ArrowLeft, ChevronRight, Volume2, Eye, CheckCircle2, Flag, RotateCcw, Share2, Lock } from 'lucide-react';
@@ -8,6 +8,12 @@ import type { AgeBand, PlayStyle } from '@/types/game';
 import { parsePlayParams, buildPlayUrl } from '@/lib/playParams';
 import { toast } from '@/hooks/use-toast';
 import ThemeToggle from '@/components/ThemeToggle';
+import MissionProgress from '@/components/MissionProgress';
+import {
+  loadProgress, completeMission, getCurrentLevel, getXPProgress,
+  XP_CORRECT, XP_BONUS, XP_DEMERIT,
+  type PlayerProgress, type Badge as BadgeDef,
+} from '@/lib/progression';
 
 const ageBands: { value: AgeBand; label: string }[] = [
   { value: '4-6', label: '4–6 years' },
