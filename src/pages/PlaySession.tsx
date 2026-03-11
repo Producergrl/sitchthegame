@@ -123,15 +123,17 @@ const PlaySession = () => {
   }, [index, sessionCards.length, showGuidance, finishCurrentMission]);
 
   const handleSelectOption = (label: string) => {
-    if (selectedOption !== null) return; // Lock in first choice only
+    if (selectedOption !== null) return;
     setSelectedOption(label);
     setCustomAnswerSubmitted(false);
     if (activeMode === 'quiz') {
       if (card?.correct_option === label) {
         setScore(s => s + 1);
+        setMissionXPEarned(prev => prev + XP_CORRECT);
       }
       if (card?.worst_option === label) {
         setDemerits(d => d + 1);
+        setMissionXPEarned(prev => prev + XP_DEMERIT);
       }
     }
   };
@@ -141,6 +143,7 @@ const PlaySession = () => {
       setCustomAnswerSubmitted(true);
       if (activeMode === 'quiz') {
         setBonusPoints(b => b + 1);
+        setMissionXPEarned(prev => prev + XP_BONUS);
       }
     }
   };
