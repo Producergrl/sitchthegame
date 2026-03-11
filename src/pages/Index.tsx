@@ -112,8 +112,19 @@ const Index = () => {
         </div>
       </div>
 
+      {/* Player Progression */}
+      <div className="mx-auto max-w-4xl px-4 pb-4">
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.15 }}
+        >
+          <MissionProgress progress={progress} />
+        </motion.div>
+      </div>
+
       {/* Features */}
-      <div className="mx-auto max-w-4xl px-4 py-12">
+      <div className="mx-auto max-w-4xl px-4 py-8">
         <motion.div
           variants={container}
           initial="hidden"
