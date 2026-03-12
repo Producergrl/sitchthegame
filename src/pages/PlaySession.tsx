@@ -9,6 +9,7 @@ import { parsePlayParams, buildPlayUrl } from '@/lib/playParams';
 import { toast } from '@/hooks/use-toast';
 import ThemeToggle from '@/components/ThemeToggle';
 import MissionProgress from '@/components/MissionProgress';
+import ShareMilestoneCard from '@/components/ShareMilestoneCard';
 import {
   loadProgress, completeMission, getCurrentLevel, getXPProgress,
   XP_CORRECT, XP_BONUS, XP_DEMERIT,
@@ -442,6 +443,17 @@ const PlaySession = () => {
 
           {/* Player Progression Card */}
           <MissionProgress progress={playerProgress} />
+
+          {/* Shareable Milestone Card */}
+          <ShareMilestoneCard
+            levelTitle={level.title}
+            levelIcon={level.icon}
+            levelNumber={level.level}
+            missionsCompleted={playerProgress.missionsCompleted}
+            totalXP={playerProgress.totalXP}
+            badgeCount={playerProgress.badgesEarned.length}
+            stickerCount={stickerProgress.earnedIds.length}
+          />
 
           {/* Session summary */}
           {newBadgesThisSession.length > 0 && (
