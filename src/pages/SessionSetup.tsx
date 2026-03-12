@@ -27,12 +27,21 @@ const SessionSetup = () => {
   const [playStyle, setPlayStyle] = useState<PlayStyle>('discussion');
   const [selectedDecks, setSelectedDecks] = useState<string[]>([]);
 
+  const isCompilation = selectedDecks.includes(COMPILATION_DECK_ID);
+
   const toggleDeck = (id: string) => {
+    if (id === COMPILATION_DECK_ID) {
+      setSelectedDecks(prev =>
+        prev.includes(COMPILATION_DECK_ID) ? [] : [COMPILATION_DECK_ID]
+      );
+      return;
+    }
     const deck = decks.find(d => d.id === id);
-    if (!deck?.is_free) return; // locked decks can't be selected
-    setSelectedDecks(prev =>
-      prev.includes(id) ? prev.filter(d => d !== id) : [...prev, id]
-    );
+    if (!deck?.is_free) return;
+    setSelectedDecks(prev => {
+      const without = prev.filter(d => d !== COMPILATION_DECK_ID);
+      return without.includes(id) ? without.filter(d => d !== id) : [...without, id];
+    });
   };
 
   const startSession = () => {
