@@ -14,6 +14,10 @@ import {
   XP_CORRECT, XP_BONUS, XP_DEMERIT,
   type PlayerProgress, type Badge as BadgeDef,
 } from '@/lib/progression';
+import {
+  loadStickerProgress, checkNewStickers, awardStickers,
+  type StickerProgress, type Sticker as StickerDef,
+} from '@/lib/stickers';
 
 const ageBands: { value: AgeBand; label: string }[] = [
   { value: '4-6', label: '4–6 years' },
@@ -87,6 +91,10 @@ const PlaySession = () => {
   const [showLevelUp, setShowLevelUp] = useState(false);
   const [missionXPEarned, setMissionXPEarned] = useState(0);
 
+  // Sticker state
+  const [stickerProgress, setStickerProgress] = useState<StickerProgress>(loadStickerProgress);
+  const [newStickersThisSession, setNewStickersThisSession] = useState<StickerDef[]>([]);
+
   const NONE_LABEL = '✨';
 
   const card = sessionCards[index];
@@ -97,7 +105,7 @@ const PlaySession = () => {
     if (!card) return;
     const result = completeMission(playerProgress, card.id, missionXPEarned);
     setPlayerProgress(result.progress);
-    setSessionXP(prev => prev + missionXPEarned + 5); // +5 for mission complete base
+    setSessionXP(prev => prev + missionXPEarned + 5);
     if (result.newBadges.length > 0) {
       setNewBadgesThisSession(prev => [...prev, ...result.newBadges]);
       result.newBadges.forEach(b => {
@@ -109,8 +117,19 @@ const PlaySession = () => {
       const newLvl = getCurrentLevel(result.progress.totalXP);
       toast({ title: `🎉 Level Up!`, description: `You're now a ${newLvl.title}!` });
     }
+    // Check for new stickers
+    const currentLevel = getCurrentLevel(result.progress.totalXP).level;
+    const newStickers = checkNewStickers(stickerProgress, result.progress.missionsCompleted, streak, currentLevel);
+    if (newStickers.length > 0) {
+      const updatedStickerProg = awardStickers(stickerProgress, newStickers, streak);
+      setStickerProgress(updatedStickerProg);
+      setNewStickersThisSession(prev => [...prev, ...newStickers]);
+      newStickers.forEach(s => {
+        toast({ title: `🎨 Sticker Earned: ${s.name}!`, description: s.description });
+      });
+    }
     setMissionXPEarned(0);
-  }, [card, playerProgress, missionXPEarned]);
+  }, [card, playerProgress, missionXPEarned, stickerProgress, streak]);
 
   const handleNext = useCallback(() => {
     // Award mission XP before advancing (whenever an option was selected)
@@ -440,6 +459,37 @@ const PlaySession = () => {
                   </div>
                 ))}
               </div>
+            </motion.div>
+          )}
+
+          {/* Stickers earned this session */}
+          {newStickersThisSession.length > 0 && (
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.2 }}
+              className="rounded-2xl border-2 border-primary/30 bg-primary/5 p-5 text-center"
+            >
+              <p className="text-sm font-bold text-primary mb-3">🎨 Stickers Earned This Session!</p>
+              <div className="flex flex-wrap justify-center gap-3">
+                {newStickersThisSession.map(s => (
+                  <motion.div
+                    key={s.id}
+                    initial={{ scale: 0, rotate: -20 }}
+                    animate={{ scale: 1, rotate: 0 }}
+                    transition={{ type: 'spring' as const, bounce: 0.5, delay: 0.3 }}
+                    className="flex flex-col items-center gap-1"
+                  >
+                    <div className={`flex h-12 w-12 items-center justify-center rounded-xl ${s.color} shadow-md`}>
+                      <span className="text-2xl">{s.emoji}</span>
+                    </div>
+                    <span className="text-xs font-bold text-card-foreground">{s.name}</span>
+                  </motion.div>
+                ))}
+              </div>
+              <Link to="/stickers" className="mt-3 inline-block text-xs font-bold text-primary underline">
+                View Collection →
+              </Link>
             </motion.div>
           )}
 
