@@ -3,7 +3,7 @@ import { Link, useSearchParams, useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { ArrowLeft, ChevronRight, Volume2, Eye, CheckCircle2, Flag, RotateCcw, Share2, Lock } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import { cards as allCards, decks } from '@/data/seedData';
+import { cards as allCards, decks, COMPILATION_DECK_ID, getCompilationCards } from '@/data/seedData';
 import type { AgeBand, PlayStyle } from '@/types/game';
 import { parsePlayParams, buildPlayUrl } from '@/lib/playParams';
 import { toast } from '@/hooks/use-toast';
