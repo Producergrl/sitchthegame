@@ -75,6 +75,11 @@ const PlaySession = () => {
   const [customAnswerSubmitted, setCustomAnswerSubmitted] = useState(false);
   const [sessionDone, setSessionDone] = useState(false);
 
+  // Streak state
+  const [streak, setStreak] = useState(0);
+  const [bestStreak, setBestStreak] = useState(0);
+  const [streakPop, setStreakPop] = useState(false);
+
   // Progression state
   const [playerProgress, setPlayerProgress] = useState<PlayerProgress>(loadProgress);
   const [sessionXP, setSessionXP] = useState(0);
@@ -128,11 +133,24 @@ const PlaySession = () => {
     setSelectedOption(label);
     setCustomAnswerSubmitted(false);
     if (activeMode === 'quiz') {
-      if (card?.correct_option === label) {
+      const isCorrect = card?.correct_option === label;
+      const isWorst = card?.worst_option === label;
+      if (isCorrect) {
         setScore(s => s + 1);
         setMissionXPEarned(prev => prev + XP_CORRECT);
+        setStreak(prev => {
+          const next = prev + 1;
+          setBestStreak(b => Math.max(b, next));
+          if (next >= 2) {
+            setStreakPop(true);
+            setTimeout(() => setStreakPop(false), 600);
+          }
+          return next;
+        });
+      } else {
+        setStreak(0);
       }
-      if (card?.worst_option === label) {
+      if (isWorst) {
         setDemerits(d => d + 1);
         setMissionXPEarned(prev => prev + XP_DEMERIT);
       }
@@ -145,6 +163,16 @@ const PlaySession = () => {
       if (activeMode === 'quiz') {
         setBonusPoints(b => b + 1);
         setMissionXPEarned(prev => prev + XP_BONUS);
+        // Custom answers count as safe choices for streak
+        setStreak(prev => {
+          const next = prev + 1;
+          setBestStreak(b => Math.max(b, next));
+          if (next >= 2) {
+            setStreakPop(true);
+            setTimeout(() => setStreakPop(false), 600);
+          }
+          return next;
+        });
       }
     }
   };
@@ -373,13 +401,23 @@ const PlaySession = () => {
           </motion.div>
 
           {activeMode === 'quiz' && (
-            <div className="space-y-1 text-center">
+            <div className="space-y-2 text-center">
               <p className="text-lg font-bold text-primary">Score: {score + bonusPoints - demerits} pts</p>
               <div className="flex justify-center gap-4 text-sm">
                 <span className="text-safe">✅ Correct: {score}</span>
                 <span className="text-primary">✨ Bonus: {bonusPoints}</span>
                 <span className="text-destructive">⚠️ Demerits: {demerits}</span>
               </div>
+              {bestStreak >= 2 && (
+                <motion.p
+                  initial={{ scale: 0 }}
+                  animate={{ scale: 1 }}
+                  transition={{ delay: 0.4, type: 'spring' }}
+                  className="text-base font-black text-accent-foreground"
+                >
+                  🔥 Best Safety Streak: {bestStreak}
+                </motion.p>
+              )}
             </div>
           )}
 
@@ -471,6 +509,19 @@ const PlaySession = () => {
               <span>⚠️ -{demerits}</span>
               <span className="text-primary-foreground">= {score + bonusPoints - demerits} pts</span>
             </div>
+          )}
+          {/* Streak counter */}
+          {activeMode === 'quiz' && streak >= 2 && (
+            <motion.div
+              key={streak}
+              initial={{ scale: 1.4, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              className="mt-2 flex justify-center"
+            >
+              <span className="inline-flex items-center gap-1.5 rounded-full bg-primary-foreground/20 px-3 py-1 text-sm font-black text-primary-foreground">
+                🔥 Safety Streak: {streak}
+              </span>
+            </motion.div>
           )}
         </div>
       </div>
