@@ -163,6 +163,16 @@ const PlaySession = () => {
       if (activeMode === 'quiz') {
         setBonusPoints(b => b + 1);
         setMissionXPEarned(prev => prev + XP_BONUS);
+        // Custom answers count as safe choices for streak
+        setStreak(prev => {
+          const next = prev + 1;
+          setBestStreak(b => Math.max(b, next));
+          if (next >= 2) {
+            setStreakPop(true);
+            setTimeout(() => setStreakPop(false), 600);
+          }
+          return next;
+        });
       }
     }
   };
