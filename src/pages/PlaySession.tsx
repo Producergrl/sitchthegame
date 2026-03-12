@@ -14,6 +14,10 @@ import {
   XP_CORRECT, XP_BONUS, XP_DEMERIT,
   type PlayerProgress, type Badge as BadgeDef,
 } from '@/lib/progression';
+import {
+  loadStickerProgress, checkNewStickers, awardStickers,
+  type StickerProgress, type Sticker as StickerDef,
+} from '@/lib/stickers';
 
 const ageBands: { value: AgeBand; label: string }[] = [
   { value: '4-6', label: '4–6 years' },
