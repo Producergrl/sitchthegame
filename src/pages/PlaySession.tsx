@@ -462,7 +462,37 @@ const PlaySession = () => {
             </motion.div>
           )}
 
-          <div className="space-y-2 rounded-2xl border bg-card p-4 text-left">
+          {/* Stickers earned this session */}
+          {newStickersThisSession.length > 0 && (
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.2 }}
+              className="rounded-2xl border-2 border-primary/30 bg-primary/5 p-5 text-center"
+            >
+              <p className="text-sm font-bold text-primary mb-3">🎨 Stickers Earned This Session!</p>
+              <div className="flex flex-wrap justify-center gap-3">
+                {newStickersThisSession.map(s => (
+                  <motion.div
+                    key={s.id}
+                    initial={{ scale: 0, rotate: -20 }}
+                    animate={{ scale: 1, rotate: 0 }}
+                    transition={{ type: 'spring' as const, bounce: 0.5, delay: 0.3 }}
+                    className="flex flex-col items-center gap-1"
+                  >
+                    <div className={`flex h-12 w-12 items-center justify-center rounded-xl ${s.color} shadow-md`}>
+                      <span className="text-2xl">{s.emoji}</span>
+                    </div>
+                    <span className="text-xs font-bold text-card-foreground">{s.name}</span>
+                  </motion.div>
+                ))}
+              </div>
+              <Link to="/stickers" className="mt-3 inline-block text-xs font-bold text-primary underline">
+                View Collection →
+              </Link>
+            </motion.div>
+          )}
+
             <p className="text-sm font-bold text-card-foreground">Session Summary</p>
             <p className="text-sm text-muted-foreground">✅ Discussed: {discussed.size} missions</p>
             <p className="text-sm text-muted-foreground">🚩 Flagged for review: {flagged.size} missions</p>
