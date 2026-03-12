@@ -75,6 +75,11 @@ const PlaySession = () => {
   const [customAnswerSubmitted, setCustomAnswerSubmitted] = useState(false);
   const [sessionDone, setSessionDone] = useState(false);
 
+  // Streak state
+  const [streak, setStreak] = useState(0);
+  const [bestStreak, setBestStreak] = useState(0);
+  const [streakPop, setStreakPop] = useState(false);
+
   // Progression state
   const [playerProgress, setPlayerProgress] = useState<PlayerProgress>(loadProgress);
   const [sessionXP, setSessionXP] = useState(0);
