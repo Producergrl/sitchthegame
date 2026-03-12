@@ -10,6 +10,7 @@ import SessionSetup from "./pages/SessionSetup";
 import PlaySession from "./pages/PlaySession";
 import Resources from "./pages/Resources";
 import AdminPage from "./pages/AdminPage";
+import StickerCollection from "./pages/StickerCollection";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
