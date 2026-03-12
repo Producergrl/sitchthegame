@@ -391,13 +391,23 @@ const PlaySession = () => {
           </motion.div>
 
           {activeMode === 'quiz' && (
-            <div className="space-y-1 text-center">
+            <div className="space-y-2 text-center">
               <p className="text-lg font-bold text-primary">Score: {score + bonusPoints - demerits} pts</p>
               <div className="flex justify-center gap-4 text-sm">
                 <span className="text-safe">✅ Correct: {score}</span>
                 <span className="text-primary">✨ Bonus: {bonusPoints}</span>
                 <span className="text-destructive">⚠️ Demerits: {demerits}</span>
               </div>
+              {bestStreak >= 2 && (
+                <motion.p
+                  initial={{ scale: 0 }}
+                  animate={{ scale: 1 }}
+                  transition={{ delay: 0.4, type: 'spring' }}
+                  className="text-base font-black text-accent-foreground"
+                >
+                  🔥 Best Safety Streak: {bestStreak}
+                </motion.p>
+              )}
             </div>
           )}
 
