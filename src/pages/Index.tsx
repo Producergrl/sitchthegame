@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { Play, BookOpen, Settings, Heart, Shield, Sparkles } from 'lucide-react';
+import { Play, BookOpen, Settings, Heart, Shield, Sparkles, Sticker } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import ThemeToggle from '@/components/ThemeToggle';
 import MissionProgress from '@/components/MissionProgress';
@@ -10,6 +10,7 @@ import { loadProgress, type PlayerProgress } from '@/lib/progression';
 const features = [
   { icon: Play, title: 'Start Mission', desc: 'Begin a guided mission', to: '/session/setup', color: 'bg-primary' },
   { icon: BookOpen, title: 'Browse Decks', desc: 'Explore mission packs', to: '/decks', color: 'bg-secondary' },
+  { icon: Sticker, title: 'My Stickers', desc: 'View your collection', to: '/stickers', color: 'bg-accent' },
   { icon: Settings, title: 'Manage Cards', desc: 'Create & edit content', to: '/admin', color: 'bg-gentle' },
   { icon: Heart, title: 'Resources', desc: 'Help & safety info', to: '/resources', color: 'bg-help' },
 ];
