@@ -444,6 +444,17 @@ const PlaySession = () => {
           {/* Player Progression Card */}
           <MissionProgress progress={playerProgress} />
 
+          {/* Shareable Milestone Card */}
+          <ShareMilestoneCard
+            levelTitle={level.title}
+            levelIcon={level.icon}
+            levelNumber={level.level}
+            missionsCompleted={playerProgress.missionsCompleted}
+            totalXP={playerProgress.totalXP}
+            badgeCount={playerProgress.badgesEarned.length}
+            stickerCount={stickerProgress.earnedIds.length}
+          />
+
           {/* Session summary */}
           {newBadgesThisSession.length > 0 && (
             <motion.div
