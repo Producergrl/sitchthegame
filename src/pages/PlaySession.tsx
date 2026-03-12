@@ -208,7 +208,6 @@ const PlaySession = () => {
       return without.includes(id) ? without.filter(d => d !== id) : [...without, id];
     });
   };
-  };
 
   // ── Setup screen (no valid deep-link) ──
   if (!isPlaying) {
