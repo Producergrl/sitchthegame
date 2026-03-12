@@ -28,6 +28,7 @@ const App = () => (
           <Route path="/session/setup" element={<SessionSetup />} />
           <Route path="/play" element={<PlaySession />} />
           <Route path="/resources" element={<Resources />} />
+          <Route path="/stickers" element={<StickerCollection />} />
           <Route path="/admin" element={<AdminPage />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
