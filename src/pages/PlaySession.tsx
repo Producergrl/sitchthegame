@@ -490,6 +490,19 @@ const PlaySession = () => {
               <span className="text-primary-foreground">= {score + bonusPoints - demerits} pts</span>
             </div>
           )}
+          {/* Streak counter */}
+          {activeMode === 'quiz' && streak >= 2 && (
+            <motion.div
+              key={streak}
+              initial={{ scale: 1.4, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              className="mt-2 flex justify-center"
+            >
+              <span className="inline-flex items-center gap-1.5 rounded-full bg-primary-foreground/20 px-3 py-1 text-sm font-black text-primary-foreground">
+                🔥 Safety Streak: {streak}
+              </span>
+            </motion.div>
+          )}
         </div>
       </div>
 
