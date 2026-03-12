@@ -670,3 +670,17 @@ export function isFreeDeck(deckId: string): boolean {
   const deck = decks.find(d => d.id === deckId);
   return deck?.is_free ?? false;
 }
+
+/** Compilation deck ID – signals "pull random cards from all decks" */
+export const COMPILATION_DECK_ID = '__compilation__';
+
+/** Shuffle array (Fisher-Yates) and optionally limit count */
+export function getCompilationCards(limit = 10): Card[] {
+  const published = cards.filter(c => c.status === 'published');
+  const shuffled = [...published];
+  for (let i = shuffled.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+  }
+  return shuffled.slice(0, limit);
+}

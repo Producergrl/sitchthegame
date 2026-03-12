@@ -117,6 +117,21 @@ const SessionSetup = () => {
         <motion.section initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2 }}>
           <h2 className="mb-3 text-lg font-bold">Choose Decks</h2>
           <div className="grid gap-3 sm:grid-cols-2">
+            {/* Compilation option */}
+            <button
+              onClick={() => toggleDeck(COMPILATION_DECK_ID)}
+              className={`relative flex items-center gap-3 rounded-2xl border-2 p-4 text-left transition-all sm:col-span-2 ${
+                isCompilation
+                  ? 'border-primary bg-primary/5 shadow-sm'
+                  : 'border-border bg-card hover:border-primary/40'
+              }`}
+            >
+              <span className="text-3xl">🎲</span>
+              <div>
+                <div className="font-bold text-card-foreground">Compilation Mix</div>
+                <div className="text-xs text-muted-foreground">Random missions from every deck — a surprise each time!</div>
+              </div>
+            </button>
             {decks.map(deck => {
               const isLocked = !deck.is_free;
               return (
