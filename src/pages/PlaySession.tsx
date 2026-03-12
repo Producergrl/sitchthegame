@@ -197,9 +197,17 @@ const PlaySession = () => {
   };
 
   const toggleSetupDeck = (id: string) => {
+    if (id === COMPILATION_DECK_ID) {
+      setSetupDecks(prev => prev.includes(COMPILATION_DECK_ID) ? [] : [COMPILATION_DECK_ID]);
+      return;
+    }
     const deck = decks.find(d => d.id === id);
     if (!deck?.is_free) return;
-    setSetupDecks(prev => (prev.includes(id) ? prev.filter(d => d !== id) : [...prev, id]));
+    setSetupDecks(prev => {
+      const without = prev.filter(d => d !== COMPILATION_DECK_ID);
+      return without.includes(id) ? without.filter(d => d !== id) : [...without, id];
+    });
+  };
   };
 
   // ── Setup screen (no valid deep-link) ──
