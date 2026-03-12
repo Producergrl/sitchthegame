@@ -133,11 +133,24 @@ const PlaySession = () => {
     setSelectedOption(label);
     setCustomAnswerSubmitted(false);
     if (activeMode === 'quiz') {
-      if (card?.correct_option === label) {
+      const isCorrect = card?.correct_option === label;
+      const isWorst = card?.worst_option === label;
+      if (isCorrect) {
         setScore(s => s + 1);
         setMissionXPEarned(prev => prev + XP_CORRECT);
+        setStreak(prev => {
+          const next = prev + 1;
+          setBestStreak(b => Math.max(b, next));
+          if (next >= 2) {
+            setStreakPop(true);
+            setTimeout(() => setStreakPop(false), 600);
+          }
+          return next;
+        });
+      } else {
+        setStreak(0);
       }
-      if (card?.worst_option === label) {
+      if (isWorst) {
         setDemerits(d => d + 1);
         setMissionXPEarned(prev => prev + XP_DEMERIT);
       }
