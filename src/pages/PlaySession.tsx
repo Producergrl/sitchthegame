@@ -3,7 +3,7 @@ import { Link, useSearchParams, useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { ArrowLeft, ChevronRight, Volume2, Eye, CheckCircle2, Flag, RotateCcw, Share2, Lock } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import { cards as allCards, decks } from '@/data/seedData';
+import { cards as allCards, decks, COMPILATION_DECK_ID, getCompilationCards } from '@/data/seedData';
 import type { AgeBand, PlayStyle } from '@/types/game';
 import { parsePlayParams, buildPlayUrl } from '@/lib/playParams';
 import { toast } from '@/hooks/use-toast';
@@ -58,6 +58,7 @@ const PlaySession = () => {
   const activeAge = isPlaying ? (autoStart ? parsed.age : setupAgeBand) : '8-10';
 
   const sessionCards = useMemo(() => {
+    if (activeDeckIds.includes(COMPILATION_DECK_ID)) return getCompilationCards(10);
     if (activeDeckIds.length === 0) return allCards.filter(c => c.status === 'published');
     return allCards.filter(c => activeDeckIds.includes(c.deck_id) && c.status === 'published');
   }, [activeDeckIds]);
@@ -196,9 +197,16 @@ const PlaySession = () => {
   };
 
   const toggleSetupDeck = (id: string) => {
+    if (id === COMPILATION_DECK_ID) {
+      setSetupDecks(prev => prev.includes(COMPILATION_DECK_ID) ? [] : [COMPILATION_DECK_ID]);
+      return;
+    }
     const deck = decks.find(d => d.id === id);
     if (!deck?.is_free) return;
-    setSetupDecks(prev => (prev.includes(id) ? prev.filter(d => d !== id) : [...prev, id]));
+    setSetupDecks(prev => {
+      const without = prev.filter(d => d !== COMPILATION_DECK_ID);
+      return without.includes(id) ? without.filter(d => d !== id) : [...without, id];
+    });
   };
 
   // ── Setup screen (no valid deep-link) ──
@@ -266,6 +274,21 @@ const PlaySession = () => {
           <section>
             <h2 className="mb-3 text-lg font-bold">Choose Decks</h2>
             <div className="grid gap-3 sm:grid-cols-2">
+              {/* Compilation option */}
+              <button
+                onClick={() => toggleSetupDeck(COMPILATION_DECK_ID)}
+                className={`relative flex items-center gap-3 rounded-2xl border-2 p-4 text-left transition-all sm:col-span-2 ${
+                  setupDecks.includes(COMPILATION_DECK_ID)
+                    ? 'border-primary bg-primary/5 shadow-sm'
+                    : 'border-border bg-card hover:border-primary/40'
+                }`}
+              >
+                <span className="text-3xl">🎲</span>
+                <div>
+                  <div className="font-bold text-card-foreground">Compilation Mix</div>
+                  <div className="text-xs text-muted-foreground">Random missions from every deck — a surprise each time!</div>
+                </div>
+              </button>
               {decks.map(d => {
                 const isLocked = !d.is_free;
                 return (

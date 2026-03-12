@@ -3,7 +3,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { ArrowLeft, Play, Lock } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import { decks } from '@/data/seedData';
+import { decks, COMPILATION_DECK_ID } from '@/data/seedData';
 import type { AgeBand, PlayStyle } from '@/types/game';
 
 const ageBands: { value: AgeBand; label: string }[] = [
@@ -27,12 +27,21 @@ const SessionSetup = () => {
   const [playStyle, setPlayStyle] = useState<PlayStyle>('discussion');
   const [selectedDecks, setSelectedDecks] = useState<string[]>([]);
 
+  const isCompilation = selectedDecks.includes(COMPILATION_DECK_ID);
+
   const toggleDeck = (id: string) => {
+    if (id === COMPILATION_DECK_ID) {
+      setSelectedDecks(prev =>
+        prev.includes(COMPILATION_DECK_ID) ? [] : [COMPILATION_DECK_ID]
+      );
+      return;
+    }
     const deck = decks.find(d => d.id === id);
-    if (!deck?.is_free) return; // locked decks can't be selected
-    setSelectedDecks(prev =>
-      prev.includes(id) ? prev.filter(d => d !== id) : [...prev, id]
-    );
+    if (!deck?.is_free) return;
+    setSelectedDecks(prev => {
+      const without = prev.filter(d => d !== COMPILATION_DECK_ID);
+      return without.includes(id) ? without.filter(d => d !== id) : [...without, id];
+    });
   };
 
   const startSession = () => {
@@ -108,6 +117,21 @@ const SessionSetup = () => {
         <motion.section initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2 }}>
           <h2 className="mb-3 text-lg font-bold">Choose Decks</h2>
           <div className="grid gap-3 sm:grid-cols-2">
+            {/* Compilation option */}
+            <button
+              onClick={() => toggleDeck(COMPILATION_DECK_ID)}
+              className={`relative flex items-center gap-3 rounded-2xl border-2 p-4 text-left transition-all sm:col-span-2 ${
+                isCompilation
+                  ? 'border-primary bg-primary/5 shadow-sm'
+                  : 'border-border bg-card hover:border-primary/40'
+              }`}
+            >
+              <span className="text-3xl">🎲</span>
+              <div>
+                <div className="font-bold text-card-foreground">Compilation Mix</div>
+                <div className="text-xs text-muted-foreground">Random missions from every deck — a surprise each time!</div>
+              </div>
+            </button>
             {decks.map(deck => {
               const isLocked = !deck.is_free;
               return (
