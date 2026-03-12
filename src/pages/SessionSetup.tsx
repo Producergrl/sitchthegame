@@ -3,7 +3,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { ArrowLeft, Play, Lock } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import { decks } from '@/data/seedData';
+import { decks, COMPILATION_DECK_ID } from '@/data/seedData';
 import type { AgeBand, PlayStyle } from '@/types/game';
 
 const ageBands: { value: AgeBand; label: string }[] = [
