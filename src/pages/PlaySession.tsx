@@ -105,7 +105,7 @@ const PlaySession = () => {
     if (!card) return;
     const result = completeMission(playerProgress, card.id, missionXPEarned);
     setPlayerProgress(result.progress);
-    setSessionXP(prev => prev + missionXPEarned + 5); // +5 for mission complete base
+    setSessionXP(prev => prev + missionXPEarned + 5);
     if (result.newBadges.length > 0) {
       setNewBadgesThisSession(prev => [...prev, ...result.newBadges]);
       result.newBadges.forEach(b => {
@@ -117,8 +117,19 @@ const PlaySession = () => {
       const newLvl = getCurrentLevel(result.progress.totalXP);
       toast({ title: `🎉 Level Up!`, description: `You're now a ${newLvl.title}!` });
     }
+    // Check for new stickers
+    const currentLevel = getCurrentLevel(result.progress.totalXP).level;
+    const newStickers = checkNewStickers(stickerProgress, result.progress.missionsCompleted, streak, currentLevel);
+    if (newStickers.length > 0) {
+      const updatedStickerProg = awardStickers(stickerProgress, newStickers, streak);
+      setStickerProgress(updatedStickerProg);
+      setNewStickersThisSession(prev => [...prev, ...newStickers]);
+      newStickers.forEach(s => {
+        toast({ title: `🎨 Sticker Earned: ${s.name}!`, description: s.description });
+      });
+    }
     setMissionXPEarned(0);
-  }, [card, playerProgress, missionXPEarned]);
+  }, [card, playerProgress, missionXPEarned, stickerProgress, streak]);
 
   const handleNext = useCallback(() => {
     // Award mission XP before advancing (whenever an option was selected)
