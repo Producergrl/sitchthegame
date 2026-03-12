@@ -648,6 +648,29 @@ const PlaySession = () => {
                     <p className="mb-1 text-sm font-bold text-accent-foreground">🗣️ Practice Phrase</p>
                     <p className="text-sm italic text-card-foreground">{card.practice_phrase}</p>
                   </div>
+                  {/* Talk About It – parent/child conversation prompts */}
+                  <div className="rounded-2xl border-2 border-gentle/40 bg-gentle/5 p-5 space-y-3">
+                    <div className="flex items-center gap-2">
+                      <span className="flex h-8 w-8 items-center justify-center rounded-full bg-gentle/20 text-lg">💬</span>
+                      <p className="text-sm font-black text-card-foreground">Talk About It</p>
+                    </div>
+                    <p className="text-xs text-muted-foreground">Take a moment to chat together — there are no wrong answers here.</p>
+                    <ul className="space-y-2">
+                      {(card.reflection_prompts && card.reflection_prompts.length > 0
+                        ? card.reflection_prompts
+                        : ['Has anything like this ever happened to you?', 'Who are three adults you could tell if this happened?']
+                      ).map((prompt, i) => (
+                        <li key={i} className="flex items-start gap-2 text-sm text-card-foreground">
+                          <span className="mt-0.5 text-gentle">•</span>
+                          <span>{prompt}</span>
+                        </li>
+                      ))}
+                      <li className="flex items-start gap-2 text-sm text-card-foreground">
+                        <span className="mt-0.5 text-gentle">•</span>
+                        <span>How could I show you support in a situation like this?</span>
+                      </li>
+                    </ul>
+                  </div>
                   <div className="rounded-2xl border border-help/30 bg-help/5 p-5">
                     <p className="mb-1 text-sm font-bold text-help">🤝 Ask an Adult</p>
                     <p className="text-sm text-card-foreground">{card.help_prompt}</p>
