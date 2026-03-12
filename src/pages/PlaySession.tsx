@@ -91,6 +91,10 @@ const PlaySession = () => {
   const [showLevelUp, setShowLevelUp] = useState(false);
   const [missionXPEarned, setMissionXPEarned] = useState(0);
 
+  // Sticker state
+  const [stickerProgress, setStickerProgress] = useState<StickerProgress>(loadStickerProgress);
+  const [newStickersThisSession, setNewStickersThisSession] = useState<StickerDef[]>([]);
+
   const NONE_LABEL = '✨';
 
   const card = sessionCards[index];
