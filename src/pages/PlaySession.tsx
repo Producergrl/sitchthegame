@@ -430,6 +430,7 @@ const PlaySession = () => {
     const level = getCurrentLevel(playerProgress.totalXP);
     return (
       <div className="min-h-screen bg-background p-4">
+        <Confetti active={showConfetti} />
         <div className="mx-auto max-w-lg space-y-6 pt-8">
           <motion.div initial={{ scale: 0 }} animate={{ scale: 1 }} transition={{ type: 'spring', bounce: 0.5 }} className="text-center">
             <div className="mx-auto mb-4 flex h-20 w-20 items-center justify-center rounded-full bg-safe text-4xl text-primary-foreground">
