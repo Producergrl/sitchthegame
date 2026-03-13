@@ -617,32 +617,54 @@ const PlaySession = () => {
             <div className="space-y-2">
               {card.options.map(opt => {
                 const isSelected = selectedOption === opt.label;
-                const isCorrect = showGuidance && card.correct_option === opt.label;
+                const hasSelected = selectedOption !== null && selectedOption !== NONE_LABEL;
+                const isQuiz = activeMode === 'quiz';
+                // Immediate feedback in quiz mode
+                const selectedCorrect = isQuiz && isSelected && card.correct_option === opt.label;
+                const selectedWrong = isQuiz && isSelected && card.correct_option !== opt.label;
+                const revealCorrect = isQuiz && hasSelected && card.correct_option === opt.label && !isSelected;
+                // Guidance-only reveals
                 const isWorst = showGuidance && card.worst_option === opt.label;
-                const isWrong = showGuidance && isSelected && card.correct_option !== opt.label && !isWorst;
                 return (
-                  <button
+                  <motion.button
                     key={opt.label}
                     onClick={() => handleSelectOption(opt.label)}
-                    disabled={showGuidance}
-                    className={`w-full rounded-xl border p-4 text-left transition-all ${
-                      isCorrect ? 'border-safe bg-safe/10' :
-                      isWorst ? 'border-destructive bg-destructive/10 ring-2 ring-destructive/30' :
-                      isWrong ? 'border-destructive bg-destructive/5' :
+                    disabled={selectedOption !== null}
+                    animate={
+                      selectedCorrect ? { scale: [1, 1.03, 1] } :
+                      selectedWrong ? { x: [0, -6, 6, -4, 4, 0] } :
+                      {}
+                    }
+                    transition={{ duration: 0.4 }}
+                    className={`w-full rounded-xl border-2 p-4 text-left transition-all ${
+                      selectedCorrect ? 'border-safe bg-safe/15 ring-2 ring-safe/40' :
+                      selectedWrong ? 'border-destructive bg-destructive/10 ring-2 ring-destructive/30' :
+                      revealCorrect ? 'border-safe/50 bg-safe/5' :
+                      isWorst ? 'border-destructive bg-destructive/10' :
                       isSelected ? 'border-primary bg-primary/5' :
-                      'card-edge-lit bg-card hover:border-gold/30'
+                      'border-border card-edge-lit bg-card hover:border-gold/30'
                     }`}
                   >
-                    <span className="mr-2 inline-flex h-7 w-7 items-center justify-center rounded-full bg-muted text-sm font-bold text-muted-foreground">
-                      {opt.label}
+                    <span className={`mr-2 inline-flex h-7 w-7 items-center justify-center rounded-full text-sm font-bold ${
+                      selectedCorrect ? 'bg-safe text-white' :
+                      selectedWrong ? 'bg-destructive text-white' :
+                      revealCorrect ? 'bg-safe/20 text-safe' :
+                      'bg-muted text-muted-foreground'
+                    }`}>
+                      {selectedCorrect ? '✓' : selectedWrong ? '✗' : opt.label}
                     </span>
                     <span className="font-semibold text-card-foreground">{opt.text}</span>
-                    {isWorst && (
-                      <span className="ml-2 inline-flex items-center gap-1 rounded-full bg-destructive/20 px-2 py-0.5 text-xs font-bold text-destructive">
-                        ⚠️ Worst choice
+                    {selectedCorrect && (
+                      <span className="ml-2 inline-flex items-center gap-1 rounded-full bg-safe/20 px-2 py-0.5 text-xs font-bold text-safe">
+                        ✅ Correct!
                       </span>
                     )}
-                  </button>
+                    {selectedWrong && (
+                      <span className="ml-2 inline-flex items-center gap-1 rounded-full bg-destructive/20 px-2 py-0.5 text-xs font-bold text-destructive">
+                        {isWorst ? '⚠️ Worst choice' : '❌ Not quite'}
+                      </span>
+                    )}
+                  </motion.button>
                 );
               })}
               {/* Critical thinking option */}
