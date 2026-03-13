@@ -97,6 +97,7 @@ const PlaySession = () => {
   // Sticker state
   const [stickerProgress, setStickerProgress] = useState<StickerProgress>(loadStickerProgress);
   const [newStickersThisSession, setNewStickersThisSession] = useState<StickerDef[]>([]);
+  const [showConfetti, setShowConfetti] = useState(false);
 
   const NONE_LABEL = '✨';
 
