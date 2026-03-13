@@ -101,8 +101,12 @@ const normalize = (s: string) =>
   s.replace(/[\u201C\u201D]/g, '"').replace(/[\u2019]/g, "'").replace(/\s*What would you do\?\s*$/i, '').trim();
 
 const makeTitle = (scenario: string) => {
-  const words = scenario.split(/\s+/).slice(0, 7).join(' ');
-  return words.replace(/[".]/g, '').slice(0, 60).trim();
+  // Use full scenario as title, but cap at a reasonable length
+  const clean = scenario.replace(/[".]/g, '').trim();
+  if (clean.length <= 80) return clean;
+  // Try to cut at a word boundary near 80 chars
+  const truncated = clean.slice(0, 80).replace(/\s+\S*$/, '');
+  return truncated + '…';
 };
 
 const tagsFor = (s0: string) => {
