@@ -807,26 +807,28 @@ const PlaySession = () => {
             </AnimatePresence>
 
             {/* Actions */}
-            <div className="flex flex-wrap gap-2">
+            <div className="flex items-center gap-2">
               <Button
-                variant={discussed.has(card.id) ? 'default' : 'outline'}
-                size="sm"
+                variant="ghost"
+                size="icon"
                 onClick={toggleDiscussed}
-                className="gap-1.5"
+                className={`h-8 w-8 ${discussed.has(card.id) ? 'text-safe' : 'text-muted-foreground'}`}
+                title={discussed.has(card.id) ? 'Discussed' : 'Mark as discussed'}
               >
-                <CheckCircle2 className="h-4 w-4" /> {discussed.has(card.id) ? 'Discussed ✓' : 'Mark Discussed'}
+                <CheckCircle2 className="h-4 w-4" />
               </Button>
               <Button
-                variant={flagged.has(card.id) ? 'destructive' : 'outline'}
-                size="sm"
+                variant="ghost"
+                size="icon"
                 onClick={toggleFlagged}
-                className="gap-1.5"
+                className={`h-8 w-8 ${flagged.has(card.id) ? 'text-destructive' : 'text-muted-foreground'}`}
+                title={flagged.has(card.id) ? 'Flagged' : 'Flag for review'}
               >
-                <Flag className="h-4 w-4" /> {flagged.has(card.id) ? 'Flagged' : 'Flag for Review'}
+                <Flag className="h-4 w-4" />
               </Button>
               <div className="flex-1" />
-              <Button onClick={handleNext} className="gap-1.5 font-bold">
-                {index + 1 >= sessionCards.length ? 'Finish' : 'Next Card'} <ChevronRight className="h-4 w-4" />
+              <Button onClick={handleNext} size="lg" className="gap-1.5 font-bold px-6">
+                {index + 1 >= sessionCards.length ? '🎉 Finish' : 'Next Card'} <ChevronRight className="h-4 w-4" />
               </Button>
             </div>
           </motion.div>
