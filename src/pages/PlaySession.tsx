@@ -806,10 +806,6 @@ const PlaySession = () => {
                       </li>
                     </ul>
                   </div>
-                  <div className="rounded-2xl border border-help/30 bg-help/5 p-5">
-                    <p className="mb-1 text-sm font-bold text-help">🤝 Ask an Adult</p>
-                    <p className="text-sm text-card-foreground">{card.help_prompt}</p>
-                  </div>
                 </motion.div>
               )}
             </AnimatePresence>
