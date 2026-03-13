@@ -565,11 +565,10 @@ const PlaySession = () => {
             />
           </div>
           {activeMode === 'quiz' && (
-            <div className="mt-2 flex justify-center gap-4 text-xs font-bold text-primary-foreground/80">
-              <span>✅ {score}</span>
-              <span>✨ {bonusPoints}</span>
-              <span>⚠️ -{demerits}</span>
-              <span className="text-primary-foreground">= {score + bonusPoints - demerits} pts</span>
+            <div className="mt-2 flex justify-center">
+              <span className="rounded-full bg-primary-foreground/20 px-3 py-1 text-sm font-black text-primary-foreground">
+                ⭐ {score + bonusPoints - demerits} pts
+              </span>
             </div>
           )}
           {/* Streak counter */}
