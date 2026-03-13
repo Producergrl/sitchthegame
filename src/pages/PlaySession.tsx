@@ -771,13 +771,10 @@ const PlaySession = () => {
                       <p className="mt-2 text-sm italic text-muted-foreground">Your answer: "{customAnswer}"</p>
                     </motion.div>
                   )}
-                  <div className="rounded-2xl border border-safe/30 bg-safe/5 p-5">
-                    <p className="mb-1 text-sm font-bold text-safe">✅ Best Next Step</p>
+                  <div className="rounded-2xl border border-safe/30 bg-safe/5 p-5 space-y-3">
+                    <p className="text-sm font-bold text-safe">✅ Best Next Step</p>
                     <p className="text-sm text-card-foreground">{card.guidance_text}</p>
-                  </div>
-                  <div className="rounded-2xl border bg-card p-5">
-                    <p className="mb-1 text-sm font-bold text-primary">💡 Why This Helps</p>
-                    <p className="text-sm text-card-foreground">{card.why_text}</p>
+                    <p className="text-sm text-card-foreground opacity-80">💡 {card.why_text}</p>
                   </div>
                   <div className="rounded-2xl border border-accent/50 bg-accent/10 p-5">
                     <p className="mb-1 text-sm font-bold text-accent-foreground">🗣️ Practice Phrase</p>
