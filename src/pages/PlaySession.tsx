@@ -10,6 +10,7 @@ import { toast } from '@/hooks/use-toast';
 import ThemeToggle from '@/components/ThemeToggle';
 import MissionProgress from '@/components/MissionProgress';
 import ShareMilestoneCard from '@/components/ShareMilestoneCard';
+import Confetti from '@/components/Confetti';
 import {
   loadProgress, completeMission, getCurrentLevel, getXPProgress,
   XP_CORRECT, XP_BONUS, XP_DEMERIT,
