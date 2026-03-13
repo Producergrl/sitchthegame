@@ -557,9 +557,9 @@ const PlaySession = () => {
         </div>
         {/* Progress bar */}
         <div className="mx-auto mt-3 max-w-2xl">
-          <div className="h-2 rounded-full bg-primary-foreground/20">
+          <div className="h-3 rounded-full bg-primary-foreground/20 overflow-hidden">
             <motion.div
-              className="h-2 rounded-full bg-primary-foreground"
+              className="h-3 rounded-full bg-primary-foreground"
               initial={{ width: 0 }}
               animate={{ width: `${((index + 1) / sessionCards.length) * 100}%` }}
             />
