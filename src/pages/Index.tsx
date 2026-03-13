@@ -1,17 +1,16 @@
 import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { Play, BookOpen, Settings, Heart, Shield, Sparkles, Sticker } from 'lucide-react';
+import { Play, BookOpen, Settings, Heart, Shield, Sparkles, Sticker, Zap } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import ThemeToggle from '@/components/ThemeToggle';
 import MissionProgress from '@/components/MissionProgress';
 import { loadProgress, type PlayerProgress } from '@/lib/progression';
 
 const features = [
-  { icon: Play, title: 'Start Mission', desc: 'Begin a guided mission', to: '/session/setup', color: 'bg-primary' },
+  { icon: Play, title: 'Start Mission', desc: 'Choose age, mode & deck', to: '/session/setup', color: 'bg-primary' },
   { icon: BookOpen, title: 'Browse Decks', desc: 'Explore mission packs', to: '/decks', color: 'bg-secondary' },
   { icon: Sticker, title: 'My Stickers', desc: 'View your collection', to: '/stickers', color: 'bg-accent' },
-  { icon: Settings, title: 'Manage Cards', desc: 'Create & edit content', to: '/admin', color: 'bg-gentle' },
   { icon: Heart, title: 'Resources', desc: 'Help & safety info', to: '/resources', color: 'bg-help' },
 ];
 
@@ -90,23 +89,24 @@ const Index = () => {
             transition={{ delay: 0.2 }}
             className="mt-8 flex flex-wrap justify-center gap-3"
           >
-            <Link to="/session/setup">
+            {/* Quick Play — skips setup entirely */}
+            <Link to="/play?decks=__compilation__&age=8-10&mode=quiz">
               <Button
                 size="lg"
                 className="gap-2 text-lg font-bold shadow-lg cta-glow bg-secondary text-secondary-foreground hover:bg-secondary/90 active:animate-btn-press transition-all duration-200 hover:scale-105 hover:shadow-xl"
               >
-                <Sparkles className="h-5 w-5" />
-                Start Playing
+                <Zap className="h-5 w-5" />
+                Quick Play
               </Button>
             </Link>
-            <Link to="/decks">
+            <Link to="/session/setup">
               <Button
                 size="lg"
                 variant="outline"
                 className="gap-2 border-white/25 text-lg font-bold text-white bg-white/10 backdrop-blur-sm hover:bg-white/20 hover:border-white/40 active:animate-btn-press transition-all duration-200 hover:scale-105"
               >
-                <BookOpen className="h-5 w-5" />
-                Browse Decks
+                <Sparkles className="h-5 w-5" />
+                Custom Game
               </Button>
             </Link>
           </motion.div>
@@ -163,6 +163,14 @@ const Index = () => {
             No public profiles • No messaging • No social sharing • Play with a trusted adult
           </p>
         </motion.div>
+
+        {/* Admin link — de-emphasized */}
+        <div className="mt-6 text-center">
+          <Link to="/admin" className="inline-flex items-center gap-1.5 text-xs text-muted-foreground hover:text-foreground transition-colors">
+            <Settings className="h-3.5 w-3.5" />
+            Manage Cards
+          </Link>
+        </div>
       </div>
     </div>
   );

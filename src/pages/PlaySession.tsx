@@ -10,6 +10,7 @@ import { toast } from '@/hooks/use-toast';
 import ThemeToggle from '@/components/ThemeToggle';
 import MissionProgress from '@/components/MissionProgress';
 import ShareMilestoneCard from '@/components/ShareMilestoneCard';
+import Confetti from '@/components/Confetti';
 import {
   loadProgress, completeMission, getCurrentLevel, getXPProgress,
   XP_CORRECT, XP_BONUS, XP_DEMERIT,
@@ -54,6 +55,7 @@ const PlaySession = () => {
   const [setupMode, setSetupMode] = useState<PlayStyle>(parsed.mode);
   const [setupDecks, setSetupDecks] = useState<string[]>(parsed.deckIds);
   const [manualStarted, setManualStarted] = useState(false);
+  const [setupStep, setSetupStep] = useState(1); // 1=Age, 2=Mode, 3=Deck
 
   const isPlaying = autoStart || manualStarted;
 
@@ -95,6 +97,7 @@ const PlaySession = () => {
   // Sticker state
   const [stickerProgress, setStickerProgress] = useState<StickerProgress>(loadStickerProgress);
   const [newStickersThisSession, setNewStickersThisSession] = useState<StickerDef[]>([]);
+  const [showConfetti, setShowConfetti] = useState(false);
 
   const NONE_LABEL = '✨';
 
@@ -138,6 +141,7 @@ const PlaySession = () => {
 
     if (index + 1 >= sessionCards.length) {
       setSessionDone(true);
+      setShowConfetti(true);
     } else {
       setIndex(i => i + 1);
       setShowGuidance(false);
@@ -157,6 +161,8 @@ const PlaySession = () => {
       const isWorst = card?.worst_option === label;
       if (isCorrect) {
         setScore(s => s + 1);
+        setShowConfetti(true);
+        setTimeout(() => setShowConfetti(false), 2500);
         setMissionXPEarned(prev => prev + XP_CORRECT);
         setStreak(prev => {
           const next = prev + 1;
@@ -264,121 +270,144 @@ const PlaySession = () => {
         <div className="hero-gradient px-4 py-6 text-primary-foreground">
           <div className="mx-auto flex max-w-2xl items-center justify-between">
             <div className="flex items-center gap-3">
-              <Link to="/">
-                <Button variant="ghost" size="icon" className="text-primary-foreground hover:bg-white/10 active:animate-btn-press">
+              {setupStep === 1 ? (
+                <Link to="/">
+                  <Button variant="ghost" size="icon" className="text-primary-foreground hover:bg-white/10 active:animate-btn-press">
+                    <ArrowLeft className="h-5 w-5" />
+                  </Button>
+                </Link>
+              ) : (
+                <Button variant="ghost" size="icon" onClick={() => setSetupStep(s => s - 1)} className="text-primary-foreground hover:bg-white/10 active:animate-btn-press">
                   <ArrowLeft className="h-5 w-5" />
                 </Button>
-              </Link>
-              <h1 className="text-2xl font-black">Start a Session</h1>
+              )}
+              <h1 className="text-2xl font-black">
+                {setupStep === 1 ? 'How old is the player?' : setupStep === 2 ? 'Pick a play style' : 'Choose your deck'}
+              </h1>
             </div>
-            <ThemeToggle className="text-primary-foreground hover:bg-white/10" />
+            <span className="rounded-full bg-primary-foreground/20 px-3 py-1 text-sm font-bold">
+              {setupStep} / 3
+            </span>
+          </div>
+          {/* Step progress */}
+          <div className="mx-auto mt-3 max-w-2xl">
+            <div className="flex gap-2">
+              {[1, 2, 3].map(s => (
+                <div key={s} className={`h-1.5 flex-1 rounded-full transition-all ${s <= setupStep ? 'bg-primary-foreground' : 'bg-primary-foreground/20'}`} />
+              ))}
+            </div>
           </div>
         </div>
 
-        <div className="mx-auto max-w-2xl space-y-8 px-4 py-8">
-          {/* Age Band */}
-          <section>
-            <h2 className="mb-3 text-lg font-bold">Age Group</h2>
-            <div className="flex flex-wrap gap-2">
-              {ageBands.map(ab => (
-                <button
-                  key={ab.value}
-                  onClick={() => setSetupAgeBand(ab.value)}
-                  className={`rounded-xl border-2 px-5 py-3 text-sm font-bold transition-all ${
-                    setupAgeBand === ab.value
-                      ? 'border-primary bg-primary text-primary-foreground'
-                      : 'border-border bg-card text-card-foreground hover:border-primary/40'
-                  }`}
-                >
-                  {ab.label}
-                </button>
-              ))}
-            </div>
-          </section>
+        <div className="mx-auto max-w-2xl px-4 py-8">
+          <AnimatePresence mode="wait">
+            {/* Step 1: Age */}
+            {setupStep === 1 && (
+              <motion.div key="age" initial={{ opacity: 0, x: 40 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -40 }} className="space-y-4">
+                <div className="grid grid-cols-2 gap-3">
+                  {ageBands.map(ab => (
+                    <button
+                      key={ab.value}
+                      onClick={() => { setSetupAgeBand(ab.value); setSetupStep(2); }}
+                      className={`rounded-2xl border-2 p-5 text-center font-bold transition-all text-lg ${
+                        setupAgeBand === ab.value
+                          ? 'border-primary bg-primary text-primary-foreground'
+                          : 'border-border bg-card text-card-foreground hover:border-primary/40'
+                      }`}
+                    >
+                      {ab.label}
+                    </button>
+                  ))}
+                </div>
+              </motion.div>
+            )}
 
-          {/* Play Style */}
-          <section>
-            <h2 className="mb-3 text-lg font-bold">Play Style</h2>
-            <div className="grid gap-3 sm:grid-cols-3">
-              {playStyles.map(ps => (
+            {/* Step 2: Play Style */}
+            {setupStep === 2 && (
+              <motion.div key="mode" initial={{ opacity: 0, x: 40 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -40 }} className="space-y-4">
+                <div className="grid gap-3">
+                  {playStyles.map(ps => (
+                    <button
+                      key={ps.value}
+                      onClick={() => { setSetupMode(ps.value); setSetupStep(3); }}
+                      className={`flex items-center gap-4 rounded-2xl border-2 p-5 text-left transition-all ${
+                        setupMode === ps.value
+                          ? 'border-primary bg-primary/5 shadow-sm'
+                          : 'border-border bg-card hover:border-primary/40'
+                      }`}
+                    >
+                      <span className="text-4xl">{ps.icon}</span>
+                      <div>
+                        <div className="text-lg font-bold text-card-foreground">{ps.label}</div>
+                        <div className="text-sm text-muted-foreground">{ps.desc}</div>
+                      </div>
+                    </button>
+                  ))}
+                </div>
+              </motion.div>
+            )}
+
+            {/* Step 3: Deck Selection */}
+            {setupStep === 3 && (
+              <motion.div key="decks" initial={{ opacity: 0, x: 40 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -40 }} className="space-y-4">
                 <button
-                  key={ps.value}
-                  onClick={() => setSetupMode(ps.value)}
-                  className={`rounded-2xl border-2 p-4 text-left transition-all ${
-                    setupMode === ps.value
+                  onClick={() => toggleSetupDeck(COMPILATION_DECK_ID)}
+                  className={`relative w-full flex items-center gap-3 rounded-2xl border-2 p-5 text-left transition-all ${
+                    setupDecks.includes(COMPILATION_DECK_ID)
                       ? 'border-primary bg-primary/5 shadow-sm'
                       : 'border-border bg-card hover:border-primary/40'
                   }`}
                 >
-                  <div className="mb-1 text-2xl">{ps.icon}</div>
-                  <div className="font-bold text-card-foreground">{ps.label}</div>
-                  <div className="text-xs text-muted-foreground">{ps.desc}</div>
+                  <span className="text-3xl">🎲</span>
+                  <div>
+                    <div className="font-bold text-card-foreground">Compilation Mix</div>
+                    <div className="text-xs text-muted-foreground">Random missions from every deck — a surprise each time!</div>
+                  </div>
                 </button>
-              ))}
-            </div>
-          </section>
-
-          {/* Deck Selection */}
-          <section>
-            <h2 className="mb-3 text-lg font-bold">Choose Decks</h2>
-            <div className="grid gap-3 sm:grid-cols-2">
-              {/* Compilation option */}
-              <button
-                onClick={() => toggleSetupDeck(COMPILATION_DECK_ID)}
-                className={`relative flex items-center gap-3 rounded-2xl border-2 p-4 text-left transition-all sm:col-span-2 ${
-                  setupDecks.includes(COMPILATION_DECK_ID)
-                    ? 'border-primary bg-primary/5 shadow-sm'
-                    : 'border-border bg-card hover:border-primary/40'
-                }`}
-              >
-                <span className="text-3xl">🎲</span>
-                <div>
-                  <div className="font-bold text-card-foreground">Compilation Mix</div>
-                  <div className="text-xs text-muted-foreground">Random missions from every deck — a surprise each time!</div>
+                <div className="grid gap-3 grid-cols-2">
+                  {decks.map(d => {
+                    const isLocked = !d.is_free;
+                    return (
+                      <button
+                        key={d.id}
+                        onClick={() => toggleSetupDeck(d.id)}
+                        disabled={isLocked}
+                        className={`relative flex items-center gap-3 rounded-2xl border-2 p-4 text-left transition-all ${
+                          isLocked
+                            ? 'cursor-not-allowed border-border bg-muted/50 opacity-60'
+                            : setupDecks.includes(d.id)
+                            ? 'border-primary bg-primary/5 shadow-sm'
+                            : 'border-border bg-card hover:border-primary/40'
+                        }`}
+                      >
+                        {isLocked && (
+                          <div className="absolute right-3 top-3">
+                            <Lock className="h-4 w-4 text-muted-foreground" />
+                          </div>
+                        )}
+                        <span className="text-2xl">{d.icon}</span>
+                        <div>
+                          <div className="text-sm font-bold text-card-foreground">{d.name}</div>
+                          <div className="text-xs text-muted-foreground">
+                            Ages {d.age_band}
+                            {isLocked && <span className="ml-1 text-caution">• Full Access</span>}
+                          </div>
+                        </div>
+                      </button>
+                    );
+                  })}
                 </div>
-              </button>
-              {decks.map(d => {
-                const isLocked = !d.is_free;
-                return (
-                  <button
-                    key={d.id}
-                    onClick={() => toggleSetupDeck(d.id)}
-                    disabled={isLocked}
-                    className={`relative flex items-center gap-3 rounded-2xl border-2 p-4 text-left transition-all ${
-                      isLocked
-                        ? 'cursor-not-allowed border-border bg-muted/50 opacity-60'
-                        : setupDecks.includes(d.id)
-                        ? 'border-primary bg-primary/5 shadow-sm'
-                        : 'border-border bg-card hover:border-primary/40'
-                    }`}
-                  >
-                    {isLocked && (
-                      <div className="absolute right-3 top-3">
-                        <Lock className="h-4 w-4 text-muted-foreground" />
-                      </div>
-                    )}
-                    <span className="text-3xl">{d.icon}</span>
-                    <div>
-                      <div className="font-bold text-card-foreground">{d.name}</div>
-                      <div className="text-xs text-muted-foreground">
-                        Ages {d.age_band}
-                        {isLocked && <span className="ml-1 text-caution">• Full Access</span>}
-                      </div>
-                    </div>
-                  </button>
-                );
-              })}
-            </div>
-          </section>
-
-          <Button
-            size="lg"
-            onClick={handleManualStart}
-            disabled={setupDecks.length === 0}
-            className="w-full gap-2 text-lg font-bold cta-glow bg-secondary text-secondary-foreground hover:bg-secondary/90 active:animate-btn-press transition-all duration-200 hover:scale-[1.02]"
-          >
-            Start Session ({setupDecks.length} deck{setupDecks.length !== 1 ? 's' : ''})
-          </Button>
+                <Button
+                  size="lg"
+                  onClick={handleManualStart}
+                  disabled={setupDecks.length === 0}
+                  className="w-full gap-2 text-lg font-bold cta-glow bg-secondary text-secondary-foreground hover:bg-secondary/90 active:animate-btn-press transition-all duration-200 hover:scale-[1.02]"
+                >
+                  🚀 Start Session
+                </Button>
+              </motion.div>
+            )}
+          </AnimatePresence>
         </div>
       </div>
     );
@@ -401,6 +430,7 @@ const PlaySession = () => {
     const level = getCurrentLevel(playerProgress.totalXP);
     return (
       <div className="min-h-screen bg-background p-4">
+        <Confetti active={showConfetti} />
         <div className="mx-auto max-w-lg space-y-6 pt-8">
           <motion.div initial={{ scale: 0 }} animate={{ scale: 1 }} transition={{ type: 'spring', bounce: 0.5 }} className="text-center">
             <div className="mx-auto mb-4 flex h-20 w-20 items-center justify-center rounded-full bg-safe text-4xl text-primary-foreground">
@@ -529,6 +559,7 @@ const PlaySession = () => {
   // ── Active play ──
   return (
     <div className="min-h-screen bg-background">
+      <Confetti active={showConfetti} />
       {/* Header */}
       <div className="hero-gradient px-4 py-4 text-primary-foreground">
         <div className="mx-auto flex max-w-2xl items-center justify-between">
@@ -557,19 +588,18 @@ const PlaySession = () => {
         </div>
         {/* Progress bar */}
         <div className="mx-auto mt-3 max-w-2xl">
-          <div className="h-2 rounded-full bg-primary-foreground/20">
+          <div className="h-3 rounded-full bg-primary-foreground/20 overflow-hidden">
             <motion.div
-              className="h-2 rounded-full bg-primary-foreground"
+              className="h-3 rounded-full bg-primary-foreground"
               initial={{ width: 0 }}
               animate={{ width: `${((index + 1) / sessionCards.length) * 100}%` }}
             />
           </div>
           {activeMode === 'quiz' && (
-            <div className="mt-2 flex justify-center gap-4 text-xs font-bold text-primary-foreground/80">
-              <span>✅ {score}</span>
-              <span>✨ {bonusPoints}</span>
-              <span>⚠️ -{demerits}</span>
-              <span className="text-primary-foreground">= {score + bonusPoints - demerits} pts</span>
+            <div className="mt-2 flex justify-center">
+              <span className="rounded-full bg-primary-foreground/20 px-3 py-1 text-sm font-black text-primary-foreground">
+                ⭐ {score + bonusPoints - demerits} pts
+              </span>
             </div>
           )}
           {/* Streak counter */}
@@ -617,32 +647,54 @@ const PlaySession = () => {
             <div className="space-y-2">
               {card.options.map(opt => {
                 const isSelected = selectedOption === opt.label;
-                const isCorrect = showGuidance && card.correct_option === opt.label;
+                const hasSelected = selectedOption !== null && selectedOption !== NONE_LABEL;
+                const isQuiz = activeMode === 'quiz';
+                // Immediate feedback in quiz mode
+                const selectedCorrect = isQuiz && isSelected && card.correct_option === opt.label;
+                const selectedWrong = isQuiz && isSelected && card.correct_option !== opt.label;
+                const revealCorrect = isQuiz && hasSelected && card.correct_option === opt.label && !isSelected;
+                // Guidance-only reveals
                 const isWorst = showGuidance && card.worst_option === opt.label;
-                const isWrong = showGuidance && isSelected && card.correct_option !== opt.label && !isWorst;
                 return (
-                  <button
+                  <motion.button
                     key={opt.label}
                     onClick={() => handleSelectOption(opt.label)}
-                    disabled={showGuidance}
-                    className={`w-full rounded-xl border p-4 text-left transition-all ${
-                      isCorrect ? 'border-safe bg-safe/10' :
-                      isWorst ? 'border-destructive bg-destructive/10 ring-2 ring-destructive/30' :
-                      isWrong ? 'border-destructive bg-destructive/5' :
+                    disabled={selectedOption !== null}
+                    animate={
+                      selectedCorrect ? { scale: [1, 1.03, 1] } :
+                      selectedWrong ? { x: [0, -6, 6, -4, 4, 0] } :
+                      {}
+                    }
+                    transition={{ duration: 0.4 }}
+                    className={`w-full rounded-xl border-2 p-4 text-left transition-all ${
+                      selectedCorrect ? 'border-safe bg-safe/15 ring-2 ring-safe/40' :
+                      selectedWrong ? 'border-destructive bg-destructive/10 ring-2 ring-destructive/30' :
+                      revealCorrect ? 'border-safe/50 bg-safe/5' :
+                      isWorst ? 'border-destructive bg-destructive/10' :
                       isSelected ? 'border-primary bg-primary/5' :
-                      'card-edge-lit bg-card hover:border-gold/30'
+                      'border-border card-edge-lit bg-card hover:border-gold/30'
                     }`}
                   >
-                    <span className="mr-2 inline-flex h-7 w-7 items-center justify-center rounded-full bg-muted text-sm font-bold text-muted-foreground">
-                      {opt.label}
+                    <span className={`mr-2 inline-flex h-7 w-7 items-center justify-center rounded-full text-sm font-bold ${
+                      selectedCorrect ? 'bg-safe text-white' :
+                      selectedWrong ? 'bg-destructive text-white' :
+                      revealCorrect ? 'bg-safe/20 text-safe' :
+                      'bg-muted text-muted-foreground'
+                    }`}>
+                      {selectedCorrect ? '✓' : selectedWrong ? '✗' : opt.label}
                     </span>
                     <span className="font-semibold text-card-foreground">{opt.text}</span>
-                    {isWorst && (
-                      <span className="ml-2 inline-flex items-center gap-1 rounded-full bg-destructive/20 px-2 py-0.5 text-xs font-bold text-destructive">
-                        ⚠️ Worst choice
+                    {selectedCorrect && (
+                      <span className="ml-2 inline-flex items-center gap-1 rounded-full bg-safe/20 px-2 py-0.5 text-xs font-bold text-safe">
+                        ✅ Correct!
                       </span>
                     )}
-                  </button>
+                    {selectedWrong && (
+                      <span className="ml-2 inline-flex items-center gap-1 rounded-full bg-destructive/20 px-2 py-0.5 text-xs font-bold text-destructive">
+                        {isWorst ? '⚠️ Worst choice' : '❌ Not quite'}
+                      </span>
+                    )}
+                  </motion.button>
                 );
               })}
               {/* Critical thinking option */}
@@ -749,13 +801,10 @@ const PlaySession = () => {
                       <p className="mt-2 text-sm italic text-muted-foreground">Your answer: "{customAnswer}"</p>
                     </motion.div>
                   )}
-                  <div className="rounded-2xl border border-safe/30 bg-safe/5 p-5">
-                    <p className="mb-1 text-sm font-bold text-safe">✅ Best Next Step</p>
+                  <div className="rounded-2xl border border-safe/30 bg-safe/5 p-5 space-y-3">
+                    <p className="text-sm font-bold text-safe">✅ Best Next Step</p>
                     <p className="text-sm text-card-foreground">{card.guidance_text}</p>
-                  </div>
-                  <div className="rounded-2xl border bg-card p-5">
-                    <p className="mb-1 text-sm font-bold text-primary">💡 Why This Helps</p>
-                    <p className="text-sm text-card-foreground">{card.why_text}</p>
+                    <p className="text-sm text-card-foreground opacity-80">💡 {card.why_text}</p>
                   </div>
                   <div className="rounded-2xl border border-accent/50 bg-accent/10 p-5">
                     <p className="mb-1 text-sm font-bold text-accent-foreground">🗣️ Practice Phrase</p>
@@ -784,35 +833,33 @@ const PlaySession = () => {
                       </li>
                     </ul>
                   </div>
-                  <div className="rounded-2xl border border-help/30 bg-help/5 p-5">
-                    <p className="mb-1 text-sm font-bold text-help">🤝 Ask an Adult</p>
-                    <p className="text-sm text-card-foreground">{card.help_prompt}</p>
-                  </div>
                 </motion.div>
               )}
             </AnimatePresence>
 
             {/* Actions */}
-            <div className="flex flex-wrap gap-2">
+            <div className="flex items-center gap-2">
               <Button
-                variant={discussed.has(card.id) ? 'default' : 'outline'}
-                size="sm"
+                variant="ghost"
+                size="icon"
                 onClick={toggleDiscussed}
-                className="gap-1.5"
+                className={`h-8 w-8 ${discussed.has(card.id) ? 'text-safe' : 'text-muted-foreground'}`}
+                title={discussed.has(card.id) ? 'Discussed' : 'Mark as discussed'}
               >
-                <CheckCircle2 className="h-4 w-4" /> {discussed.has(card.id) ? 'Discussed ✓' : 'Mark Discussed'}
+                <CheckCircle2 className="h-4 w-4" />
               </Button>
               <Button
-                variant={flagged.has(card.id) ? 'destructive' : 'outline'}
-                size="sm"
+                variant="ghost"
+                size="icon"
                 onClick={toggleFlagged}
-                className="gap-1.5"
+                className={`h-8 w-8 ${flagged.has(card.id) ? 'text-destructive' : 'text-muted-foreground'}`}
+                title={flagged.has(card.id) ? 'Flagged' : 'Flag for review'}
               >
-                <Flag className="h-4 w-4" /> {flagged.has(card.id) ? 'Flagged' : 'Flag for Review'}
+                <Flag className="h-4 w-4" />
               </Button>
               <div className="flex-1" />
-              <Button onClick={handleNext} className="gap-1.5 font-bold">
-                {index + 1 >= sessionCards.length ? 'Finish' : 'Next Card'} <ChevronRight className="h-4 w-4" />
+              <Button onClick={handleNext} size="lg" className="gap-1.5 font-bold px-6">
+                {index + 1 >= sessionCards.length ? '🎉 Finish' : 'Next Card'} <ChevronRight className="h-4 w-4" />
               </Button>
             </div>
           </motion.div>
