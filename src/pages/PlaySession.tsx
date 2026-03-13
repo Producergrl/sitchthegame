@@ -54,6 +54,7 @@ const PlaySession = () => {
   const [setupMode, setSetupMode] = useState<PlayStyle>(parsed.mode);
   const [setupDecks, setSetupDecks] = useState<string[]>(parsed.deckIds);
   const [manualStarted, setManualStarted] = useState(false);
+  const [setupStep, setSetupStep] = useState(1); // 1=Age, 2=Mode, 3=Deck
 
   const isPlaying = autoStart || manualStarted;
 
