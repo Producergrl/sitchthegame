@@ -160,6 +160,8 @@ const PlaySession = () => {
       const isWorst = card?.worst_option === label;
       if (isCorrect) {
         setScore(s => s + 1);
+        setShowConfetti(true);
+        setTimeout(() => setShowConfetti(false), 2500);
         setMissionXPEarned(prev => prev + XP_CORRECT);
         setStreak(prev => {
           const next = prev + 1;
