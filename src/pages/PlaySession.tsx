@@ -558,6 +558,7 @@ const PlaySession = () => {
   // ── Active play ──
   return (
     <div className="min-h-screen bg-background">
+      <Confetti active={showConfetti} />
       {/* Header */}
       <div className="hero-gradient px-4 py-4 text-primary-foreground">
         <div className="mx-auto flex max-w-2xl items-center justify-between">
