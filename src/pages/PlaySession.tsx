@@ -265,121 +265,144 @@ const PlaySession = () => {
         <div className="hero-gradient px-4 py-6 text-primary-foreground">
           <div className="mx-auto flex max-w-2xl items-center justify-between">
             <div className="flex items-center gap-3">
-              <Link to="/">
-                <Button variant="ghost" size="icon" className="text-primary-foreground hover:bg-white/10 active:animate-btn-press">
+              {setupStep === 1 ? (
+                <Link to="/">
+                  <Button variant="ghost" size="icon" className="text-primary-foreground hover:bg-white/10 active:animate-btn-press">
+                    <ArrowLeft className="h-5 w-5" />
+                  </Button>
+                </Link>
+              ) : (
+                <Button variant="ghost" size="icon" onClick={() => setSetupStep(s => s - 1)} className="text-primary-foreground hover:bg-white/10 active:animate-btn-press">
                   <ArrowLeft className="h-5 w-5" />
                 </Button>
-              </Link>
-              <h1 className="text-2xl font-black">Start a Session</h1>
+              )}
+              <h1 className="text-2xl font-black">
+                {setupStep === 1 ? 'How old is the player?' : setupStep === 2 ? 'Pick a play style' : 'Choose your deck'}
+              </h1>
             </div>
-            <ThemeToggle className="text-primary-foreground hover:bg-white/10" />
+            <span className="rounded-full bg-primary-foreground/20 px-3 py-1 text-sm font-bold">
+              {setupStep} / 3
+            </span>
+          </div>
+          {/* Step progress */}
+          <div className="mx-auto mt-3 max-w-2xl">
+            <div className="flex gap-2">
+              {[1, 2, 3].map(s => (
+                <div key={s} className={`h-1.5 flex-1 rounded-full transition-all ${s <= setupStep ? 'bg-primary-foreground' : 'bg-primary-foreground/20'}`} />
+              ))}
+            </div>
           </div>
         </div>
 
-        <div className="mx-auto max-w-2xl space-y-8 px-4 py-8">
-          {/* Age Band */}
-          <section>
-            <h2 className="mb-3 text-lg font-bold">Age Group</h2>
-            <div className="flex flex-wrap gap-2">
-              {ageBands.map(ab => (
-                <button
-                  key={ab.value}
-                  onClick={() => setSetupAgeBand(ab.value)}
-                  className={`rounded-xl border-2 px-5 py-3 text-sm font-bold transition-all ${
-                    setupAgeBand === ab.value
-                      ? 'border-primary bg-primary text-primary-foreground'
-                      : 'border-border bg-card text-card-foreground hover:border-primary/40'
-                  }`}
-                >
-                  {ab.label}
-                </button>
-              ))}
-            </div>
-          </section>
+        <div className="mx-auto max-w-2xl px-4 py-8">
+          <AnimatePresence mode="wait">
+            {/* Step 1: Age */}
+            {setupStep === 1 && (
+              <motion.div key="age" initial={{ opacity: 0, x: 40 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -40 }} className="space-y-4">
+                <div className="grid grid-cols-2 gap-3">
+                  {ageBands.map(ab => (
+                    <button
+                      key={ab.value}
+                      onClick={() => { setSetupAgeBand(ab.value); setSetupStep(2); }}
+                      className={`rounded-2xl border-2 p-5 text-center font-bold transition-all text-lg ${
+                        setupAgeBand === ab.value
+                          ? 'border-primary bg-primary text-primary-foreground'
+                          : 'border-border bg-card text-card-foreground hover:border-primary/40'
+                      }`}
+                    >
+                      {ab.label}
+                    </button>
+                  ))}
+                </div>
+              </motion.div>
+            )}
 
-          {/* Play Style */}
-          <section>
-            <h2 className="mb-3 text-lg font-bold">Play Style</h2>
-            <div className="grid gap-3 sm:grid-cols-3">
-              {playStyles.map(ps => (
+            {/* Step 2: Play Style */}
+            {setupStep === 2 && (
+              <motion.div key="mode" initial={{ opacity: 0, x: 40 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -40 }} className="space-y-4">
+                <div className="grid gap-3">
+                  {playStyles.map(ps => (
+                    <button
+                      key={ps.value}
+                      onClick={() => { setSetupMode(ps.value); setSetupStep(3); }}
+                      className={`flex items-center gap-4 rounded-2xl border-2 p-5 text-left transition-all ${
+                        setupMode === ps.value
+                          ? 'border-primary bg-primary/5 shadow-sm'
+                          : 'border-border bg-card hover:border-primary/40'
+                      }`}
+                    >
+                      <span className="text-4xl">{ps.icon}</span>
+                      <div>
+                        <div className="text-lg font-bold text-card-foreground">{ps.label}</div>
+                        <div className="text-sm text-muted-foreground">{ps.desc}</div>
+                      </div>
+                    </button>
+                  ))}
+                </div>
+              </motion.div>
+            )}
+
+            {/* Step 3: Deck Selection */}
+            {setupStep === 3 && (
+              <motion.div key="decks" initial={{ opacity: 0, x: 40 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -40 }} className="space-y-4">
                 <button
-                  key={ps.value}
-                  onClick={() => setSetupMode(ps.value)}
-                  className={`rounded-2xl border-2 p-4 text-left transition-all ${
-                    setupMode === ps.value
+                  onClick={() => toggleSetupDeck(COMPILATION_DECK_ID)}
+                  className={`relative w-full flex items-center gap-3 rounded-2xl border-2 p-5 text-left transition-all ${
+                    setupDecks.includes(COMPILATION_DECK_ID)
                       ? 'border-primary bg-primary/5 shadow-sm'
                       : 'border-border bg-card hover:border-primary/40'
                   }`}
                 >
-                  <div className="mb-1 text-2xl">{ps.icon}</div>
-                  <div className="font-bold text-card-foreground">{ps.label}</div>
-                  <div className="text-xs text-muted-foreground">{ps.desc}</div>
+                  <span className="text-3xl">🎲</span>
+                  <div>
+                    <div className="font-bold text-card-foreground">Compilation Mix</div>
+                    <div className="text-xs text-muted-foreground">Random missions from every deck — a surprise each time!</div>
+                  </div>
                 </button>
-              ))}
-            </div>
-          </section>
-
-          {/* Deck Selection */}
-          <section>
-            <h2 className="mb-3 text-lg font-bold">Choose Decks</h2>
-            <div className="grid gap-3 sm:grid-cols-2">
-              {/* Compilation option */}
-              <button
-                onClick={() => toggleSetupDeck(COMPILATION_DECK_ID)}
-                className={`relative flex items-center gap-3 rounded-2xl border-2 p-4 text-left transition-all sm:col-span-2 ${
-                  setupDecks.includes(COMPILATION_DECK_ID)
-                    ? 'border-primary bg-primary/5 shadow-sm'
-                    : 'border-border bg-card hover:border-primary/40'
-                }`}
-              >
-                <span className="text-3xl">🎲</span>
-                <div>
-                  <div className="font-bold text-card-foreground">Compilation Mix</div>
-                  <div className="text-xs text-muted-foreground">Random missions from every deck — a surprise each time!</div>
+                <div className="grid gap-3 grid-cols-2">
+                  {decks.map(d => {
+                    const isLocked = !d.is_free;
+                    return (
+                      <button
+                        key={d.id}
+                        onClick={() => toggleSetupDeck(d.id)}
+                        disabled={isLocked}
+                        className={`relative flex items-center gap-3 rounded-2xl border-2 p-4 text-left transition-all ${
+                          isLocked
+                            ? 'cursor-not-allowed border-border bg-muted/50 opacity-60'
+                            : setupDecks.includes(d.id)
+                            ? 'border-primary bg-primary/5 shadow-sm'
+                            : 'border-border bg-card hover:border-primary/40'
+                        }`}
+                      >
+                        {isLocked && (
+                          <div className="absolute right-3 top-3">
+                            <Lock className="h-4 w-4 text-muted-foreground" />
+                          </div>
+                        )}
+                        <span className="text-2xl">{d.icon}</span>
+                        <div>
+                          <div className="text-sm font-bold text-card-foreground">{d.name}</div>
+                          <div className="text-xs text-muted-foreground">
+                            Ages {d.age_band}
+                            {isLocked && <span className="ml-1 text-caution">• Full Access</span>}
+                          </div>
+                        </div>
+                      </button>
+                    );
+                  })}
                 </div>
-              </button>
-              {decks.map(d => {
-                const isLocked = !d.is_free;
-                return (
-                  <button
-                    key={d.id}
-                    onClick={() => toggleSetupDeck(d.id)}
-                    disabled={isLocked}
-                    className={`relative flex items-center gap-3 rounded-2xl border-2 p-4 text-left transition-all ${
-                      isLocked
-                        ? 'cursor-not-allowed border-border bg-muted/50 opacity-60'
-                        : setupDecks.includes(d.id)
-                        ? 'border-primary bg-primary/5 shadow-sm'
-                        : 'border-border bg-card hover:border-primary/40'
-                    }`}
-                  >
-                    {isLocked && (
-                      <div className="absolute right-3 top-3">
-                        <Lock className="h-4 w-4 text-muted-foreground" />
-                      </div>
-                    )}
-                    <span className="text-3xl">{d.icon}</span>
-                    <div>
-                      <div className="font-bold text-card-foreground">{d.name}</div>
-                      <div className="text-xs text-muted-foreground">
-                        Ages {d.age_band}
-                        {isLocked && <span className="ml-1 text-caution">• Full Access</span>}
-                      </div>
-                    </div>
-                  </button>
-                );
-              })}
-            </div>
-          </section>
-
-          <Button
-            size="lg"
-            onClick={handleManualStart}
-            disabled={setupDecks.length === 0}
-            className="w-full gap-2 text-lg font-bold cta-glow bg-secondary text-secondary-foreground hover:bg-secondary/90 active:animate-btn-press transition-all duration-200 hover:scale-[1.02]"
-          >
-            Start Session ({setupDecks.length} deck{setupDecks.length !== 1 ? 's' : ''})
-          </Button>
+                <Button
+                  size="lg"
+                  onClick={handleManualStart}
+                  disabled={setupDecks.length === 0}
+                  className="w-full gap-2 text-lg font-bold cta-glow bg-secondary text-secondary-foreground hover:bg-secondary/90 active:animate-btn-press transition-all duration-200 hover:scale-[1.02]"
+                >
+                  🚀 Start Session
+                </Button>
+              </motion.div>
+            )}
+          </AnimatePresence>
         </div>
       </div>
     );
