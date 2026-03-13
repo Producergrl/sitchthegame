@@ -141,6 +141,7 @@ const PlaySession = () => {
 
     if (index + 1 >= sessionCards.length) {
       setSessionDone(true);
+      setShowConfetti(true);
     } else {
       setIndex(i => i + 1);
       setShowGuidance(false);
