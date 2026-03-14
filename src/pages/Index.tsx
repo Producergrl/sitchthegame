@@ -136,7 +136,7 @@ const Index = () => {
             initial={{ opacity: 0, y: 30, scale: 0.9 }}
             animate={{ opacity: 1, y: 0, scale: 1 }}
             transition={{ delay: 0.5, duration: 1, ease: [0.22, 1, 0.36, 1] }}
-            className="text-[2.6rem] leading-[1.1] font-black tracking-[-0.02em] md:text-[5rem] uppercase"
+            className="text-[2.4rem] leading-[1.1] font-black tracking-[-0.02em] md:text-[4.5rem] uppercase"
             style={{
               background: 'linear-gradient(170deg, hsl(42 60% 75%) 0%, hsl(42 90% 62%) 30%, hsl(42 100% 50%) 50%, hsl(42 80% 60%) 70%, hsl(42 50% 45%) 100%)',
               WebkitBackgroundClip: 'text',
@@ -147,8 +147,17 @@ const Index = () => {
           >
             What Would
             <br />
-            You Do?
+            You Do
           </motion.h1>
+          <motion.span
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 1.1, duration: 0.6 }}
+            className="mt-2 block text-[0.7rem] font-bold uppercase tracking-[0.35em] md:text-xs"
+            style={{ color: 'hsl(42 70% 60% / 0.7)' }}
+          >
+            Founders Edition
+          </motion.span>
 
           {/* Metallic underline accent */}
           <motion.div
