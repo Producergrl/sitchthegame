@@ -100,6 +100,43 @@ const PlaySession = () => {
   const [newStickersThisSession, setNewStickersThisSession] = useState<StickerDef[]>([]);
   const [showConfetti, setShowConfetti] = useState(false);
 
+  // Speech-to-text state
+  const [isListening, setIsListening] = useState(false);
+  const [speechSupported] = useState(() =>
+    typeof window !== 'undefined' && ('SpeechRecognition' in window || 'webkitSpeechRecognition' in window)
+  );
+
+  const toggleSpeechToText = useCallback(() => {
+    if (!speechSupported) {
+      toast({ title: '🎤 Not supported', description: 'Speech recognition is not available in this browser.' });
+      return;
+    }
+    if (isListening) {
+      setIsListening(false);
+      return;
+    }
+    const SpeechRecognition = (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition;
+    const recognition = new SpeechRecognition();
+    recognition.lang = 'en-US';
+    recognition.interimResults = false;
+    recognition.maxAlternatives = 1;
+    recognition.continuous = false;
+
+    recognition.onstart = () => setIsListening(true);
+    recognition.onend = () => setIsListening(false);
+    recognition.onerror = () => setIsListening(false);
+
+    recognition.onresult = (event: any) => {
+      const transcript = event.results[0][0].transcript;
+      setCustomAnswer(prev => {
+        const combined = prev ? `${prev} ${transcript}` : transcript;
+        return combined.slice(0, 500);
+      });
+    };
+
+    recognition.start();
+  }, [speechSupported, isListening]);
+
   const NONE_LABEL = '✨';
 
   const card = sessionCards[index];
