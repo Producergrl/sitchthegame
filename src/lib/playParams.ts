@@ -26,10 +26,15 @@ export function parsePlayParams(raw: {
 }): ParseResult {
   // Parse decks – match by slug or id
   const rawDecks = (raw.decks || '').split(',').map(s => s.trim()).filter(Boolean);
-  const validDecks = rawDecks
-    .map(slug => decks.find(d => d.slug === slug || d.id === slug))
-    .filter(Boolean)
-    .map(d => d!.id);
+  const validDecks: string[] = [];
+  for (const slug of rawDecks) {
+    if (slug === COMPILATION_DECK_ID) {
+      validDecks.push(COMPILATION_DECK_ID);
+    } else {
+      const found = decks.find(d => d.slug === slug || d.id === slug);
+      if (found) validDecks.push(found.id);
+    }
+  }
 
   // Parse age
   const rawAge = raw.age as AgeBand;
