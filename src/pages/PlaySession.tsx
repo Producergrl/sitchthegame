@@ -558,31 +558,32 @@ const PlaySession = () => {
 
   // ── Active play ──
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen bg-background overflow-x-hidden">
       <Confetti active={showConfetti} />
       {/* Header */}
-      <div className="hero-gradient px-4 py-4 text-primary-foreground">
-        <div className="mx-auto flex max-w-2xl items-center justify-between">
-          <div className="flex items-center gap-2">
-            <Link to="/play">
-              <Button variant="ghost" size="icon" className="text-primary-foreground hover:bg-white/10 active:animate-btn-press">
+      <div className="hero-gradient px-3 py-3 sm:px-4 sm:py-4 text-primary-foreground">
+        <div className="mx-auto flex max-w-2xl items-center justify-between gap-1">
+          <div className="flex items-center gap-1.5 min-w-0">
+            <Link to="/play" aria-label="Back to session setup">
+              <Button variant="ghost" size="icon" className="h-10 w-10 shrink-0 text-primary-foreground hover:bg-white/10 active:animate-btn-press">
                 <ArrowLeft className="h-5 w-5" />
               </Button>
             </Link>
-            <span className="text-sm font-bold opacity-80">{deck?.icon} Mission {index + 1}</span>
+            <span className="text-xs sm:text-sm font-bold opacity-80 truncate">{deck?.icon} Mission {index + 1}</span>
           </div>
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-1 sm:gap-2 shrink-0">
             <ThemeToggle className="text-primary-foreground hover:bg-white/10" />
             <Button
               variant="ghost"
-              size="sm"
+              size="icon"
               onClick={handleShare}
-              className="gap-1.5 text-primary-foreground hover:bg-primary-foreground/10"
+              aria-label="Share session link"
+              className="h-10 w-10 text-primary-foreground hover:bg-primary-foreground/10"
             >
-              <Share2 className="h-4 w-4" /> Share
+              <Share2 className="h-4 w-4" />
             </Button>
-            <span className="rounded-full bg-primary-foreground/20 px-3 py-1 text-sm font-bold">
-              🎯 {index + 1} / {sessionCards.length}
+            <span className="rounded-full bg-primary-foreground/20 px-2.5 py-1 text-xs sm:text-sm font-bold whitespace-nowrap">
+              {index + 1}/{sessionCards.length}
             </span>
           </div>
         </div>
@@ -739,7 +740,8 @@ const PlaySession = () => {
                         <p className="text-sm font-bold text-card-foreground">💭 Share your answer:</p>
                         <textarea
                           value={customAnswer}
-                          onChange={e => setCustomAnswer(e.target.value)}
+                          onChange={e => setCustomAnswer(e.target.value.slice(0, 500))}
+                          maxLength={500}
                           placeholder="What would YOU do in this situation? (at least 10 characters)"
                           className="w-full rounded-lg border border-border bg-background p-3 text-sm text-foreground placeholder:text-muted-foreground focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary min-h-[80px] resize-none"
                         />
@@ -850,19 +852,19 @@ const PlaySession = () => {
                 variant="ghost"
                 size="icon"
                 onClick={toggleDiscussed}
-                className={`h-8 w-8 ${discussed.has(card.id) ? 'text-safe' : 'text-muted-foreground'}`}
-                title={discussed.has(card.id) ? 'Discussed' : 'Mark as discussed'}
+                aria-label={discussed.has(card.id) ? 'Discussed' : 'Mark as discussed'}
+                className={`h-11 w-11 ${discussed.has(card.id) ? 'text-safe' : 'text-muted-foreground'}`}
               >
-                <CheckCircle2 className="h-4 w-4" />
+                <CheckCircle2 className="h-5 w-5" />
               </Button>
               <Button
                 variant="ghost"
                 size="icon"
                 onClick={toggleFlagged}
-                className={`h-8 w-8 ${flagged.has(card.id) ? 'text-destructive' : 'text-muted-foreground'}`}
-                title={flagged.has(card.id) ? 'Flagged' : 'Flag for review'}
+                aria-label={flagged.has(card.id) ? 'Flagged' : 'Flag for review'}
+                className={`h-11 w-11 ${flagged.has(card.id) ? 'text-destructive' : 'text-muted-foreground'}`}
               >
-                <Flag className="h-4 w-4" />
+                <Flag className="h-5 w-5" />
               </Button>
               <div className="flex-1" />
               <Button onClick={handleNext} size="lg" className="gap-1.5 font-bold px-6">
