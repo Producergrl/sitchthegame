@@ -101,12 +101,12 @@ const normalize = (s: string) =>
   s.replace(/[\u201C\u201D]/g, '"').replace(/[\u2019]/g, "'").replace(/\s*What would you do\?\s*$/i, '').trim();
 
 const makeTitle = (scenario: string) => {
-  // Use full scenario as title, but cap at a reasonable length
+  // Short punchy title: first clause/sentence, max ~50 chars
   const clean = scenario.replace(/[".]/g, '').trim();
-  if (clean.length <= 80) return clean;
-  // Try to cut at a word boundary near 80 chars
-  const truncated = clean.slice(0, 80).replace(/\s+\S*$/, '');
-  return truncated + '…';
+  // Split on sentence-ending punctuation or common clause breaks
+  const first = clean.split(/[.!?–—]/)[0].trim();
+  const short = first.length <= 50 ? first : first.slice(0, 50).replace(/\s+\S*$/, '') + '…';
+  return short;
 };
 
 const tagsFor = (s0: string) => {
