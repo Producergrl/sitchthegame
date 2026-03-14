@@ -44,36 +44,6 @@ const navItems = [
   { title: 'Safety Hub', desc: 'Help & resources', to: '/resources', emoji: '💙' },
 ];
 
-/* ── title letter animation ── */
-const titleLine = {
-  hidden: {},
-  visible: { transition: { staggerChildren: 0.04 } },
-};
-const titleChar = {
-  hidden: { opacity: 0, y: 40, rotateX: -90 },
-  visible: {
-    opacity: 1, y: 0, rotateX: 0,
-    transition: { type: 'spring' as const, damping: 15, stiffness: 120 },
-  },
-};
-
-const TitleLine = ({ text, className, delay = 0 }: { text: string; className?: string; delay?: number }) => (
-  <motion.span
-    className={`block ${className}`}
-    variants={titleLine}
-    initial="hidden"
-    animate="visible"
-    transition={{ delayChildren: delay }}
-    aria-label={text}
-  >
-    {text.split('').map((ch, i) => (
-      <motion.span key={i} variants={titleChar} className="inline-block" style={{ whiteSpace: ch === ' ' ? 'pre' : undefined }}>
-        {ch === ' ' ? '\u00A0' : ch}
-      </motion.span>
-    ))}
-  </motion.span>
-);
-
 /* ── main ── */
 const Index = () => {
   const [progress, setProgress] = useState<PlayerProgress>(loadProgress);
