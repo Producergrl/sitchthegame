@@ -636,8 +636,15 @@ const PlaySession = () => {
                 </span>
                 <span className="text-xs text-muted-foreground">{deck?.name}</span>
               </div>
-              <h2 className="mb-3 text-xl font-black text-card-foreground">{card.title}</h2>
-              <p className="text-base leading-relaxed text-card-foreground">{card.scenario}</p>
+              {/* Only show title as heading if it differs meaningfully from the scenario */}
+              {card.scenario.toLowerCase().startsWith(card.title.toLowerCase().replace(/…$/, '')) ? (
+                <h2 className="mb-3 text-xl font-black text-card-foreground">{card.scenario}</h2>
+              ) : (
+                <>
+                  <h2 className="mb-3 text-xl font-black text-card-foreground">{card.title}</h2>
+                  <p className="text-base leading-relaxed text-card-foreground">{card.scenario}</p>
+                </>
+              )}
               <Button variant="ghost" size="sm" onClick={handleReadAloud} className="mt-3 gap-1.5 text-primary">
                 <Volume2 className="h-4 w-4" /> Read Aloud
               </Button>
