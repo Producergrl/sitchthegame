@@ -3,14 +3,16 @@
  * Persisted to localStorage under key "wwyd-stickers".
  */
 
+import { safeGetItem, safeSetItem, safeRemoveItem } from './safeStorage';
+
 export interface Sticker {
   id: string;
   name: string;
   emoji: string;
   description: string;
-  color: string; // tailwind bg class token
+  color: string;
   unlockType: 'missions' | 'streak' | 'level' | 'special';
-  unlockValue: number; // missions completed, streak count, or level number
+  unlockValue: number;
 }
 
 export const STICKERS: Sticker[] = [
@@ -43,23 +45,26 @@ export interface StickerProgress {
   bestStreak: number;
 }
 
+const DEFAULT_STICKER_PROGRESS: StickerProgress = { earnedIds: [], bestStreak: 0 };
+
 export function loadStickerProgress(): StickerProgress {
-  try {
-    const raw = localStorage.getItem(STORAGE_KEY);
-    if (raw) return JSON.parse(raw);
-  } catch { /* ignore */ }
-  return { earnedIds: [], bestStreak: 0 };
+  const raw = safeGetItem(STORAGE_KEY);
+  if (raw) {
+    try {
+      return JSON.parse(raw);
+    } catch { /* corrupted data */ }
+  }
+  return { ...DEFAULT_STICKER_PROGRESS };
 }
 
 export function saveStickerProgress(p: StickerProgress) {
-  localStorage.setItem(STORAGE_KEY, JSON.stringify(p));
+  safeSetItem(STORAGE_KEY, JSON.stringify(p));
 }
 
 export function resetStickerProgress() {
-  localStorage.removeItem(STORAGE_KEY);
+  safeRemoveItem(STORAGE_KEY);
 }
 
-/** Check for newly earned stickers and return them */
 export function checkNewStickers(
   progress: StickerProgress,
   missionsCompleted: number,
@@ -90,7 +95,6 @@ export function checkNewStickers(
   return newStickers;
 }
 
-/** Award stickers and save */
 export function awardStickers(
   progress: StickerProgress,
   newStickers: Sticker[],

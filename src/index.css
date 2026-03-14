@@ -113,6 +113,16 @@
     font-family: 'Nunito', system-ui, -apple-system, sans-serif;
     font-weight: 800;
   }
+
+  /* Ensure focus-visible rings on all interactive elements */
+  button:focus-visible,
+  a:focus-visible,
+  input:focus-visible,
+  textarea:focus-visible,
+  select:focus-visible,
+  [role="button"]:focus-visible {
+    @apply outline-none ring-2 ring-ring ring-offset-2 ring-offset-background;
+  }
 }
 
 @layer utilities {
@@ -186,6 +196,11 @@
     background: radial-gradient(ellipse at center, transparent 50%, hsl(0 0% 0% / 0.45) 100%);
     z-index: 1;
   }
+
+  /* Prevent unintentional horizontal scroll */
+  .overflow-x-clip {
+    overflow-x: clip;
+  }
 }
 
 @keyframes grain-shift {
@@ -205,5 +220,3 @@
   0% { transform: translateX(-100%) rotate(0deg); }
   100% { transform: translateX(100%) rotate(0deg); }
 }
-
-@import url('https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&display=swap');

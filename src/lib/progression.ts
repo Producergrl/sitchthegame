@@ -3,25 +3,27 @@
  * Persisted to localStorage under key "wwyd-progression".
  */
 
+import { safeGetItem, safeSetItem, safeRemoveItem } from './safeStorage';
+
 export interface Badge {
   id: string;
   name: string;
   icon: string;
   description: string;
-  missionsRequired: number; // cumulative missions to unlock
+  missionsRequired: number;
 }
 
 export interface PlayerLevel {
   level: number;
   title: string;
   icon: string;
-  xpRequired: number; // XP to reach this level
+  xpRequired: number;
 }
 
 export interface PlayerProgress {
   totalXP: number;
   missionsCompleted: number;
-  badgesEarned: string[]; // badge ids
+  badgesEarned: string[];
   completedCardIds: string[];
 }
 
@@ -48,28 +50,32 @@ export const BADGES: Badge[] = [
 // ── XP Awards ──
 
 export const XP_CORRECT = 10;
-export const XP_BONUS = 15; // critical-thinking answer
+export const XP_BONUS = 15;
 export const XP_DEMERIT = -5;
-export const XP_MISSION_COMPLETE = 5; // just for finishing a card
+export const XP_MISSION_COMPLETE = 5;
 
 // ── Helpers ──
 
 const STORAGE_KEY = 'wwyd-progression';
 
+const DEFAULT_PROGRESS: PlayerProgress = { totalXP: 0, missionsCompleted: 0, badgesEarned: [], completedCardIds: [] };
+
 export function loadProgress(): PlayerProgress {
-  try {
-    const raw = localStorage.getItem(STORAGE_KEY);
-    if (raw) return JSON.parse(raw);
-  } catch { /* ignore */ }
-  return { totalXP: 0, missionsCompleted: 0, badgesEarned: [], completedCardIds: [] };
+  const raw = safeGetItem(STORAGE_KEY);
+  if (raw) {
+    try {
+      return JSON.parse(raw);
+    } catch { /* corrupted data */ }
+  }
+  return { ...DEFAULT_PROGRESS };
 }
 
 export function saveProgress(p: PlayerProgress) {
-  localStorage.setItem(STORAGE_KEY, JSON.stringify(p));
+  safeSetItem(STORAGE_KEY, JSON.stringify(p));
 }
 
 export function resetProgress() {
-  localStorage.removeItem(STORAGE_KEY);
+  safeRemoveItem(STORAGE_KEY);
 }
 
 export function getCurrentLevel(xp: number): PlayerLevel {
@@ -99,7 +105,6 @@ export function getNewBadges(missions: number, alreadyEarned: string[]): Badge[]
   return BADGES.filter(b => missions >= b.missionsRequired && !alreadyEarned.includes(b.id));
 }
 
-/** Award XP + missions for finishing a card and return updated progress + any new badges/level-ups */
 export function completeMission(
   progress: PlayerProgress,
   cardId: string,
