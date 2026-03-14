@@ -1,7 +1,7 @@
 import { useState, useMemo, useCallback, useEffect } from 'react';
 import { Link, useSearchParams, useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
-import { ArrowLeft, ChevronRight, Volume2, Eye, CheckCircle2, Flag, RotateCcw, Share2, Lock } from 'lucide-react';
+import { ArrowLeft, ChevronRight, Volume2, Eye, CheckCircle2, Flag, RotateCcw, Share2, Lock, Mic, MicOff } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { cards as allCards, decks, COMPILATION_DECK_ID, getCompilationCards } from '@/data/seedData';
 import type { AgeBand, PlayStyle } from '@/types/game';
@@ -99,6 +99,43 @@ const PlaySession = () => {
   const [stickerProgress, setStickerProgress] = useState<StickerProgress>(loadStickerProgress);
   const [newStickersThisSession, setNewStickersThisSession] = useState<StickerDef[]>([]);
   const [showConfetti, setShowConfetti] = useState(false);
+
+  // Speech-to-text state
+  const [isListening, setIsListening] = useState(false);
+  const [speechSupported] = useState(() =>
+    typeof window !== 'undefined' && ('SpeechRecognition' in window || 'webkitSpeechRecognition' in window)
+  );
+
+  const toggleSpeechToText = useCallback(() => {
+    if (!speechSupported) {
+      toast({ title: '🎤 Not supported', description: 'Speech recognition is not available in this browser.' });
+      return;
+    }
+    if (isListening) {
+      setIsListening(false);
+      return;
+    }
+    const SpeechRecognition = (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition;
+    const recognition = new SpeechRecognition();
+    recognition.lang = 'en-US';
+    recognition.interimResults = false;
+    recognition.maxAlternatives = 1;
+    recognition.continuous = false;
+
+    recognition.onstart = () => setIsListening(true);
+    recognition.onend = () => setIsListening(false);
+    recognition.onerror = () => setIsListening(false);
+
+    recognition.onresult = (event: any) => {
+      const transcript = event.results[0][0].transcript;
+      setCustomAnswer(prev => {
+        const combined = prev ? `${prev} ${transcript}` : transcript;
+        return combined.slice(0, 500);
+      });
+    };
+
+    recognition.start();
+  }, [speechSupported, isListening]);
 
   const NONE_LABEL = '✨';
 
@@ -741,13 +778,29 @@ const PlaySession = () => {
                         className="rounded-xl border border-primary/30 bg-card p-4 space-y-3"
                       >
                         <p className="text-sm font-bold text-card-foreground">💭 Share your answer:</p>
-                        <textarea
-                          value={customAnswer}
-                          onChange={e => setCustomAnswer(e.target.value.slice(0, 500))}
-                          maxLength={500}
-                          placeholder="What would YOU do in this situation? (at least 10 characters)"
-                          className="w-full rounded-lg border border-border bg-background p-3 text-sm text-foreground placeholder:text-muted-foreground focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary min-h-[80px] resize-none"
-                        />
+                        <div className="relative">
+                          <textarea
+                            value={customAnswer}
+                            onChange={e => setCustomAnswer(e.target.value.slice(0, 500))}
+                            maxLength={500}
+                            placeholder={speechSupported ? "Type or tap 🎤 to speak your answer (at least 10 characters)" : "What would YOU do in this situation? (at least 10 characters)"}
+                            className="w-full rounded-lg border border-border bg-background p-3 pr-12 text-sm text-foreground placeholder:text-muted-foreground focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary min-h-[80px] resize-none"
+                          />
+                          {speechSupported && !customAnswerSubmitted && (
+                            <button
+                              type="button"
+                              onClick={toggleSpeechToText}
+                              aria-label={isListening ? 'Stop recording' : 'Speak your answer'}
+                              className={`absolute right-2 top-2 rounded-full p-2 transition-all ${
+                                isListening
+                                  ? 'bg-destructive text-destructive-foreground animate-pulse'
+                                  : 'bg-primary/10 text-primary hover:bg-primary/20'
+                              }`}
+                            >
+                              {isListening ? <MicOff className="h-4 w-4" /> : <Mic className="h-4 w-4" />}
+                            </button>
+                          )}
+                        </div>
                         <div className="flex items-center justify-between">
                           <span className={`text-xs ${customAnswer.trim().length >= 10 ? 'text-safe' : 'text-muted-foreground'}`}>
                             {customAnswer.trim().length}/10 characters minimum
