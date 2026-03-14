@@ -164,6 +164,7 @@ const PlaySession = () => {
         setScore(s => s + 1);
         setShowConfetti(true);
         setTimeout(() => setShowConfetti(false), 2500);
+        playCorrectChime();
         setMissionXPEarned(prev => prev + XP_CORRECT);
         setStreak(prev => {
           const next = prev + 1;
