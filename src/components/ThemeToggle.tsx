@@ -1,6 +1,7 @@
 import { Moon, Sun } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { useEffect, useState } from 'react';
+import { safeSetItem } from '@/lib/safeStorage';
 
 const ThemeToggle = ({ className = '' }: { className?: string }) => {
   const [isDark, setIsDark] = useState(true);
