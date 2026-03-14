@@ -53,7 +53,7 @@ const titleChar = {
   hidden: { opacity: 0, y: 40, rotateX: -90 },
   visible: {
     opacity: 1, y: 0, rotateX: 0,
-    transition: { type: 'spring', damping: 15, stiffness: 120 },
+    transition: { type: 'spring' as const, damping: 15, stiffness: 120 },
   },
 };
 
