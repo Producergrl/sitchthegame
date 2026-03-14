@@ -8,6 +8,7 @@ import type { AgeBand, PlayStyle } from '@/types/game';
 import { parsePlayParams, buildPlayUrl } from '@/lib/playParams';
 import { toast } from '@/hooks/use-toast';
 import ThemeToggle from '@/components/ThemeToggle';
+import { playCorrectChime, playWowFanfare } from '@/lib/sounds';
 import MissionProgress from '@/components/MissionProgress';
 import ShareMilestoneCard from '@/components/ShareMilestoneCard';
 import Confetti from '@/components/Confetti';
@@ -163,6 +164,7 @@ const PlaySession = () => {
         setScore(s => s + 1);
         setShowConfetti(true);
         setTimeout(() => setShowConfetti(false), 2500);
+        playCorrectChime();
         setMissionXPEarned(prev => prev + XP_CORRECT);
         setStreak(prev => {
           const next = prev + 1;
@@ -186,6 +188,7 @@ const PlaySession = () => {
   const handleSubmitCustomAnswer = () => {
     if (customAnswer.trim().length >= 10) {
       setCustomAnswerSubmitted(true);
+      playWowFanfare();
       if (activeMode === 'quiz') {
         setBonusPoints(b => b + 1);
         setMissionXPEarned(prev => prev + XP_BONUS);
