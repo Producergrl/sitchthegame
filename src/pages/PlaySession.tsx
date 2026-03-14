@@ -188,6 +188,7 @@ const PlaySession = () => {
   const handleSubmitCustomAnswer = () => {
     if (customAnswer.trim().length >= 10) {
       setCustomAnswerSubmitted(true);
+      playWowFanfare();
       if (activeMode === 'quiz') {
         setBonusPoints(b => b + 1);
         setMissionXPEarned(prev => prev + XP_BONUS);
