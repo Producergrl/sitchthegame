@@ -558,31 +558,32 @@ const PlaySession = () => {
 
   // ── Active play ──
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen bg-background overflow-x-hidden">
       <Confetti active={showConfetti} />
       {/* Header */}
-      <div className="hero-gradient px-4 py-4 text-primary-foreground">
-        <div className="mx-auto flex max-w-2xl items-center justify-between">
-          <div className="flex items-center gap-2">
-            <Link to="/play">
-              <Button variant="ghost" size="icon" className="text-primary-foreground hover:bg-white/10 active:animate-btn-press">
+      <div className="hero-gradient px-3 py-3 sm:px-4 sm:py-4 text-primary-foreground">
+        <div className="mx-auto flex max-w-2xl items-center justify-between gap-1">
+          <div className="flex items-center gap-1.5 min-w-0">
+            <Link to="/play" aria-label="Back to session setup">
+              <Button variant="ghost" size="icon" className="h-10 w-10 shrink-0 text-primary-foreground hover:bg-white/10 active:animate-btn-press">
                 <ArrowLeft className="h-5 w-5" />
               </Button>
             </Link>
-            <span className="text-sm font-bold opacity-80">{deck?.icon} Mission {index + 1}</span>
+            <span className="text-xs sm:text-sm font-bold opacity-80 truncate">{deck?.icon} Mission {index + 1}</span>
           </div>
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-1 sm:gap-2 shrink-0">
             <ThemeToggle className="text-primary-foreground hover:bg-white/10" />
             <Button
               variant="ghost"
-              size="sm"
+              size="icon"
               onClick={handleShare}
-              className="gap-1.5 text-primary-foreground hover:bg-primary-foreground/10"
+              aria-label="Share session link"
+              className="h-10 w-10 text-primary-foreground hover:bg-primary-foreground/10"
             >
-              <Share2 className="h-4 w-4" /> Share
+              <Share2 className="h-4 w-4" />
             </Button>
-            <span className="rounded-full bg-primary-foreground/20 px-3 py-1 text-sm font-bold">
-              🎯 {index + 1} / {sessionCards.length}
+            <span className="rounded-full bg-primary-foreground/20 px-2.5 py-1 text-xs sm:text-sm font-bold whitespace-nowrap">
+              {index + 1}/{sessionCards.length}
             </span>
           </div>
         </div>
