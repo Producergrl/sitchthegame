@@ -852,19 +852,19 @@ const PlaySession = () => {
                 variant="ghost"
                 size="icon"
                 onClick={toggleDiscussed}
-                className={`h-8 w-8 ${discussed.has(card.id) ? 'text-safe' : 'text-muted-foreground'}`}
-                title={discussed.has(card.id) ? 'Discussed' : 'Mark as discussed'}
+                aria-label={discussed.has(card.id) ? 'Discussed' : 'Mark as discussed'}
+                className={`h-11 w-11 ${discussed.has(card.id) ? 'text-safe' : 'text-muted-foreground'}`}
               >
-                <CheckCircle2 className="h-4 w-4" />
+                <CheckCircle2 className="h-5 w-5" />
               </Button>
               <Button
                 variant="ghost"
                 size="icon"
                 onClick={toggleFlagged}
-                className={`h-8 w-8 ${flagged.has(card.id) ? 'text-destructive' : 'text-muted-foreground'}`}
-                title={flagged.has(card.id) ? 'Flagged' : 'Flag for review'}
+                aria-label={flagged.has(card.id) ? 'Flagged' : 'Flag for review'}
+                className={`h-11 w-11 ${flagged.has(card.id) ? 'text-destructive' : 'text-muted-foreground'}`}
               >
-                <Flag className="h-4 w-4" />
+                <Flag className="h-5 w-5" />
               </Button>
               <div className="flex-1" />
               <Button onClick={handleNext} size="lg" className="gap-1.5 font-bold px-6">
