@@ -1,7 +1,7 @@
 import { useState, useEffect, useMemo } from 'react';
 import { Link } from 'react-router-dom';
-import { motion, AnimatePresence } from 'framer-motion';
-import { Play, BookOpen, Settings, Heart, Shield, Sparkles, Sticker, Zap, ChevronDown } from 'lucide-react';
+import { motion } from 'framer-motion';
+import { BookOpen, Settings, Heart, Shield, Sparkles, Sticker, Zap, ChevronDown, ChevronRight } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import ThemeToggle from '@/components/ThemeToggle';
 import MissionProgress from '@/components/MissionProgress';
@@ -16,119 +16,186 @@ const Particle = ({ delay, size, x, y, dur }: { delay: number; size: number; x: 
       height: size,
       left: `${x}%`,
       top: `${y}%`,
-      background: `radial-gradient(circle, hsl(42 90% 62% / 0.6), hsl(42 90% 62% / 0))`,
+      background: `radial-gradient(circle, hsl(42 90% 62% / 0.5), hsl(42 90% 62% / 0))`,
     }}
     initial={{ opacity: 0, scale: 0 }}
     animate={{
-      opacity: [0, 0.8, 0],
-      scale: [0, 1, 0.5],
-      y: [0, -60, -120],
+      opacity: [0, 0.7, 0],
+      scale: [0, 1.2, 0.3],
+      y: [0, -80, -160],
     }}
     transition={{ duration: dur, delay, repeat: Infinity, ease: 'easeOut' }}
   />
 );
 
-const particles = Array.from({ length: 18 }, (_, i) => ({
+const particles = Array.from({ length: 22 }, (_, i) => ({
   id: i,
-  delay: i * 0.4 + Math.random() * 2,
-  size: 3 + Math.random() * 5,
+  delay: i * 0.35 + Math.random() * 2,
+  size: 2 + Math.random() * 4,
   x: 5 + Math.random() * 90,
-  y: 40 + Math.random() * 55,
-  dur: 3 + Math.random() * 3,
+  y: 50 + Math.random() * 45,
+  dur: 3.5 + Math.random() * 3,
 }));
 
 /* ── nav items ── */
 const navItems = [
-  { icon: BookOpen, title: 'Mission Packs', desc: 'Explore all decks', to: '/decks', emoji: '📦' },
-  { icon: Sticker, title: 'Sticker Album', desc: 'Your collection', to: '/stickers', emoji: '⭐' },
-  { icon: Heart, title: 'Safety Hub', desc: 'Help & resources', to: '/resources', emoji: '💙' },
+  { title: 'Mission Packs', desc: 'Explore all decks', to: '/decks', emoji: '📦' },
+  { title: 'Sticker Album', desc: 'Your collection', to: '/stickers', emoji: '⭐' },
+  { title: 'Safety Hub', desc: 'Help & resources', to: '/resources', emoji: '💙' },
 ];
+
+/* ── title letter animation ── */
+const titleLine = {
+  hidden: {},
+  visible: { transition: { staggerChildren: 0.04 } },
+};
+const titleChar = {
+  hidden: { opacity: 0, y: 40, rotateX: -90 },
+  visible: {
+    opacity: 1, y: 0, rotateX: 0,
+    transition: { type: 'spring', damping: 15, stiffness: 120 },
+  },
+};
+
+const TitleLine = ({ text, className, delay = 0 }: { text: string; className?: string; delay?: number }) => (
+  <motion.span
+    className={`block ${className}`}
+    variants={titleLine}
+    initial="hidden"
+    animate="visible"
+    transition={{ delayChildren: delay }}
+    aria-label={text}
+  >
+    {text.split('').map((ch, i) => (
+      <motion.span key={i} variants={titleChar} className="inline-block" style={{ whiteSpace: ch === ' ' ? 'pre' : undefined }}>
+        {ch === ' ' ? '\u00A0' : ch}
+      </motion.span>
+    ))}
+  </motion.span>
+);
 
 /* ── main ── */
 const Index = () => {
   const [progress, setProgress] = useState<PlayerProgress>(loadProgress);
-  const [showContent, setShowContent] = useState(false);
 
   useEffect(() => {
     setProgress(loadProgress());
-    const t = setTimeout(() => setShowContent(true), 600);
-    return () => clearTimeout(t);
   }, []);
 
   const level = useMemo(() => getCurrentLevel(progress.totalXP), [progress.totalXP]);
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen" style={{ background: 'linear-gradient(180deg, hsl(160 20% 5%) 0%, hsl(160 15% 3%) 100%)' }}>
       {/* ═══════════ FULL-SCREEN HERO ═══════════ */}
-      <div className="relative flex min-h-[100dvh] flex-col items-center justify-center overflow-hidden hero-gradient grain-overlay vignette">
+      <div className="relative flex min-h-[100dvh] flex-col items-center justify-center overflow-hidden">
+        {/* Deep cinematic background layers */}
+        <div className="absolute inset-0" style={{
+          background: 'radial-gradient(ellipse 80% 60% at 50% 40%, hsl(160 50% 12% / 0.5) 0%, transparent 70%)',
+        }} />
+        <div className="absolute inset-0" style={{
+          background: 'radial-gradient(ellipse 60% 50% at 50% 45%, hsl(42 80% 50% / 0.06) 0%, transparent 60%)',
+        }} />
+
+        {/* Grain overlay */}
+        <div className="absolute inset-0 grain-overlay pointer-events-none" />
+
+        {/* Heavy vignette */}
+        <div className="absolute inset-0 pointer-events-none" style={{
+          background: 'radial-gradient(ellipse at center, transparent 30%, hsl(0 0% 0% / 0.7) 100%)',
+        }} />
+
         {/* Theme toggle */}
         <div className="absolute right-3 top-3 z-30">
-          <ThemeToggle className="text-primary-foreground/70 hover:text-primary-foreground hover:bg-white/10" />
+          <ThemeToggle className="text-white/40 hover:text-white/80 hover:bg-white/5" />
         </div>
 
         {/* Floating particles */}
         <div className="absolute inset-0 z-[2] pointer-events-none overflow-hidden">
-          {particles.map(p => (
-            <Particle key={p.id} {...p} />
-          ))}
+          {particles.map(p => <Particle key={p.id} {...p} />)}
         </div>
 
-        {/* Radial glow behind shield */}
-        <div className="absolute z-[2] pointer-events-none" style={{
-          width: 400, height: 400,
-          background: 'radial-gradient(circle, hsl(42 90% 62% / 0.12) 0%, transparent 70%)',
-          top: '50%', left: '50%', transform: 'translate(-50%, -60%)',
-        }} />
+        {/* ── Animated glow aura behind title ── */}
+        <motion.div
+          className="absolute z-[1] pointer-events-none"
+          style={{
+            width: 500, height: 500,
+            top: '50%', left: '50%', transform: 'translate(-50%, -55%)',
+          }}
+          animate={{
+            background: [
+              'radial-gradient(circle, hsl(42 90% 55% / 0.10) 0%, hsl(160 60% 30% / 0.04) 40%, transparent 70%)',
+              'radial-gradient(circle, hsl(42 90% 55% / 0.16) 0%, hsl(160 60% 30% / 0.07) 40%, transparent 70%)',
+              'radial-gradient(circle, hsl(42 90% 55% / 0.10) 0%, hsl(160 60% 30% / 0.04) 40%, transparent 70%)',
+            ],
+          }}
+          transition={{ duration: 4, repeat: Infinity, ease: 'easeInOut' }}
+        />
 
         {/* ── Shield emblem ── */}
         <motion.div
           initial={{ scale: 0, rotate: -180 }}
           animate={{ scale: 1, rotate: 0 }}
-          transition={{ type: 'spring', damping: 12, stiffness: 100, duration: 1.2 }}
-          className="relative z-10 mb-6"
+          transition={{ type: 'spring', damping: 14, stiffness: 80, delay: 0.2 }}
+          className="relative z-10 mb-8"
         >
-          <div className="relative flex h-28 w-28 items-center justify-center rounded-[2rem] gold-glow animate-glow-pulse gold-sweep"
-            style={{ background: 'linear-gradient(135deg, hsl(42 78% 50%), hsl(42 90% 62%))' }}
+          <div
+            className="relative flex h-24 w-24 items-center justify-center rounded-[1.75rem] gold-sweep"
+            style={{
+              background: 'linear-gradient(145deg, hsl(42 70% 45%), hsl(42 85% 55%), hsl(42 70% 40%))',
+              boxShadow: '0 0 40px hsl(42 90% 55% / 0.3), 0 0 80px hsl(42 90% 55% / 0.1), inset 0 1px 1px hsl(42 90% 80% / 0.4)',
+            }}
           >
-            <Shield className="relative z-10 h-14 w-14 text-white drop-shadow-lg" />
+            <Shield className="relative z-10 h-12 w-12 text-white drop-shadow-[0_2px_4px_hsl(0_0%_0%/0.5)]" />
           </div>
-          {/* Orbiting ring */}
+          {/* Orbiting rings */}
           <motion.div
-            className="absolute inset-[-12px] rounded-[2.5rem] border-2 border-gold/20"
+            className="absolute inset-[-10px] rounded-[2.25rem] border border-gold/15"
             animate={{ rotate: 360 }}
-            transition={{ duration: 20, repeat: Infinity, ease: 'linear' }}
+            transition={{ duration: 25, repeat: Infinity, ease: 'linear' }}
           />
           <motion.div
-            className="absolute inset-[-24px] rounded-[3rem] border border-gold/10"
+            className="absolute inset-[-22px] rounded-[2.75rem] border border-gold/8"
             animate={{ rotate: -360 }}
-            transition={{ duration: 30, repeat: Infinity, ease: 'linear' }}
+            transition={{ duration: 40, repeat: Infinity, ease: 'linear' }}
           />
         </motion.div>
 
-        {/* ── Title reveal ── */}
-        <div className="relative z-10 text-center px-6">
-          <motion.div
-            initial={{ opacity: 0, y: 30 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.4, duration: 0.8 }}
+        {/* ── CINEMATIC TITLE ── */}
+        <div className="relative z-10 text-center px-4">
+          <h1 className="sr-only">What Would You Do?</h1>
+          <div
+            className="text-[3.2rem] leading-[1.05] font-black tracking-[-0.03em] md:text-[5.5rem] uppercase"
+            style={{
+              background: 'linear-gradient(170deg, hsl(42 60% 75%) 0%, hsl(42 90% 62%) 30%, hsl(42 100% 50%) 50%, hsl(42 80% 60%) 70%, hsl(42 50% 45%) 100%)',
+              WebkitBackgroundClip: 'text',
+              WebkitTextFillColor: 'transparent',
+              backgroundClip: 'text',
+              filter: 'drop-shadow(0 4px 12px hsl(42 90% 50% / 0.3)) drop-shadow(0 1px 0 hsl(42 80% 30% / 0.5))',
+            }}
           >
-            <h1 className="text-5xl font-black text-primary-foreground tracking-tight md:text-7xl drop-shadow-[0_4px_24px_hsl(0_0%_0%/0.5)]">
-              What Would
-            </h1>
-            <h1 className="text-5xl font-black tracking-tight md:text-7xl drop-shadow-[0_4px_24px_hsl(0_0%_0%/0.5)]"
-              style={{ color: 'hsl(42 90% 62%)' }}
-            >
-              You Do?
-            </h1>
-          </motion.div>
+            <TitleLine text="WHAT WOULD" delay={0.5} />
+            <TitleLine text="YOU DO?" delay={0.9} />
+          </div>
+
+          {/* Metallic underline accent */}
+          <motion.div
+            initial={{ scaleX: 0 }}
+            animate={{ scaleX: 1 }}
+            transition={{ delay: 1.4, duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
+            className="mx-auto mt-3 h-[2px] w-32 origin-center"
+            style={{
+              background: 'linear-gradient(90deg, transparent, hsl(42 90% 62% / 0.8), transparent)',
+            }}
+          />
 
           <motion.p
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ delay: 0.8, duration: 0.6 }}
-            className="mx-auto mt-4 max-w-sm text-base text-white/70 font-medium"
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 1.6, duration: 0.6 }}
+            className="mx-auto mt-5 max-w-xs text-sm text-white/50 font-medium tracking-wide uppercase"
+            style={{ letterSpacing: '0.15em' }}
           >
-            The safety card game that makes learning life skills an adventure
+            A game of choices & consequences
           </motion.p>
         </div>
 
@@ -136,28 +203,38 @@ const Index = () => {
         <motion.div
           initial={{ opacity: 0, scale: 0.8 }}
           animate={{ opacity: 1, scale: 1 }}
-          transition={{ delay: 1, duration: 0.5 }}
-          className="relative z-10 mt-6 flex items-center gap-2 rounded-full border border-gold/30 bg-black/30 backdrop-blur-md px-4 py-2"
+          transition={{ delay: 1.8, duration: 0.5 }}
+          className="relative z-10 mt-8 flex items-center gap-2.5 rounded-full px-5 py-2.5"
+          style={{
+            background: 'hsl(0 0% 100% / 0.04)',
+            border: '1px solid hsl(42 80% 50% / 0.2)',
+            backdropFilter: 'blur(12px)',
+          }}
         >
-          <span className="text-xl">{level.icon}</span>
-          <span className="text-sm font-bold text-gold">{level.title}</span>
-          <span className="text-xs text-white/50">•</span>
-          <span className="text-sm font-bold text-white/80">{progress.totalXP} XP</span>
+          <span className="text-lg">{level.icon}</span>
+          <span className="text-sm font-bold" style={{ color: 'hsl(42 80% 60%)' }}>{level.title}</span>
+          <span className="h-3 w-px bg-white/15" />
+          <span className="text-sm font-bold text-white/70">{progress.totalXP} XP</span>
         </motion.div>
 
         {/* ── CTA buttons ── */}
         <motion.div
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 1.2, duration: 0.6 }}
+          transition={{ delay: 2, duration: 0.6 }}
           className="relative z-10 mt-10 flex flex-col items-center gap-3 sm:flex-row"
         >
           <Link to="/play?decks=__compilation__&age=8-10&mode=quiz">
             <Button
               size="lg"
-              className="group gap-2.5 text-lg font-black shadow-2xl cta-glow bg-secondary text-secondary-foreground hover:bg-secondary/90 active:animate-btn-press transition-all duration-300 hover:scale-110 hover:shadow-[0_8px_40px_hsl(24_95%_52%/0.6)] px-8 py-6 rounded-2xl"
+              className="group gap-2.5 text-base font-black tracking-wide uppercase shadow-2xl active:animate-btn-press transition-all duration-300 hover:scale-110 px-10 py-7 rounded-2xl border-0"
+              style={{
+                background: 'linear-gradient(135deg, hsl(24 95% 50%), hsl(24 90% 58%))',
+                boxShadow: '0 4px 30px hsl(24 95% 50% / 0.5), 0 0 60px hsl(24 95% 50% / 0.15), inset 0 1px 1px hsl(24 95% 75% / 0.3)',
+                color: 'white',
+              }}
             >
-              <Zap className="h-5 w-5 transition-transform group-hover:rotate-12" />
+              <Zap className="h-5 w-5 transition-transform group-hover:rotate-12 group-hover:scale-110" />
               Quick Play
             </Button>
           </Link>
@@ -165,7 +242,13 @@ const Index = () => {
             <Button
               size="lg"
               variant="outline"
-              className="gap-2.5 border-white/20 text-lg font-bold text-white bg-white/5 backdrop-blur-md hover:bg-white/15 hover:border-white/40 active:animate-btn-press transition-all duration-300 hover:scale-105 px-8 py-6 rounded-2xl"
+              className="gap-2.5 text-base font-bold uppercase tracking-wide active:animate-btn-press transition-all duration-300 hover:scale-105 px-10 py-7 rounded-2xl"
+              style={{
+                background: 'hsl(0 0% 100% / 0.03)',
+                border: '1px solid hsl(0 0% 100% / 0.12)',
+                color: 'hsl(0 0% 100% / 0.8)',
+                backdropFilter: 'blur(8px)',
+              }}
             >
               <Sparkles className="h-5 w-5" />
               Custom Game
@@ -177,21 +260,21 @@ const Index = () => {
         <motion.div
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
-          transition={{ delay: 2 }}
-          className="absolute bottom-6 z-10 flex flex-col items-center gap-1"
+          transition={{ delay: 2.8 }}
+          className="absolute bottom-8 z-10 flex flex-col items-center gap-1.5"
         >
-          <span className="text-xs text-white/40 font-medium">Explore</span>
+          <span className="text-[10px] text-white/25 font-medium uppercase tracking-[0.2em]">Explore</span>
           <motion.div
-            animate={{ y: [0, 6, 0] }}
-            transition={{ duration: 1.5, repeat: Infinity }}
+            animate={{ y: [0, 5, 0] }}
+            transition={{ duration: 2, repeat: Infinity, ease: 'easeInOut' }}
           >
-            <ChevronDown className="h-4 w-4 text-white/40" />
+            <ChevronDown className="h-4 w-4 text-white/25" />
           </motion.div>
         </motion.div>
       </div>
 
       {/* ═══════════ BELOW THE FOLD ═══════════ */}
-      <div className="mx-auto max-w-lg px-4 py-8 space-y-6">
+      <div className="mx-auto max-w-lg px-4 py-10 space-y-5">
         {/* Mission Progress */}
         <motion.div
           initial={{ opacity: 0, y: 30 }}
@@ -202,18 +285,30 @@ const Index = () => {
           <MissionProgress progress={progress} />
         </motion.div>
 
-        {/* Navigation cards */}
+        {/* Navigation cards — premium tactile feel */}
         <div className="grid gap-3">
           {navItems.map((item, i) => (
             <motion.div
               key={item.title}
-              initial={{ opacity: 0, x: -20 }}
-              whileInView={{ opacity: 1, x: 0 }}
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
-              transition={{ delay: i * 0.1, duration: 0.4 }}
+              transition={{ delay: i * 0.08, duration: 0.4 }}
             >
               <Link to={item.to}>
-                <div className="group flex items-center gap-4 rounded-2xl card-edge-lit bg-card p-4 transition-all duration-200 hover:shadow-lg hover:-translate-y-0.5 hover:scale-[1.02] active:animate-btn-press">
+                <motion.div
+                  className="group flex items-center gap-4 rounded-2xl bg-card p-4 cursor-pointer"
+                  style={{
+                    border: '1px solid hsl(42 78% 50% / 0.1)',
+                    boxShadow: '0 2px 8px hsl(0 0% 0% / 0.2), 0 8px 32px hsl(0 0% 0% / 0.15), inset 0 1px 0 hsl(0 0% 100% / 0.03)',
+                  }}
+                  whileHover={{
+                    y: -4,
+                    boxShadow: '0 8px 24px hsl(0 0% 0% / 0.3), 0 16px 48px hsl(0 0% 0% / 0.2), 0 0 20px hsl(42 90% 62% / 0.06), inset 0 1px 0 hsl(0 0% 100% / 0.05)',
+                  }}
+                  whileTap={{ scale: 0.98 }}
+                  transition={{ type: 'spring', stiffness: 300, damping: 20 }}
+                >
                   <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-muted text-2xl">
                     {item.emoji}
                   </div>
@@ -221,8 +316,8 @@ const Index = () => {
                     <h3 className="text-base font-bold text-card-foreground">{item.title}</h3>
                     <p className="text-sm text-muted-foreground">{item.desc}</p>
                   </div>
-                  <ChevronDown className="h-4 w-4 -rotate-90 text-muted-foreground transition-transform group-hover:translate-x-1" />
-                </div>
+                  <ChevronRight className="h-4 w-4 text-muted-foreground transition-transform duration-200 group-hover:translate-x-1 group-hover:text-gold" />
+                </motion.div>
               </Link>
             </motion.div>
           ))}
@@ -233,11 +328,15 @@ const Index = () => {
           initial={{ opacity: 0 }}
           whileInView={{ opacity: 1 }}
           viewport={{ once: true }}
-          transition={{ delay: 0.3 }}
-          className="rounded-2xl card-edge-lit bg-gold/5 p-5 text-center gold-glow"
-          style={{ boxShadow: '0 0 30px hsl(42 90% 62% / 0.08)' }}
+          transition={{ delay: 0.2 }}
+          className="rounded-2xl p-5 text-center"
+          style={{
+            background: 'hsl(42 80% 50% / 0.04)',
+            border: '1px solid hsl(42 78% 50% / 0.12)',
+            boxShadow: '0 0 40px hsl(42 90% 62% / 0.05)',
+          }}
         >
-          <Shield className="mx-auto mb-2 h-7 w-7 text-gold" />
+          <Shield className="mx-auto mb-2 h-6 w-6 text-gold" />
           <p className="text-sm font-bold text-foreground">Designed for Safety</p>
           <p className="mt-1 text-xs text-muted-foreground leading-relaxed">
             No public profiles · No messaging · No social sharing · Play with a trusted adult
@@ -245,7 +344,7 @@ const Index = () => {
         </motion.div>
 
         {/* Admin */}
-        <div className="text-center pb-6">
+        <div className="text-center pb-8">
           <Link to="/admin" className="inline-flex items-center gap-1.5 text-xs text-muted-foreground hover:text-foreground transition-colors">
             <Settings className="h-3.5 w-3.5" />
             Manage Cards
