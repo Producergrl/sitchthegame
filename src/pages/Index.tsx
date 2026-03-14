@@ -132,9 +132,11 @@ const Index = () => {
 
         {/* ── CINEMATIC TITLE ── */}
         <div className="relative z-10 text-center px-4">
-          <h1 className="sr-only">What Would You Do?</h1>
-          <div
-            className="text-[3.2rem] leading-[1.05] font-black tracking-[-0.03em] md:text-[5.5rem] uppercase"
+          <motion.h1
+            initial={{ opacity: 0, y: 30, scale: 0.9 }}
+            animate={{ opacity: 1, y: 0, scale: 1 }}
+            transition={{ delay: 0.5, duration: 1, ease: [0.22, 1, 0.36, 1] }}
+            className="text-[2.6rem] leading-[1.1] font-black tracking-[-0.02em] md:text-[5rem] uppercase"
             style={{
               background: 'linear-gradient(170deg, hsl(42 60% 75%) 0%, hsl(42 90% 62%) 30%, hsl(42 100% 50%) 50%, hsl(42 80% 60%) 70%, hsl(42 50% 45%) 100%)',
               WebkitBackgroundClip: 'text',
@@ -143,9 +145,10 @@ const Index = () => {
               filter: 'drop-shadow(0 4px 12px hsl(42 90% 50% / 0.3)) drop-shadow(0 1px 0 hsl(42 80% 30% / 0.5))',
             }}
           >
-            <TitleLine text="WHAT WOULD" delay={0.5} />
-            <TitleLine text="YOU DO?" delay={0.9} />
-          </div>
+            What Would
+            <br />
+            You Do?
+          </motion.h1>
 
           {/* Metallic underline accent */}
           <motion.div
