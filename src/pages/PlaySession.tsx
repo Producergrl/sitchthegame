@@ -205,7 +205,7 @@ const PlaySession = () => {
 
   const handleReadAloud = () => {
     if (!card) return;
-    const text = `${card.title}. ${card.scenario}`;
+    const text = card.scenario;
     const utterance = new SpeechSynthesisUtterance(text);
     utterance.rate = 0.85;
     utterance.pitch = 1.1;
