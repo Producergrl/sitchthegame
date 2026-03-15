@@ -245,10 +245,31 @@ const PlaySession = () => {
 
   const handleReadAloud = () => {
     if (!card) return;
+    speechSynthesis.cancel(); // stop any ongoing speech
+
     const text = card.scenario;
     const utterance = new SpeechSynthesisUtterance(text);
-    utterance.rate = 0.85;
-    utterance.pitch = 1.1;
+
+    // Pick the most natural-sounding voice available
+    const voices = speechSynthesis.getVoices();
+    const preferred = voices.find(
+      v => v.lang.startsWith('en') && v.name.toLowerCase().includes('samantha'),
+    ) ?? voices.find(
+      v => v.lang.startsWith('en') && v.name.toLowerCase().includes('google uk english female'),
+    ) ?? voices.find(
+      v => v.lang.startsWith('en') && v.name.toLowerCase().includes('natural'),
+    ) ?? voices.find(
+      v => v.lang.startsWith('en') && v.name.toLowerCase().includes('female'),
+    ) ?? voices.find(
+      v => v.lang.startsWith('en') && !v.localService,
+    ) ?? voices.find(v => v.lang.startsWith('en'));
+    if (preferred) utterance.voice = preferred;
+
+    // Warm, storytelling pace — slightly slower with natural pitch
+    utterance.rate = 0.88;
+    utterance.pitch = 1.05;
+    utterance.volume = 1.0;
+
     speechSynthesis.speak(utterance);
   };
 
