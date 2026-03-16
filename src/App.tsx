@@ -12,6 +12,7 @@ import PlaySession from "./pages/PlaySession";
 import Resources from "./pages/Resources";
 import AdminPage from "./pages/AdminPage";
 import StickerCollection from "./pages/StickerCollection";
+import Legal from "./pages/Legal";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
