@@ -12,6 +12,7 @@ import PlaySession from "./pages/PlaySession";
 import Resources from "./pages/Resources";
 import AdminPage from "./pages/AdminPage";
 import StickerCollection from "./pages/StickerCollection";
+import Legal from "./pages/Legal";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -32,6 +33,7 @@ const App = () => (
             <Route path="/resources" element={<Resources />} />
             <Route path="/stickers" element={<StickerCollection />} />
             <Route path="/admin" element={<AdminPage />} />
+            <Route path="/legal" element={<Legal />} />
             <Route path="*" element={<NotFound />} />
           </Routes>
         </BrowserRouter>

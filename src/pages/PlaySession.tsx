@@ -951,6 +951,11 @@ const PlaySession = () => {
           </motion.div>
         </AnimatePresence>
       </div>
+      <div className="text-center py-2">
+        <Link to="/legal" className="text-[10px] text-muted-foreground/50 hover:text-muted-foreground transition-colors">
+          Terms & Privacy
+        </Link>
+      </div>
     </div>
   );
 };
