@@ -23,65 +23,63 @@ export const decks: Deck[] = [
     age_band: '4-6', tags: ['body-safety', 'secrets'],
     is_default: true, is_free: false, card_count: 0, icon: '🤫', color: 'caution',
   },
-  // ── 5-7 age band ──
   {
     id: 'body-boundaries', slug: 'body-boundaries',
     name: 'Body Boundaries & Consent',
     description: 'Learn about personal space, safe and unsafe touches, and how to speak up.',
-    age_band: '5-7', tags: ['boundaries', 'consent'],
+    age_band: '4-6', tags: ['boundaries', 'consent'],
     is_default: true, is_free: true, card_count: 4, icon: '🛡️', color: 'primary',
   },
   {
     id: 'trusted-adults', slug: 'trusted-adults',
     name: 'Trusted Adults & Safe Places',
     description: 'Know who to turn to and where to go when you need help.',
-    age_band: '5-7', tags: ['trusted adults', 'safe places'],
+    age_band: '4-6', tags: ['trusted adults', 'safe places'],
     is_default: true, is_free: false, card_count: 4, icon: '🏠', color: 'safe',
   },
-  // ── 7-11 age band ──
+  // ── 7-9 age band ──
   {
-    id: 'peer-pressure-7-11', slug: 'peer-pressure-7-11',
-    name: 'Peer Pressure (7–11)',
+    id: 'peer-pressure-7-9', slug: 'peer-pressure-7-9',
+    name: 'Peer Pressure (7–9)',
     description: 'Handle dares, vapes, and pressure from friends.',
-    age_band: '7-11', tags: ['peer-pressure', 'substance-risk'],
+    age_band: '7-9', tags: ['peer-pressure', 'substance-risk'],
     is_default: true, is_free: true, card_count: 0, icon: '🫸', color: 'caution',
   },
   {
-    id: 'digital-safety-7-11', slug: 'digital-safety-7-11',
-    name: 'Digital Safety (7–11)',
+    id: 'digital-safety-7-9', slug: 'digital-safety-7-9',
+    name: 'Digital Safety (7–9)',
     description: 'Stay safe from strangers and scams online.',
-    age_band: '7-11', tags: ['online-safety'],
+    age_band: '7-9', tags: ['online-safety'],
     is_default: true, is_free: false, card_count: 0, icon: '💻', color: 'help',
   },
-  // ── 8-10 age band ──
   {
     id: 'online-safety', slug: 'online-safety',
     name: 'Online & Device Safety',
     description: 'Stay safe while using phones, tablets, and the internet.',
-    age_band: '8-10', tags: ['online safety', 'devices'],
+    age_band: '7-9', tags: ['online safety', 'devices'],
     is_default: true, is_free: true, card_count: 4, icon: '📱', color: 'help',
   },
   {
     id: 'bullying', slug: 'bullying',
     name: 'Bullying & Peer Pressure',
     description: 'Handle tough social situations and stand up for yourself and others.',
-    age_band: '8-10', tags: ['bullying', 'peer pressure'],
+    age_band: '7-9', tags: ['bullying', 'peer pressure'],
     is_default: true, is_free: false, card_count: 4, icon: '💪', color: 'secondary',
   },
-  // ── 11-13 age band ──
+  // ── 10+ age band ──
   {
     id: 'emergencies', slug: 'emergencies',
     name: 'Emergencies & Getting Help',
     description: 'Learn what to do in scary or dangerous situations.',
-    age_band: '11-13', tags: ['emergencies', 'help'],
+    age_band: '10+', tags: ['emergencies', 'help'],
     is_default: true, is_free: true, card_count: 4, icon: '🚨', color: 'caution',
   },
-  // ── 12+ age band ──
+  // ── Teens age band ──
   {
-    id: 'real-world-judgment-12plus', slug: 'real-world-judgment-12plus',
-    name: 'Real-World Judgment (12+)',
+    id: 'real-world-judgment-teens', slug: 'real-world-judgment-teens',
+    name: 'Real-World Judgment (Teens)',
     description: 'Navigate adult-ish situations with confidence and common sense.',
-    age_band: '12+', tags: ['judgment', 'digital-awareness'],
+    age_band: 'teens', tags: ['judgment', 'digital-awareness'],
     is_default: true, is_free: false, card_count: 0, icon: '🧭', color: 'gentle',
   },
 ];
