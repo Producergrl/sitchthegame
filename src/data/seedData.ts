@@ -203,7 +203,7 @@ const practicePhraseFor = (scenario: string, age: AgeBand) => {
 
 const reflectionPromptsFor = (age: AgeBand): string[] => {
   if (age === '4-6') return ['What did your tummy feel like?', 'Who is your safe grown-up to tell?'];
-  if (age === '7-11') return ['Who is the best trusted adult to tell first?', 'What is one safe boundary you can set?'];
+  if (age === '7-9') return ['Who is the best trusted adult to tell first?', 'What is one safe boundary you can set?'];
   return ['What\'s the safest next step right now?', 'Who can support you without making it worse?'];
 };
 
