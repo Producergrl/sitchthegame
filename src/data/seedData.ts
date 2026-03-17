@@ -216,11 +216,11 @@ const deckFor_4_6 = (scenario: string) => {
   return DECKS.TRUSTED_4_6;
 };
 
-const deckFor_7_11 = (scenario: string) => {
+const deckFor_7_9 = (scenario: string) => {
   const s = scenario.toLowerCase();
   if (s.includes('online') || s.includes('text') || s.includes('phone') || s.includes('picture') || s.includes('social media') || s.includes('naked') || s.includes('photo') || s.includes('call'))
-    return DECKS.DIGITAL_7_11;
-  return DECKS.PEER_7_11;
+    return DECKS.DIGITAL_7_9;
+  return DECKS.PEER_7_9;
 };
 
 /* ═══════════════════════════════════════════════════════════════
