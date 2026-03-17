@@ -327,7 +327,7 @@ const PlaySession = () => {
   // ── Setup screen (no valid deep-link) ──
   if (!isPlaying) {
     return (
-      <div className="min-h-screen bg-background">
+      <div className="min-h-screen bg-background" data-age-theme={setupAgeBand}>
         <div className="hero-gradient px-4 py-6 text-primary-foreground">
           <div className="mx-auto flex max-w-2xl items-center justify-between">
             <div className="flex items-center gap-3">
