@@ -1,4 +1,4 @@
-export type AgeBand = '4-6' | '5-7' | '7-11' | '8-10' | '11-13' | '12+';
+export type AgeBand = '4-6' | '7-9' | '10+' | 'teens';
 export type PlayStyle = 'discussion' | 'quiz' | 'roleplay';
 export type CardStatus = 'draft' | 'published';
 

@@ -23,65 +23,63 @@ export const decks: Deck[] = [
     age_band: '4-6', tags: ['body-safety', 'secrets'],
     is_default: true, is_free: false, card_count: 0, icon: '🤫', color: 'caution',
   },
-  // ── 5-7 age band ──
   {
     id: 'body-boundaries', slug: 'body-boundaries',
     name: 'Body Boundaries & Consent',
     description: 'Learn about personal space, safe and unsafe touches, and how to speak up.',
-    age_band: '5-7', tags: ['boundaries', 'consent'],
+    age_band: '4-6', tags: ['boundaries', 'consent'],
     is_default: true, is_free: true, card_count: 4, icon: '🛡️', color: 'primary',
   },
   {
     id: 'trusted-adults', slug: 'trusted-adults',
     name: 'Trusted Adults & Safe Places',
     description: 'Know who to turn to and where to go when you need help.',
-    age_band: '5-7', tags: ['trusted adults', 'safe places'],
+    age_band: '4-6', tags: ['trusted adults', 'safe places'],
     is_default: true, is_free: false, card_count: 4, icon: '🏠', color: 'safe',
   },
-  // ── 7-11 age band ──
+  // ── 7-9 age band ──
   {
-    id: 'peer-pressure-7-11', slug: 'peer-pressure-7-11',
-    name: 'Peer Pressure (7–11)',
+    id: 'peer-pressure-7-9', slug: 'peer-pressure-7-9',
+    name: 'Peer Pressure (7–9)',
     description: 'Handle dares, vapes, and pressure from friends.',
-    age_band: '7-11', tags: ['peer-pressure', 'substance-risk'],
+    age_band: '7-9', tags: ['peer-pressure', 'substance-risk'],
     is_default: true, is_free: true, card_count: 0, icon: '🫸', color: 'caution',
   },
   {
-    id: 'digital-safety-7-11', slug: 'digital-safety-7-11',
-    name: 'Digital Safety (7–11)',
+    id: 'digital-safety-7-9', slug: 'digital-safety-7-9',
+    name: 'Digital Safety (7–9)',
     description: 'Stay safe from strangers and scams online.',
-    age_band: '7-11', tags: ['online-safety'],
+    age_band: '7-9', tags: ['online-safety'],
     is_default: true, is_free: false, card_count: 0, icon: '💻', color: 'help',
   },
-  // ── 8-10 age band ──
   {
     id: 'online-safety', slug: 'online-safety',
     name: 'Online & Device Safety',
     description: 'Stay safe while using phones, tablets, and the internet.',
-    age_band: '8-10', tags: ['online safety', 'devices'],
+    age_band: '7-9', tags: ['online safety', 'devices'],
     is_default: true, is_free: true, card_count: 4, icon: '📱', color: 'help',
   },
   {
     id: 'bullying', slug: 'bullying',
     name: 'Bullying & Peer Pressure',
     description: 'Handle tough social situations and stand up for yourself and others.',
-    age_band: '8-10', tags: ['bullying', 'peer pressure'],
+    age_band: '7-9', tags: ['bullying', 'peer pressure'],
     is_default: true, is_free: false, card_count: 4, icon: '💪', color: 'secondary',
   },
-  // ── 11-13 age band ──
+  // ── 10+ age band ──
   {
     id: 'emergencies', slug: 'emergencies',
     name: 'Emergencies & Getting Help',
     description: 'Learn what to do in scary or dangerous situations.',
-    age_band: '11-13', tags: ['emergencies', 'help'],
+    age_band: '10+', tags: ['emergencies', 'help'],
     is_default: true, is_free: true, card_count: 4, icon: '🚨', color: 'caution',
   },
-  // ── 12+ age band ──
+  // ── Teens age band ──
   {
-    id: 'real-world-judgment-12plus', slug: 'real-world-judgment-12plus',
-    name: 'Real-World Judgment (12+)',
+    id: 'real-world-judgment-teens', slug: 'real-world-judgment-teens',
+    name: 'Real-World Judgment (Teens)',
     description: 'Navigate adult-ish situations with confidence and common sense.',
-    age_band: '12+', tags: ['judgment', 'digital-awareness'],
+    age_band: 'teens', tags: ['judgment', 'digital-awareness'],
     is_default: true, is_free: false, card_count: 0, icon: '🧭', color: 'gentle',
   },
 ];
@@ -92,9 +90,9 @@ const DECKS = {
   BODY_4_6: 'body-boundaries-4-6',
   TRUSTED_4_6: 'trusted-adults-4-6',
   SECRETS_4_6: 'secrets-4-6',
-  PEER_7_11: 'peer-pressure-7-11',
-  DIGITAL_7_11: 'digital-safety-7-11',
-  JUDGMENT_12: 'real-world-judgment-12plus',
+  PEER_7_9: 'peer-pressure-7-9',
+  DIGITAL_7_9: 'digital-safety-7-9',
+  JUDGMENT_TEENS: 'real-world-judgment-teens',
 } as const;
 
 const normalize = (s: string) =>
@@ -199,13 +197,13 @@ const practicePhraseFor = (scenario: string, age: AgeBand) => {
     if (s.includes("can't find") || s.includes("can\u2019t find") || s.includes('lost')) return 'I\'m lost. Please help me find my grown-up.';
     return 'I need help, please.';
   }
-  if (age === '7-11') return 'No thanks. I\'m not doing that.';
+  if (age === '7-9') return 'No thanks. I\'m not doing that.';
   return 'I\'m not comfortable with that. I\'m getting help.';
 };
 
 const reflectionPromptsFor = (age: AgeBand): string[] => {
   if (age === '4-6') return ['What did your tummy feel like?', 'Who is your safe grown-up to tell?'];
-  if (age === '7-11') return ['Who is the best trusted adult to tell first?', 'What is one safe boundary you can set?'];
+  if (age === '7-9') return ['Who is the best trusted adult to tell first?', 'What is one safe boundary you can set?'];
   return ['What\'s the safest next step right now?', 'Who can support you without making it worse?'];
 };
 
@@ -218,11 +216,11 @@ const deckFor_4_6 = (scenario: string) => {
   return DECKS.TRUSTED_4_6;
 };
 
-const deckFor_7_11 = (scenario: string) => {
+const deckFor_7_9 = (scenario: string) => {
   const s = scenario.toLowerCase();
   if (s.includes('online') || s.includes('text') || s.includes('phone') || s.includes('picture') || s.includes('social media') || s.includes('naked') || s.includes('photo') || s.includes('call'))
-    return DECKS.DIGITAL_7_11;
-  return DECKS.PEER_7_11;
+    return DECKS.DIGITAL_7_9;
+  return DECKS.PEER_7_9;
 };
 
 /* ═══════════════════════════════════════════════════════════════
@@ -702,7 +700,7 @@ const LABELS = ['A', 'B', 'C', 'D'];
 const buildCards = (age: AgeBand, deckFn: (scenario: string) => string, scenarios: ScenarioData[]): Card[] =>
   scenarios.map((data, idx) => {
     const scenario = normalize(data.scenario);
-    const id = `${age === '12+' ? '12PLUS' : age}-${String(idx + 1).padStart(3, '0')}`;
+    const id = `${age === 'teens' ? 'TEENS' : age === '10+' ? '10PLUS' : age}-${String(idx + 1).padStart(3, '0')}`;
     return {
       id,
       deck_id: deckFn(scenario),
@@ -726,7 +724,7 @@ const buildCards = (age: AgeBand, deckFn: (scenario: string) => string, scenario
 /* ─── 5-7 / 8-10 / 11-13 hand-authored cards ─── */
 
 const handAuthoredCards: Card[] = [
-  // ── 5-7: Body Boundaries & Consent ──
+  // ── 4-6: Body Boundaries & Consent ──
   { id: 'bb-1', deck_id: 'body-boundaries', title: 'The Unwanted Hug',
     scenario: 'A family friend wants to give you a big hug, but you don\'t feel like being hugged right now. What would you do?',
     options: [{ label: 'A', text: 'Hug them even though you don\'t want to' }, { label: 'B', text: 'Say "No thank you, I\'d rather wave hello!"' }, { label: 'C', text: 'Run away without saying anything' }, { label: 'D', text: 'Ask a parent if you have to hug them' }],
@@ -734,7 +732,7 @@ const handAuthoredCards: Card[] = [
     why_text: 'Your body belongs to you. Politely saying no teaches others to respect your boundaries.',
     practice_phrase: '"No thank you — I\'d prefer a wave or a high-five!"',
     help_prompt: 'Talk to your parent or guardian about body boundaries.',
-    difficulty: 1, age_band: '5-7', tags: ['boundaries', 'consent'], status: 'published' },
+    difficulty: 1, age_band: '4-6', tags: ['boundaries', 'consent'], status: 'published' },
   { id: 'bb-2', deck_id: 'body-boundaries', title: 'The Secret Touch',
     scenario: 'Someone touches you in a way that feels wrong and tells you to keep it a secret. What would you do?',
     options: [{ label: 'A', text: 'Keep the secret because they told you to' }, { label: 'B', text: 'Tell a trusted adult right away' }, { label: 'C', text: 'Forget about it and move on' }, { label: 'D', text: 'Tell your best friend' }],
@@ -742,7 +740,7 @@ const handAuthoredCards: Card[] = [
     why_text: 'No one should ever ask you to keep a secret about touching. Telling an adult is brave and the right thing to do.',
     practice_phrase: '"This doesn\'t feel right. I need to tell someone I trust."',
     help_prompt: 'Tell a parent, teacher, or another trusted adult immediately.',
-    difficulty: 2, age_band: '5-7', tags: ['boundaries', 'secrets'], status: 'published' },
+    difficulty: 2, age_band: '4-6', tags: ['boundaries', 'secrets'], status: 'published' },
   { id: 'bb-3', deck_id: 'body-boundaries', title: 'Changing Clothes',
     scenario: 'You\'re changing clothes at a friend\'s house and their older sibling walks in without knocking. What would you do?',
     options: [{ label: 'A', text: 'Say "Please knock! I\'m changing" and cover up' }, { label: 'B', text: 'Ignore it because it\'s not a big deal' }, { label: 'C', text: 'Feel embarrassed but say nothing' }, { label: 'D', text: 'Tell your friend\'s parent what happened' }],
@@ -750,7 +748,7 @@ const handAuthoredCards: Card[] = [
     why_text: 'Asking for privacy is not rude — it\'s healthy. If it keeps happening, tell a trusted adult.',
     practice_phrase: '"Please knock before coming in — I need privacy!"',
     help_prompt: 'Talk to your parent about rules for privacy at other homes.',
-    difficulty: 1, age_band: '5-7', tags: ['boundaries', 'privacy'], status: 'published' },
+    difficulty: 1, age_band: '4-6', tags: ['boundaries', 'privacy'], status: 'published' },
   { id: 'bb-4', deck_id: 'body-boundaries', title: 'The Tickle Game',
     scenario: 'Your cousin keeps tickling you and won\'t stop even though you said stop. What would you do?',
     options: [{ label: 'A', text: 'Laugh and hope they stop eventually' }, { label: 'B', text: 'Say "STOP! I said stop and I mean it!"' }, { label: 'C', text: 'Hit them back' }, { label: 'D', text: 'Walk away and tell an adult' }],
@@ -758,8 +756,8 @@ const handAuthoredCards: Card[] = [
     why_text: 'Stop means stop — always. This is an important boundary everyone should respect.',
     practice_phrase: '"I said stop. Please respect that."',
     help_prompt: 'Tell a parent or guardian if someone won\'t stop when you ask.',
-    difficulty: 1, age_band: '5-7', tags: ['boundaries', 'consent'], status: 'published' },
-  // ── 5-7: Trusted Adults & Safe Places ──
+    difficulty: 1, age_band: '4-6', tags: ['boundaries', 'consent'], status: 'published' },
+  // ── 4-6: Trusted Adults & Safe Places ──
   { id: 'ta-1', deck_id: 'trusted-adults', title: 'Who Do You Trust?',
     scenario: 'Something is making you worried and you need to talk to someone. Who would be the best person to tell?',
     options: [{ label: 'A', text: 'A stranger who seems nice' }, { label: 'B', text: 'A parent, teacher, or family member you trust' }, { label: 'C', text: 'Nobody — you should handle it yourself' }, { label: 'D', text: 'Post about it online' }],
@@ -767,7 +765,7 @@ const handAuthoredCards: Card[] = [
     why_text: 'You never have to handle scary things alone. Trusted adults are there to help.',
     practice_phrase: '"I need to talk to you about something that\'s worrying me."',
     help_prompt: 'Make a list of 3-5 trusted adults you can always go to.',
-    difficulty: 1, age_band: '5-7', tags: ['trusted adults'], status: 'published' },
+    difficulty: 1, age_band: '4-6', tags: ['trusted adults'], status: 'published' },
   { id: 'ta-2', deck_id: 'trusted-adults', title: 'Lost at the Store',
     scenario: 'You get separated from your parent at a big store and can\'t find them. What would you do?',
     options: [{ label: 'A', text: 'Walk out of the store to look for them' }, { label: 'B', text: 'Go with a stranger who offers to help find them' }, { label: 'C', text: 'Find a store worker (with a name badge) and ask for help' }, { label: 'D', text: 'Stay where you are and cry' }],
@@ -775,7 +773,7 @@ const handAuthoredCards: Card[] = [
     why_text: 'Staying in the store and finding an employee is the safest choice.',
     practice_phrase: '"I\'m lost. Can you help me find my mom/dad? Their name is ___."',
     help_prompt: 'Practice a plan with your parent about what to do if you get separated.',
-    difficulty: 1, age_band: '5-7', tags: ['safe places', 'strangers'], status: 'published' },
+    difficulty: 1, age_band: '4-6', tags: ['safe places', 'strangers'], status: 'published' },
   { id: 'ta-3', deck_id: 'trusted-adults', title: 'The Offer of a Ride',
     scenario: 'Someone you don\'t know well pulls up in a car and offers you a ride home. What would you do?',
     options: [{ label: 'A', text: 'Get in if they know your name' }, { label: 'B', text: 'Say "No thank you" and quickly go to a safe place' }, { label: 'C', text: 'Ask them who sent them' }, { label: 'D', text: 'Get in because it\'s a long walk' }],
@@ -783,7 +781,7 @@ const handAuthoredCards: Card[] = [
     why_text: 'Safe adults won\'t ask kids they don\'t know well to get in their car.',
     practice_phrase: '"No thank you! My parent didn\'t tell me about this."',
     help_prompt: 'Have a family password that only trusted people know.',
-    difficulty: 2, age_band: '5-7', tags: ['strangers', 'safe places'], status: 'published' },
+    difficulty: 2, age_band: '4-6', tags: ['strangers', 'safe places'], status: 'published' },
   { id: 'ta-4', deck_id: 'trusted-adults', title: 'The Worried Feeling',
     scenario: 'You told a trusted adult about a problem, but nothing seems to change. What would you do?',
     options: [{ label: 'A', text: 'Give up and stop talking about it' }, { label: 'B', text: 'Keep telling trusted adults until someone helps' }, { label: 'C', text: 'Decide it\'s not important' }, { label: 'D', text: 'Handle it by yourself' }],
@@ -791,8 +789,8 @@ const handAuthoredCards: Card[] = [
     why_text: 'Sometimes the first person you tell might not understand. Never stop speaking up.',
     practice_phrase: '"I told someone before but I still need help. Can you help me?"',
     help_prompt: 'Remember: it\'s never your fault, and you deserve to be helped.',
-    difficulty: 2, age_band: '5-7', tags: ['trusted adults'], status: 'published' },
-  // ── 8-10: Online & Device Safety ──
+    difficulty: 2, age_band: '4-6', tags: ['trusted adults'], status: 'published' },
+  // ── 7-9: Online & Device Safety ──
   { id: 'os-1', deck_id: 'online-safety', title: 'The Friend Request',
     scenario: 'Someone you don\'t know sends you a friend request on a game and says they\'re a kid your age. What would you do?',
     options: [{ label: 'A', text: 'Accept — they said they\'re your age' }, { label: 'B', text: 'Don\'t accept and tell a parent about it' }, { label: 'C', text: 'Accept but don\'t share personal info' }, { label: 'D', text: 'Ask them to prove they\'re a kid first' }],
@@ -800,7 +798,7 @@ const handAuthoredCards: Card[] = [
     why_text: 'You can\'t verify who someone really is online. A trusted adult can help you decide.',
     practice_phrase: '"I don\'t accept friend requests from people I don\'t know in real life."',
     help_prompt: 'Show your parent the request and talk about online safety rules.',
-    difficulty: 1, age_band: '8-10', tags: ['online safety', 'strangers'], status: 'published' },
+    difficulty: 1, age_band: '7-9', tags: ['online safety', 'strangers'], status: 'published' },
   { id: 'os-2', deck_id: 'online-safety', title: 'The Personal Info Quiz',
     scenario: 'A fun quiz online asks for your full name, school name, and birthday. What would you do?',
     options: [{ label: 'A', text: 'Fill it in — it\'s just a fun quiz' }, { label: 'B', text: 'Make up fake answers' }, { label: 'C', text: 'Skip the quiz and tell a parent about it' }, { label: 'D', text: 'Only share your first name' }],
@@ -808,7 +806,7 @@ const handAuthoredCards: Card[] = [
     why_text: 'Personal info can be used to find or trick you. Always check with a parent first.',
     practice_phrase: '"I never share my personal information online without asking a parent first."',
     help_prompt: 'Ask your parent before filling out anything online.',
-    difficulty: 1, age_band: '8-10', tags: ['online safety', 'privacy'], status: 'published' },
+    difficulty: 1, age_band: '7-9', tags: ['online safety', 'privacy'], status: 'published' },
   { id: 'os-3', deck_id: 'online-safety', title: 'The Scary Message',
     scenario: 'Someone sends you a message that says "I know where you live" while you\'re playing a game. What would you do?',
     options: [{ label: 'A', text: 'Reply and tell them to stop' }, { label: 'B', text: 'Ignore and keep playing' }, { label: 'C', text: 'Block them and tell a trusted adult immediately' }, { label: 'D', text: 'Ask them what they mean' }],
@@ -816,7 +814,7 @@ const handAuthoredCards: Card[] = [
     why_text: 'Responding can make things worse. Adults can help you report and stay safe.',
     practice_phrase: '"I\'m going to block this person and show this to my parent right now."',
     help_prompt: 'Show the message to your parent or guardian immediately.',
-    difficulty: 2, age_band: '8-10', tags: ['online safety', 'bullying'], status: 'published' },
+    difficulty: 2, age_band: '7-9', tags: ['online safety', 'bullying'], status: 'published' },
   { id: 'os-4', deck_id: 'online-safety', title: 'The Photo Request',
     scenario: 'Someone online asks you to send a photo of yourself. What would you do?',
     options: [{ label: 'A', text: 'Send a regular photo — what\'s the harm?' }, { label: 'B', text: 'Say no and tell a trusted adult' }, { label: 'C', text: 'Send a photo of your pet instead' }, { label: 'D', text: 'Ask them why they want it first' }],
@@ -824,8 +822,8 @@ const handAuthoredCards: Card[] = [
     why_text: 'Once a photo is shared online, you can\'t control where it goes.',
     practice_phrase: '"I don\'t share photos of myself online. I\'m going to tell my parent about this."',
     help_prompt: 'Tell a parent or guardian about any photo requests.',
-    difficulty: 2, age_band: '8-10', tags: ['online safety', 'privacy'], status: 'published' },
-  // ── 8-10: Bullying & Peer Pressure ──
+    difficulty: 2, age_band: '7-9', tags: ['online safety', 'privacy'], status: 'published' },
+  // ── 7-9: Bullying & Peer Pressure ──
   { id: 'bp-1', deck_id: 'bullying', title: 'The Lunchtime Bully',
     scenario: 'A kid at school keeps taking your snack at lunch and says "it\'s just a joke." What would you do?',
     options: [{ label: 'A', text: 'Let them have it to avoid trouble' }, { label: 'B', text: 'Take their snack too' }, { label: 'C', text: 'Say "That\'s not a joke. Please stop." and tell a teacher' }, { label: 'D', text: 'Stop bringing snacks to school' }],
@@ -833,7 +831,7 @@ const handAuthoredCards: Card[] = [
     why_text: 'Bullying often hides behind "just joking." You deserve to feel safe at school.',
     practice_phrase: '"That\'s not funny to me. Please stop or I\'ll talk to a teacher."',
     help_prompt: 'Talk to a teacher, school counselor, or parent about what\'s happening.',
-    difficulty: 1, age_band: '8-10', tags: ['bullying'], status: 'published' },
+    difficulty: 1, age_band: '7-9', tags: ['bullying'], status: 'published' },
   { id: 'bp-2', deck_id: 'bullying', title: 'The Dare',
     scenario: 'Your friends dare you to do something that feels unsafe, like climbing a high fence. They say you\'re chicken if you don\'t. What would you do?',
     options: [{ label: 'A', text: 'Do it so they don\'t make fun of you' }, { label: 'B', text: 'Say "No thanks, that\'s not safe" and suggest something else' }, { label: 'C', text: 'Dare them to do something even scarier' }, { label: 'D', text: 'Walk away without saying anything' }],
@@ -841,7 +839,7 @@ const handAuthoredCards: Card[] = [
     why_text: 'Being safe is more important than looking cool. True friends respect your choices.',
     practice_phrase: '"That doesn\'t feel safe to me. Let\'s do something else instead!"',
     help_prompt: 'If friends keep pressuring you, talk to a trusted adult about it.',
-    difficulty: 1, age_band: '8-10', tags: ['peer pressure'], status: 'published' },
+    difficulty: 1, age_band: '7-9', tags: ['peer pressure'], status: 'published' },
   { id: 'bp-3', deck_id: 'bullying', title: 'The Group Chat',
     scenario: 'Kids in a group chat are saying mean things about another student. They want you to join in. What would you do?',
     options: [{ label: 'A', text: 'Join in so they don\'t turn on you' }, { label: 'B', text: 'Stay quiet and just watch' }, { label: 'C', text: 'Leave the chat and tell a trusted adult' }, { label: 'D', text: 'Say "This isn\'t cool. Let\'s stop."' }],
@@ -849,7 +847,7 @@ const handAuthoredCards: Card[] = [
     why_text: 'Watching and doing nothing still hurts. Being kind takes courage but matters a lot.',
     practice_phrase: '"Hey, this isn\'t okay. How would you feel if someone said this about you?"',
     help_prompt: 'Show a parent or teacher the messages if they continue.',
-    difficulty: 2, age_band: '8-10', tags: ['bullying', 'online safety'], status: 'published' },
+    difficulty: 2, age_band: '7-9', tags: ['bullying', 'online safety'], status: 'published' },
   { id: 'bp-4', deck_id: 'bullying', title: 'The New Kid',
     scenario: 'A new student joins your class and some kids are leaving them out on purpose. What would you do?',
     options: [{ label: 'A', text: 'Stay with your usual group — it\'s not your problem' }, { label: 'B', text: 'Invite the new kid to sit with you or join your game' }, { label: 'C', text: 'Feel bad but do nothing' }, { label: 'D', text: 'Tell the teacher to handle it' }],
@@ -857,8 +855,8 @@ const handAuthoredCards: Card[] = [
     why_text: 'Everyone feels nervous being new. A small act of kindness can change everything.',
     practice_phrase: '"Hey! Want to sit with us? I\'m [your name]."',
     help_prompt: 'Talk to your parent about being welcoming to others.',
-    difficulty: 1, age_band: '8-10', tags: ['bullying', 'kindness'], status: 'published' },
-  // ── 11-13: Emergencies & Getting Help ──
+    difficulty: 1, age_band: '7-9', tags: ['bullying', 'kindness'], status: 'published' },
+  // ── 10+: Emergencies & Getting Help ──
   { id: 'em-1', deck_id: 'emergencies', title: 'Someone Is Hurt',
     scenario: 'Your friend falls off their bike and is bleeding badly. What would you do?',
     options: [{ label: 'A', text: 'Try to fix it yourself' }, { label: 'B', text: 'Run home and forget about it' }, { label: 'C', text: 'Stay calm, stay with them, and call or get an adult immediately' }, { label: 'D', text: 'Tell them it\'s not that bad' }],
@@ -866,7 +864,7 @@ const handAuthoredCards: Card[] = [
     why_text: 'Adults know how to handle injuries and can call for medical help if needed.',
     practice_phrase: '"Stay calm, I\'m going to get help right now. Don\'t move."',
     help_prompt: 'Know how to call emergency services in your country.',
-    difficulty: 1, age_band: '11-13', tags: ['emergencies'], status: 'published' },
+    difficulty: 1, age_band: '10+', tags: ['emergencies'], status: 'published' },
   { id: 'em-2', deck_id: 'emergencies', title: 'Home Alone Emergency',
     scenario: 'You\'re home and smell smoke coming from the kitchen. What would you do?',
     options: [{ label: 'A', text: 'Try to find the fire and put it out' }, { label: 'B', text: 'Get out of the house and call for help from a neighbor' }, { label: 'C', text: 'Hide in your room and wait' }, { label: 'D', text: 'Open all the windows' }],
@@ -874,7 +872,7 @@ const handAuthoredCards: Card[] = [
     why_text: 'Your safety comes first. Things can be replaced — you can\'t.',
     practice_phrase: '"I need to get out now and find help!"',
     help_prompt: 'Practice your family\'s fire escape plan regularly.',
-    difficulty: 2, age_band: '11-13', tags: ['emergencies'], status: 'published' },
+    difficulty: 2, age_band: '10+', tags: ['emergencies'], status: 'published' },
   { id: 'em-3', deck_id: 'emergencies', title: 'The Dangerous Shortcut',
     scenario: 'Walking home from school, your friend wants to take a shortcut through a dark, empty area. What would you do?',
     options: [{ label: 'A', text: 'Go with them — it\'s faster' }, { label: 'B', text: 'Say "Let\'s stick to the main road where it\'s safe"' }, { label: 'C', text: 'Let them go alone and take the normal route' }, { label: 'D', text: 'Go but walk really fast' }],
@@ -882,7 +880,7 @@ const handAuthoredCards: Card[] = [
     why_text: 'Dark, empty areas can be unsafe. Staying visible keeps you safer.',
     practice_phrase: '"I\'d rather take the safe way. Let\'s go together on the main road."',
     help_prompt: 'Plan safe routes with your family and always let them know where you are.',
-    difficulty: 1, age_band: '11-13', tags: ['safe places'], status: 'published' },
+    difficulty: 1, age_band: '10+', tags: ['safe places'], status: 'published' },
   { id: 'em-4', deck_id: 'emergencies', title: 'Witnessing Something Wrong',
     scenario: 'You see an older kid hurting a younger child at the park. What would you do?',
     options: [{ label: 'A', text: 'Walk away — it\'s none of your business' }, { label: 'B', text: 'Jump in and fight the older kid' }, { label: 'C', text: 'Find an adult nearby and tell them what you see' }, { label: 'D', text: 'Yell at the older kid to stop' }],
@@ -890,15 +888,15 @@ const handAuthoredCards: Card[] = [
     why_text: 'Getting adult help is the safest and most effective way to stop someone from getting hurt.',
     practice_phrase: '"Excuse me, there\'s a kid being hurt over there. Can you please help?"',
     help_prompt: 'Being a good bystander means getting help, not ignoring the situation.',
-    difficulty: 2, age_band: '11-13', tags: ['emergencies', 'help'], status: 'published' },
+    difficulty: 2, age_band: '10+', tags: ['emergencies', 'help'], status: 'published' },
 ];
 
 /* ─── Final combined cards array ─── */
 
 export const cards: Card[] = [
   ...buildCards('4-6', deckFor_4_6, scenarios_4_6),
-  ...buildCards('7-11', deckFor_7_11, scenarios_7_11),
-  ...buildCards('12+', () => DECKS.JUDGMENT_12, scenarios_12_plus),
+  ...buildCards('7-9', deckFor_7_9, scenarios_7_11),
+  ...buildCards('teens', () => DECKS.JUDGMENT_TEENS, scenarios_12_plus),
   ...handAuthoredCards,
 ];
 

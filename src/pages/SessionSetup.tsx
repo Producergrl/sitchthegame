@@ -8,11 +8,9 @@ import type { AgeBand, PlayStyle } from '@/types/game';
 
 const ageBands: { value: AgeBand; label: string }[] = [
   { value: '4-6', label: '4–6 years' },
-  { value: '5-7', label: '5–7 years' },
-  { value: '7-11', label: '7–11 years' },
-  { value: '8-10', label: '8–10 years' },
-  { value: '11-13', label: '11–13 years' },
-  { value: '12+', label: '12+ years' },
+  { value: '7-9', label: '7–9 years' },
+  { value: '10+', label: '10+ years' },
+  { value: 'teens', label: 'Teens' },
 ];
 
 const playStyles: { value: PlayStyle; label: string; desc: string; icon: string }[] = [
@@ -23,7 +21,7 @@ const playStyles: { value: PlayStyle; label: string; desc: string; icon: string 
 
 const SessionSetup = () => {
   const navigate = useNavigate();
-  const [ageBand, setAgeBand] = useState<AgeBand>('8-10');
+  const [ageBand, setAgeBand] = useState<AgeBand>('7-9');
   const [playStyle, setPlayStyle] = useState<PlayStyle>('discussion');
   const [selectedDecks, setSelectedDecks] = useState<string[]>([]);
 
