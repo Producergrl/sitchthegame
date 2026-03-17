@@ -831,7 +831,7 @@ const handAuthoredCards: Card[] = [
     why_text: 'Bullying often hides behind "just joking." You deserve to feel safe at school.',
     practice_phrase: '"That\'s not funny to me. Please stop or I\'ll talk to a teacher."',
     help_prompt: 'Talk to a teacher, school counselor, or parent about what\'s happening.',
-    difficulty: 1, age_band: '8-10', tags: ['bullying'], status: 'published' },
+    difficulty: 1, age_band: '7-9', tags: ['bullying'], status: 'published' },
   { id: 'bp-2', deck_id: 'bullying', title: 'The Dare',
     scenario: 'Your friends dare you to do something that feels unsafe, like climbing a high fence. They say you\'re chicken if you don\'t. What would you do?',
     options: [{ label: 'A', text: 'Do it so they don\'t make fun of you' }, { label: 'B', text: 'Say "No thanks, that\'s not safe" and suggest something else' }, { label: 'C', text: 'Dare them to do something even scarier' }, { label: 'D', text: 'Walk away without saying anything' }],
