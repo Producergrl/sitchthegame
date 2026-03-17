@@ -872,7 +872,7 @@ const handAuthoredCards: Card[] = [
     why_text: 'Your safety comes first. Things can be replaced — you can\'t.',
     practice_phrase: '"I need to get out now and find help!"',
     help_prompt: 'Practice your family\'s fire escape plan regularly.',
-    difficulty: 2, age_band: '11-13', tags: ['emergencies'], status: 'published' },
+    difficulty: 2, age_band: '10+', tags: ['emergencies'], status: 'published' },
   { id: 'em-3', deck_id: 'emergencies', title: 'The Dangerous Shortcut',
     scenario: 'Walking home from school, your friend wants to take a shortcut through a dark, empty area. What would you do?',
     options: [{ label: 'A', text: 'Go with them — it\'s faster' }, { label: 'B', text: 'Say "Let\'s stick to the main road where it\'s safe"' }, { label: 'C', text: 'Let them go alone and take the normal route' }, { label: 'D', text: 'Go but walk really fast' }],
