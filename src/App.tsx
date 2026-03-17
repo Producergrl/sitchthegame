@@ -12,6 +12,7 @@ import PlaySession from "./pages/PlaySession";
 import Resources from "./pages/Resources";
 import AdminPage from "./pages/AdminPage";
 import StickerCollection from "./pages/StickerCollection";
+import HowToPlay from "./pages/HowToPlay";
 import Legal from "./pages/Legal";
 import NotFound from "./pages/NotFound";
 
@@ -32,6 +33,7 @@ const App = () => (
             <Route path="/play" element={<PlaySession />} />
             <Route path="/resources" element={<Resources />} />
             <Route path="/stickers" element={<StickerCollection />} />
+            <Route path="/how-to-play" element={<HowToPlay />} />
             <Route path="/admin" element={<AdminPage />} />
             <Route path="/legal" element={<Legal />} />
             <Route path="*" element={<NotFound />} />
