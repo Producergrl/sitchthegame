@@ -823,7 +823,7 @@ const handAuthoredCards: Card[] = [
     practice_phrase: '"I don\'t share photos of myself online. I\'m going to tell my parent about this."',
     help_prompt: 'Tell a parent or guardian about any photo requests.',
     difficulty: 2, age_band: '7-9', tags: ['online safety', 'privacy'], status: 'published' },
-  // ── 8-10: Bullying & Peer Pressure ──
+  // ── 7-9: Bullying & Peer Pressure ──
   { id: 'bp-1', deck_id: 'bullying', title: 'The Lunchtime Bully',
     scenario: 'A kid at school keeps taking your snack at lunch and says "it\'s just a joke." What would you do?',
     options: [{ label: 'A', text: 'Let them have it to avoid trouble' }, { label: 'B', text: 'Take their snack too' }, { label: 'C', text: 'Say "That\'s not a joke. Please stop." and tell a teacher' }, { label: 'D', text: 'Stop bringing snacks to school' }],
