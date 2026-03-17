@@ -700,7 +700,7 @@ const LABELS = ['A', 'B', 'C', 'D'];
 const buildCards = (age: AgeBand, deckFn: (scenario: string) => string, scenarios: ScenarioData[]): Card[] =>
   scenarios.map((data, idx) => {
     const scenario = normalize(data.scenario);
-    const id = `${age === '12+' ? '12PLUS' : age}-${String(idx + 1).padStart(3, '0')}`;
+    const id = `${age === 'teens' ? 'TEENS' : age === '10+' ? '10PLUS' : age}-${String(idx + 1).padStart(3, '0')}`;
     return {
       id,
       deck_id: deckFn(scenario),
