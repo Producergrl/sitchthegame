@@ -327,7 +327,7 @@ const PlaySession = () => {
   // ── Setup screen (no valid deep-link) ──
   if (!isPlaying) {
     return (
-      <div className="min-h-screen bg-background">
+      <div className="min-h-screen bg-background" data-age-theme={setupAgeBand}>
         <div className="hero-gradient px-4 py-6 text-primary-foreground">
           <div className="mx-auto flex max-w-2xl items-center justify-between">
             <div className="flex items-center gap-3">
@@ -477,7 +477,7 @@ const PlaySession = () => {
   // ── No cards ──
   if (sessionCards.length === 0) {
     return (
-      <div className="flex min-h-screen items-center justify-center bg-background p-4">
+      <div className="flex min-h-screen items-center justify-center bg-background p-4" data-age-theme={activeAge}>
         <div className="text-center">
           <p className="text-lg font-bold text-foreground">No cards found for this selection.</p>
           <Link to="/play" className="mt-4 inline-block text-primary underline">Go back</Link>
@@ -490,7 +490,7 @@ const PlaySession = () => {
   if (sessionDone) {
     const level = getCurrentLevel(playerProgress.totalXP);
     return (
-      <div className="min-h-screen bg-background p-4">
+      <div className="min-h-screen bg-background p-4" data-age-theme={activeAge}>
         <Confetti active={showConfetti} />
         <div className="mx-auto max-w-lg space-y-6 pt-8">
           <motion.div initial={{ scale: 0 }} animate={{ scale: 1 }} transition={{ type: 'spring', bounce: 0.5 }} className="text-center">
@@ -619,7 +619,7 @@ const PlaySession = () => {
 
   // ── Active play ──
   return (
-    <div className="min-h-screen bg-background overflow-x-hidden">
+    <div className="min-h-screen bg-background overflow-x-hidden" data-age-theme={activeAge}>
       <Confetti active={showConfetti} />
       {/* Header */}
       <div className="hero-gradient px-3 py-3 sm:px-4 sm:py-4 text-primary-foreground">
