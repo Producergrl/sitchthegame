@@ -781,7 +781,7 @@ const handAuthoredCards: Card[] = [
     why_text: 'Safe adults won\'t ask kids they don\'t know well to get in their car.',
     practice_phrase: '"No thank you! My parent didn\'t tell me about this."',
     help_prompt: 'Have a family password that only trusted people know.',
-    difficulty: 2, age_band: '5-7', tags: ['strangers', 'safe places'], status: 'published' },
+    difficulty: 2, age_band: '4-6', tags: ['strangers', 'safe places'], status: 'published' },
   { id: 'ta-4', deck_id: 'trusted-adults', title: 'The Worried Feeling',
     scenario: 'You told a trusted adult about a problem, but nothing seems to change. What would you do?',
     options: [{ label: 'A', text: 'Give up and stop talking about it' }, { label: 'B', text: 'Keep telling trusted adults until someone helps' }, { label: 'C', text: 'Decide it\'s not important' }, { label: 'D', text: 'Handle it by yourself' }],
