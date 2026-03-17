@@ -773,7 +773,7 @@ const handAuthoredCards: Card[] = [
     why_text: 'Staying in the store and finding an employee is the safest choice.',
     practice_phrase: '"I\'m lost. Can you help me find my mom/dad? Their name is ___."',
     help_prompt: 'Practice a plan with your parent about what to do if you get separated.',
-    difficulty: 1, age_band: '5-7', tags: ['safe places', 'strangers'], status: 'published' },
+    difficulty: 1, age_band: '4-6', tags: ['safe places', 'strangers'], status: 'published' },
   { id: 'ta-3', deck_id: 'trusted-adults', title: 'The Offer of a Ride',
     scenario: 'Someone you don\'t know well pulls up in a car and offers you a ride home. What would you do?',
     options: [{ label: 'A', text: 'Get in if they know your name' }, { label: 'B', text: 'Say "No thank you" and quickly go to a safe place' }, { label: 'C', text: 'Ask them who sent them' }, { label: 'D', text: 'Get in because it\'s a long walk' }],
