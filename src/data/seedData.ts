@@ -798,7 +798,7 @@ const handAuthoredCards: Card[] = [
     why_text: 'You can\'t verify who someone really is online. A trusted adult can help you decide.',
     practice_phrase: '"I don\'t accept friend requests from people I don\'t know in real life."',
     help_prompt: 'Show your parent the request and talk about online safety rules.',
-    difficulty: 1, age_band: '8-10', tags: ['online safety', 'strangers'], status: 'published' },
+    difficulty: 1, age_band: '7-9', tags: ['online safety', 'strangers'], status: 'published' },
   { id: 'os-2', deck_id: 'online-safety', title: 'The Personal Info Quiz',
     scenario: 'A fun quiz online asks for your full name, school name, and birthday. What would you do?',
     options: [{ label: 'A', text: 'Fill it in — it\'s just a fun quiz' }, { label: 'B', text: 'Make up fake answers' }, { label: 'C', text: 'Skip the quiz and tell a parent about it' }, { label: 'D', text: 'Only share your first name' }],
