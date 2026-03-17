@@ -748,7 +748,7 @@ const handAuthoredCards: Card[] = [
     why_text: 'Asking for privacy is not rude — it\'s healthy. If it keeps happening, tell a trusted adult.',
     practice_phrase: '"Please knock before coming in — I need privacy!"',
     help_prompt: 'Talk to your parent about rules for privacy at other homes.',
-    difficulty: 1, age_band: '5-7', tags: ['boundaries', 'privacy'], status: 'published' },
+    difficulty: 1, age_band: '4-6', tags: ['boundaries', 'privacy'], status: 'published' },
   { id: 'bb-4', deck_id: 'body-boundaries', title: 'The Tickle Game',
     scenario: 'Your cousin keeps tickling you and won\'t stop even though you said stop. What would you do?',
     options: [{ label: 'A', text: 'Laugh and hope they stop eventually' }, { label: 'B', text: 'Say "STOP! I said stop and I mean it!"' }, { label: 'C', text: 'Hit them back' }, { label: 'D', text: 'Walk away and tell an adult' }],
