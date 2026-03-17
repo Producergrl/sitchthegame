@@ -856,7 +856,7 @@ const handAuthoredCards: Card[] = [
     practice_phrase: '"Hey! Want to sit with us? I\'m [your name]."',
     help_prompt: 'Talk to your parent about being welcoming to others.',
     difficulty: 1, age_band: '7-9', tags: ['bullying', 'kindness'], status: 'published' },
-  // ── 11-13: Emergencies & Getting Help ──
+  // ── 10+: Emergencies & Getting Help ──
   { id: 'em-1', deck_id: 'emergencies', title: 'Someone Is Hurt',
     scenario: 'Your friend falls off their bike and is bleeding badly. What would you do?',
     options: [{ label: 'A', text: 'Try to fix it yourself' }, { label: 'B', text: 'Run home and forget about it' }, { label: 'C', text: 'Stay calm, stay with them, and call or get an adult immediately' }, { label: 'D', text: 'Tell them it\'s not that bad' }],
