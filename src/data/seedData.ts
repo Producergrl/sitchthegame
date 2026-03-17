@@ -880,7 +880,7 @@ const handAuthoredCards: Card[] = [
     why_text: 'Dark, empty areas can be unsafe. Staying visible keeps you safer.',
     practice_phrase: '"I\'d rather take the safe way. Let\'s go together on the main road."',
     help_prompt: 'Plan safe routes with your family and always let them know where you are.',
-    difficulty: 1, age_band: '11-13', tags: ['safe places'], status: 'published' },
+    difficulty: 1, age_band: '10+', tags: ['safe places'], status: 'published' },
   { id: 'em-4', deck_id: 'emergencies', title: 'Witnessing Something Wrong',
     scenario: 'You see an older kid hurting a younger child at the park. What would you do?',
     options: [{ label: 'A', text: 'Walk away — it\'s none of your business' }, { label: 'B', text: 'Jump in and fight the older kid' }, { label: 'C', text: 'Find an adult nearby and tell them what you see' }, { label: 'D', text: 'Yell at the older kid to stop' }],
