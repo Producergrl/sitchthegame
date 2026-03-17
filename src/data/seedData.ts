@@ -864,7 +864,7 @@ const handAuthoredCards: Card[] = [
     why_text: 'Adults know how to handle injuries and can call for medical help if needed.',
     practice_phrase: '"Stay calm, I\'m going to get help right now. Don\'t move."',
     help_prompt: 'Know how to call emergency services in your country.',
-    difficulty: 1, age_band: '11-13', tags: ['emergencies'], status: 'published' },
+    difficulty: 1, age_band: '10+', tags: ['emergencies'], status: 'published' },
   { id: 'em-2', deck_id: 'emergencies', title: 'Home Alone Emergency',
     scenario: 'You\'re home and smell smoke coming from the kitchen. What would you do?',
     options: [{ label: 'A', text: 'Try to find the fire and put it out' }, { label: 'B', text: 'Get out of the house and call for help from a neighbor' }, { label: 'C', text: 'Hide in your room and wait' }, { label: 'D', text: 'Open all the windows' }],
