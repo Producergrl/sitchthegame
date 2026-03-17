@@ -68,7 +68,7 @@ describe('buildPlayUrl', () => {
   });
 
   it('joins multiple decks with commas', () => {
-    const url = buildPlayUrl({ deckIds: ['emergencies', 'bullying'], age: '8-10', mode: 'quiz' }, 'https://x.com');
+    const url = buildPlayUrl({ deckIds: ['emergencies', 'bullying'], age: '7-9', mode: 'quiz' }, 'https://x.com');
     expect(url).toContain('decks=emergencies%2Cbullying');
   });
 });
