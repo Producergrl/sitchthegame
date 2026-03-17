@@ -757,7 +757,7 @@ const handAuthoredCards: Card[] = [
     practice_phrase: '"I said stop. Please respect that."',
     help_prompt: 'Tell a parent or guardian if someone won\'t stop when you ask.',
     difficulty: 1, age_band: '4-6', tags: ['boundaries', 'consent'], status: 'published' },
-  // ── 5-7: Trusted Adults & Safe Places ──
+  // ── 4-6: Trusted Adults & Safe Places ──
   { id: 'ta-1', deck_id: 'trusted-adults', title: 'Who Do You Trust?',
     scenario: 'Something is making you worried and you need to talk to someone. Who would be the best person to tell?',
     options: [{ label: 'A', text: 'A stranger who seems nice' }, { label: 'B', text: 'A parent, teacher, or family member you trust' }, { label: 'C', text: 'Nobody — you should handle it yourself' }, { label: 'D', text: 'Post about it online' }],
