@@ -790,7 +790,7 @@ const handAuthoredCards: Card[] = [
     practice_phrase: '"I told someone before but I still need help. Can you help me?"',
     help_prompt: 'Remember: it\'s never your fault, and you deserve to be helped.',
     difficulty: 2, age_band: '4-6', tags: ['trusted adults'], status: 'published' },
-  // ── 8-10: Online & Device Safety ──
+  // ── 7-9: Online & Device Safety ──
   { id: 'os-1', deck_id: 'online-safety', title: 'The Friend Request',
     scenario: 'Someone you don\'t know sends you a friend request on a game and says they\'re a kid your age. What would you do?',
     options: [{ label: 'A', text: 'Accept — they said they\'re your age' }, { label: 'B', text: 'Don\'t accept and tell a parent about it' }, { label: 'C', text: 'Accept but don\'t share personal info' }, { label: 'D', text: 'Ask them to prove they\'re a kid first' }],
