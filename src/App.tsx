@@ -33,6 +33,7 @@ const App = () => (
             <Route path="/play" element={<PlaySession />} />
             <Route path="/resources" element={<Resources />} />
             <Route path="/stickers" element={<StickerCollection />} />
+            <Route path="/how-to-play" element={<HowToPlay />} />
             <Route path="/admin" element={<AdminPage />} />
             <Route path="/legal" element={<Legal />} />
             <Route path="*" element={<NotFound />} />
