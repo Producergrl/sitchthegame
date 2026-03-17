@@ -855,7 +855,7 @@ const handAuthoredCards: Card[] = [
     why_text: 'Everyone feels nervous being new. A small act of kindness can change everything.',
     practice_phrase: '"Hey! Want to sit with us? I\'m [your name]."',
     help_prompt: 'Talk to your parent about being welcoming to others.',
-    difficulty: 1, age_band: '8-10', tags: ['bullying', 'kindness'], status: 'published' },
+    difficulty: 1, age_band: '7-9', tags: ['bullying', 'kindness'], status: 'published' },
   // ── 11-13: Emergencies & Getting Help ──
   { id: 'em-1', deck_id: 'emergencies', title: 'Someone Is Hurt',
     scenario: 'Your friend falls off their bike and is bleeding badly. What would you do?',
