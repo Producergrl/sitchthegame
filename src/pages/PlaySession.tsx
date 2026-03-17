@@ -619,7 +619,7 @@ const PlaySession = () => {
 
   // ── Active play ──
   return (
-    <div className="min-h-screen bg-background overflow-x-hidden">
+    <div className="min-h-screen bg-background overflow-x-hidden" data-age-theme={activeAge}>
       <Confetti active={showConfetti} />
       {/* Header */}
       <div className="hero-gradient px-3 py-3 sm:px-4 sm:py-4 text-primary-foreground">
