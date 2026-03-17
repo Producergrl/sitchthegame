@@ -61,7 +61,7 @@ const PlaySession = () => {
   // Active session params
   const activeDeckIds = isPlaying ? (autoStart ? parsed.deckIds : setupDecks) : [];
   const activeMode = isPlaying ? (autoStart ? parsed.mode : setupMode) : 'discussion';
-  const activeAge = isPlaying ? (autoStart ? parsed.age : setupAgeBand) : '8-10';
+  const activeAge = isPlaying ? (autoStart ? parsed.age : setupAgeBand) : '7-9';
 
   const sessionCards = useMemo(() => {
     if (activeDeckIds.includes(COMPILATION_DECK_ID)) return getCompilationCards(10);

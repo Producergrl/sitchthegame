@@ -21,7 +21,7 @@ const playStyles: { value: PlayStyle; label: string; desc: string; icon: string 
 
 const SessionSetup = () => {
   const navigate = useNavigate();
-  const [ageBand, setAgeBand] = useState<AgeBand>('8-10');
+  const [ageBand, setAgeBand] = useState<AgeBand>('7-9');
   const [playStyle, setPlayStyle] = useState<PlayStyle>('discussion');
   const [selectedDecks, setSelectedDecks] = useState<string[]>([]);
 

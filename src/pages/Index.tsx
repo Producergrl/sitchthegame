@@ -206,7 +206,7 @@ const Index = () => {
           transition={{ delay: 2, duration: 0.6 }}
           className="relative z-10 mt-10 flex flex-col items-center gap-3 sm:flex-row"
         >
-          <Link to="/play?decks=__compilation__&age=8-10&mode=quiz">
+          <Link to="/play?decks=__compilation__&age=7-9&mode=quiz">
             <Button
               size="lg"
               className="group gap-2.5 text-base font-black tracking-wide uppercase shadow-2xl active:animate-btn-press transition-all duration-300 hover:scale-110 px-10 py-7 rounded-2xl border-0"

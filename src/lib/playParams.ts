@@ -51,7 +51,7 @@ export function parsePlayParams(raw: {
   return {
     params: {
       deckIds: hasDecks ? validDecks : [],
-      age: validAge ?? '8-10',
+      age: validAge ?? '7-9',
       mode: validMode ?? 'discussion',
     },
     isValid,
