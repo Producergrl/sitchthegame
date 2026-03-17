@@ -1,7 +1,7 @@
 import { decks, COMPILATION_DECK_ID } from '@/data/seedData';
 import type { AgeBand, PlayStyle } from '@/types/game';
 
-const VALID_AGE_BANDS: AgeBand[] = ['4-6', '5-7', '7-11', '8-10', '11-13', '12+'];
+const VALID_AGE_BANDS: AgeBand[] = ['4-6', '7-9', '10+', 'teens'];
 const VALID_MODES: PlayStyle[] = ['discussion', 'quiz', 'roleplay'];
 
 export interface PlayParams {
