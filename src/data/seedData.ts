@@ -839,7 +839,7 @@ const handAuthoredCards: Card[] = [
     why_text: 'Being safe is more important than looking cool. True friends respect your choices.',
     practice_phrase: '"That doesn\'t feel safe to me. Let\'s do something else instead!"',
     help_prompt: 'If friends keep pressuring you, talk to a trusted adult about it.',
-    difficulty: 1, age_band: '8-10', tags: ['peer pressure'], status: 'published' },
+    difficulty: 1, age_band: '7-9', tags: ['peer pressure'], status: 'published' },
   { id: 'bp-3', deck_id: 'bullying', title: 'The Group Chat',
     scenario: 'Kids in a group chat are saying mean things about another student. They want you to join in. What would you do?',
     options: [{ label: 'A', text: 'Join in so they don\'t turn on you' }, { label: 'B', text: 'Stay quiet and just watch' }, { label: 'C', text: 'Leave the chat and tell a trusted adult' }, { label: 'D', text: 'Say "This isn\'t cool. Let\'s stop."' }],
