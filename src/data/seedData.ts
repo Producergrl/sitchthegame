@@ -724,7 +724,7 @@ const buildCards = (age: AgeBand, deckFn: (scenario: string) => string, scenario
 /* ─── 5-7 / 8-10 / 11-13 hand-authored cards ─── */
 
 const handAuthoredCards: Card[] = [
-  // ── 5-7: Body Boundaries & Consent ──
+  // ── 4-6: Body Boundaries & Consent ──
   { id: 'bb-1', deck_id: 'body-boundaries', title: 'The Unwanted Hug',
     scenario: 'A family friend wants to give you a big hug, but you don\'t feel like being hugged right now. What would you do?',
     options: [{ label: 'A', text: 'Hug them even though you don\'t want to' }, { label: 'B', text: 'Say "No thank you, I\'d rather wave hello!"' }, { label: 'C', text: 'Run away without saying anything' }, { label: 'D', text: 'Ask a parent if you have to hug them' }],
