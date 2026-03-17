@@ -814,7 +814,7 @@ const handAuthoredCards: Card[] = [
     why_text: 'Responding can make things worse. Adults can help you report and stay safe.',
     practice_phrase: '"I\'m going to block this person and show this to my parent right now."',
     help_prompt: 'Show the message to your parent or guardian immediately.',
-    difficulty: 2, age_band: '8-10', tags: ['online safety', 'bullying'], status: 'published' },
+    difficulty: 2, age_band: '7-9', tags: ['online safety', 'bullying'], status: 'published' },
   { id: 'os-4', deck_id: 'online-safety', title: 'The Photo Request',
     scenario: 'Someone online asks you to send a photo of yourself. What would you do?',
     options: [{ label: 'A', text: 'Send a regular photo — what\'s the harm?' }, { label: 'B', text: 'Say no and tell a trusted adult' }, { label: 'C', text: 'Send a photo of your pet instead' }, { label: 'D', text: 'Ask them why they want it first' }],
