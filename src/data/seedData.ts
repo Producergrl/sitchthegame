@@ -895,8 +895,8 @@ const handAuthoredCards: Card[] = [
 
 export const cards: Card[] = [
   ...buildCards('4-6', deckFor_4_6, scenarios_4_6),
-  ...buildCards('7-11', deckFor_7_11, scenarios_7_11),
-  ...buildCards('12+', () => DECKS.JUDGMENT_12, scenarios_12_plus),
+  ...buildCards('7-9', deckFor_7_9, scenarios_7_11),
+  ...buildCards('teens', () => DECKS.JUDGMENT_TEENS, scenarios_12_plus),
   ...handAuthoredCards,
 ];
 
