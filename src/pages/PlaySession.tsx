@@ -477,7 +477,7 @@ const PlaySession = () => {
   // ── No cards ──
   if (sessionCards.length === 0) {
     return (
-      <div className="flex min-h-screen items-center justify-center bg-background p-4">
+      <div className="flex min-h-screen items-center justify-center bg-background p-4" data-age-theme={activeAge}>
         <div className="text-center">
           <p className="text-lg font-bold text-foreground">No cards found for this selection.</p>
           <Link to="/play" className="mt-4 inline-block text-primary underline">Go back</Link>
