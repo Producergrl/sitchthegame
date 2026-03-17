@@ -732,7 +732,7 @@ const handAuthoredCards: Card[] = [
     why_text: 'Your body belongs to you. Politely saying no teaches others to respect your boundaries.',
     practice_phrase: '"No thank you — I\'d prefer a wave or a high-five!"',
     help_prompt: 'Talk to your parent or guardian about body boundaries.',
-    difficulty: 1, age_band: '5-7', tags: ['boundaries', 'consent'], status: 'published' },
+    difficulty: 1, age_band: '4-6', tags: ['boundaries', 'consent'], status: 'published' },
   { id: 'bb-2', deck_id: 'body-boundaries', title: 'The Secret Touch',
     scenario: 'Someone touches you in a way that feels wrong and tells you to keep it a secret. What would you do?',
     options: [{ label: 'A', text: 'Keep the secret because they told you to' }, { label: 'B', text: 'Tell a trusted adult right away' }, { label: 'C', text: 'Forget about it and move on' }, { label: 'D', text: 'Tell your best friend' }],
