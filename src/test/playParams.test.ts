@@ -63,7 +63,7 @@ describe('parsePlayParams', () => {
 
 describe('buildPlayUrl', () => {
   it('constructs a valid URL', () => {
-    const url = buildPlayUrl({ deckIds: ['emergencies'], age: '11-13', mode: 'discussion' }, 'https://example.com');
+    const url = buildPlayUrl({ deckIds: ['emergencies'], age: '10+', mode: 'discussion' }, 'https://example.com');
     expect(url).toBe('https://example.com/play?decks=emergencies&age=11-13&mode=discussion');
   });
 
