@@ -888,7 +888,7 @@ const handAuthoredCards: Card[] = [
     why_text: 'Getting adult help is the safest and most effective way to stop someone from getting hurt.',
     practice_phrase: '"Excuse me, there\'s a kid being hurt over there. Can you please help?"',
     help_prompt: 'Being a good bystander means getting help, not ignoring the situation.',
-    difficulty: 2, age_band: '11-13', tags: ['emergencies', 'help'], status: 'published' },
+    difficulty: 2, age_band: '10+', tags: ['emergencies', 'help'], status: 'published' },
 ];
 
 /* ─── Final combined cards array ─── */
