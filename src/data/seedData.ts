@@ -197,7 +197,7 @@ const practicePhraseFor = (scenario: string, age: AgeBand) => {
     if (s.includes("can't find") || s.includes("can\u2019t find") || s.includes('lost')) return 'I\'m lost. Please help me find my grown-up.';
     return 'I need help, please.';
   }
-  if (age === '7-11') return 'No thanks. I\'m not doing that.';
+  if (age === '7-9') return 'No thanks. I\'m not doing that.';
   return 'I\'m not comfortable with that. I\'m getting help.';
 };
 
