@@ -765,7 +765,7 @@ const handAuthoredCards: Card[] = [
     why_text: 'You never have to handle scary things alone. Trusted adults are there to help.',
     practice_phrase: '"I need to talk to you about something that\'s worrying me."',
     help_prompt: 'Make a list of 3-5 trusted adults you can always go to.',
-    difficulty: 1, age_band: '5-7', tags: ['trusted adults'], status: 'published' },
+    difficulty: 1, age_band: '4-6', tags: ['trusted adults'], status: 'published' },
   { id: 'ta-2', deck_id: 'trusted-adults', title: 'Lost at the Store',
     scenario: 'You get separated from your parent at a big store and can\'t find them. What would you do?',
     options: [{ label: 'A', text: 'Walk out of the store to look for them' }, { label: 'B', text: 'Go with a stranger who offers to help find them' }, { label: 'C', text: 'Find a store worker (with a name badge) and ask for help' }, { label: 'D', text: 'Stay where you are and cry' }],
