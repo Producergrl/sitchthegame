@@ -90,9 +90,9 @@ const DECKS = {
   BODY_4_6: 'body-boundaries-4-6',
   TRUSTED_4_6: 'trusted-adults-4-6',
   SECRETS_4_6: 'secrets-4-6',
-  PEER_7_11: 'peer-pressure-7-11',
-  DIGITAL_7_11: 'digital-safety-7-11',
-  JUDGMENT_12: 'real-world-judgment-12plus',
+  PEER_7_9: 'peer-pressure-7-9',
+  DIGITAL_7_9: 'digital-safety-7-9',
+  JUDGMENT_TEENS: 'real-world-judgment-teens',
 } as const;
 
 const normalize = (s: string) =>
