@@ -806,7 +806,7 @@ const handAuthoredCards: Card[] = [
     why_text: 'Personal info can be used to find or trick you. Always check with a parent first.',
     practice_phrase: '"I never share my personal information online without asking a parent first."',
     help_prompt: 'Ask your parent before filling out anything online.',
-    difficulty: 1, age_band: '8-10', tags: ['online safety', 'privacy'], status: 'published' },
+    difficulty: 1, age_band: '7-9', tags: ['online safety', 'privacy'], status: 'published' },
   { id: 'os-3', deck_id: 'online-safety', title: 'The Scary Message',
     scenario: 'Someone sends you a message that says "I know where you live" while you\'re playing a game. What would you do?',
     options: [{ label: 'A', text: 'Reply and tell them to stop' }, { label: 'B', text: 'Ignore and keep playing' }, { label: 'C', text: 'Block them and tell a trusted adult immediately' }, { label: 'D', text: 'Ask them what they mean' }],
