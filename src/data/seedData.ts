@@ -740,7 +740,7 @@ const handAuthoredCards: Card[] = [
     why_text: 'No one should ever ask you to keep a secret about touching. Telling an adult is brave and the right thing to do.',
     practice_phrase: '"This doesn\'t feel right. I need to tell someone I trust."',
     help_prompt: 'Tell a parent, teacher, or another trusted adult immediately.',
-    difficulty: 2, age_band: '5-7', tags: ['boundaries', 'secrets'], status: 'published' },
+    difficulty: 2, age_band: '4-6', tags: ['boundaries', 'secrets'], status: 'published' },
   { id: 'bb-3', deck_id: 'body-boundaries', title: 'Changing Clothes',
     scenario: 'You\'re changing clothes at a friend\'s house and their older sibling walks in without knocking. What would you do?',
     options: [{ label: 'A', text: 'Say "Please knock! I\'m changing" and cover up' }, { label: 'B', text: 'Ignore it because it\'s not a big deal' }, { label: 'C', text: 'Feel embarrassed but say nothing' }, { label: 'D', text: 'Tell your friend\'s parent what happened' }],
