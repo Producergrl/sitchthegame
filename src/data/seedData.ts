@@ -789,7 +789,7 @@ const handAuthoredCards: Card[] = [
     why_text: 'Sometimes the first person you tell might not understand. Never stop speaking up.',
     practice_phrase: '"I told someone before but I still need help. Can you help me?"',
     help_prompt: 'Remember: it\'s never your fault, and you deserve to be helped.',
-    difficulty: 2, age_band: '5-7', tags: ['trusted adults'], status: 'published' },
+    difficulty: 2, age_band: '4-6', tags: ['trusted adults'], status: 'published' },
   // ── 8-10: Online & Device Safety ──
   { id: 'os-1', deck_id: 'online-safety', title: 'The Friend Request',
     scenario: 'Someone you don\'t know sends you a friend request on a game and says they\'re a kid your age. What would you do?',
