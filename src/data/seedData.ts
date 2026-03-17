@@ -847,7 +847,7 @@ const handAuthoredCards: Card[] = [
     why_text: 'Watching and doing nothing still hurts. Being kind takes courage but matters a lot.',
     practice_phrase: '"Hey, this isn\'t okay. How would you feel if someone said this about you?"',
     help_prompt: 'Show a parent or teacher the messages if they continue.',
-    difficulty: 2, age_band: '8-10', tags: ['bullying', 'online safety'], status: 'published' },
+    difficulty: 2, age_band: '7-9', tags: ['bullying', 'online safety'], status: 'published' },
   { id: 'bp-4', deck_id: 'bullying', title: 'The New Kid',
     scenario: 'A new student joins your class and some kids are leaving them out on purpose. What would you do?',
     options: [{ label: 'A', text: 'Stay with your usual group — it\'s not your problem' }, { label: 'B', text: 'Invite the new kid to sit with you or join your game' }, { label: 'C', text: 'Feel bad but do nothing' }, { label: 'D', text: 'Tell the teacher to handle it' }],
