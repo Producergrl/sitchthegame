@@ -60,10 +60,10 @@ const Index = () => {
       <div className="relative flex min-h-[100dvh] flex-col items-center justify-center overflow-hidden">
         {/* Deep cinematic background layers */}
         <div className="absolute inset-0" style={{
-          background: 'radial-gradient(ellipse 80% 60% at 50% 40%, hsl(160 50% 12% / 0.5) 0%, transparent 70%)',
+          background: 'radial-gradient(ellipse 80% 60% at 50% 40%, hsl(8 55% 15% / 0.6) 0%, transparent 70%)',
         }} />
         <div className="absolute inset-0" style={{
-          background: 'radial-gradient(ellipse 60% 50% at 50% 45%, hsl(42 80% 50% / 0.06) 0%, transparent 60%)',
+          background: 'radial-gradient(ellipse 60% 50% at 50% 45%, hsl(20 80% 45% / 0.08) 0%, transparent 60%)',
         }} />
 
         {/* Grain overlay */}
