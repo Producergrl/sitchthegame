@@ -194,7 +194,7 @@ const Index = () => {
           }}
         >
           <span className="text-lg">{level.icon}</span>
-          <span className="text-sm font-bold" style={{ color: 'hsl(42 80% 60%)' }}>{level.title}</span>
+          <span className="text-sm font-bold" style={{ color: 'hsl(20 80% 58%)' }}>{level.title}</span>
           <span className="h-3 w-px bg-white/15" />
           <span className="text-sm font-bold text-white/70">{progress.totalXP} XP</span>
         </motion.div>
