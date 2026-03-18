@@ -331,9 +331,6 @@ const scenarios_4_6: ScenarioData[] = [
   { scenario: "Your friend hits you.",
     options: ["Hit them back harder", "Say 'Don't hit me!' and tell a grown-up", "Pretend it didn't hurt", "Hit them and then run away"],
     correct_option: 'B', worst_option: 'A' },
-  { scenario: 'Someone says they want to play "doctor" with you and take off clothes.',
-    options: ["Play along because it sounds like a game", "Say 'No! That's not a safe game' and tell a grown-up", "Take off some clothes but not all", "Play the game if they go first"],
-    correct_option: 'B', worst_option: 'A' },
   { scenario: "You see someone taking something that isn't theirs.",
     options: ["Help them take it", "Tell a grown-up what you saw", "Take something too", "Pretend you didn't see anything"],
     correct_option: 'B', worst_option: 'A' },
@@ -449,6 +446,9 @@ const scenarios_4_6: ScenarioData[] = [
 ];
 
 const scenarios_7_11: ScenarioData[] = [
+  { scenario: 'Someone says they want to play "doctor" with you and take off clothes.',
+    options: ["Play along because it sounds like a game", "Say 'No! That's not a safe game' and tell a trusted adult", "Take off some clothes but not all", "Play the game if they go first"],
+    correct_option: 'B', worst_option: 'A' },
   { scenario: "Your friend wants to cheat on a test and asks for your answers.",
     options: ["Give them your answers so they don't get in trouble", "Say 'I can't do that, but I can help you study later'", "Cheat together so you both get good grades", "Ignore them and hope they stop asking"],
     correct_option: 'B', worst_option: 'C' },
