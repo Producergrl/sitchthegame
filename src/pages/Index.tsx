@@ -189,7 +189,7 @@ const Index = () => {
           className="relative z-10 mt-8 flex items-center gap-2.5 rounded-full px-5 py-2.5"
           style={{
             background: 'hsl(0 0% 100% / 0.04)',
-            border: '1px solid hsl(42 80% 50% / 0.2)',
+            border: '1px solid hsl(18 80% 50% / 0.25)',
             backdropFilter: 'blur(12px)',
           }}
         >
