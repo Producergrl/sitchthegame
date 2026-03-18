@@ -138,11 +138,11 @@ const Index = () => {
             transition={{ delay: 0.5, duration: 1, ease: [0.22, 1, 0.36, 1] }}
             className="text-[2.4rem] leading-[1.1] font-black tracking-[-0.02em] md:text-[4.5rem] uppercase"
             style={{
-              background: 'linear-gradient(170deg, hsl(42 60% 75%) 0%, hsl(42 90% 62%) 30%, hsl(42 100% 50%) 50%, hsl(42 80% 60%) 70%, hsl(42 50% 45%) 100%)',
+              background: 'linear-gradient(170deg, hsl(15 60% 70%) 0%, hsl(18 90% 58%) 30%, hsl(24 100% 52%) 50%, hsl(18 80% 55%) 70%, hsl(8 60% 40%) 100%)',
               WebkitBackgroundClip: 'text',
               WebkitTextFillColor: 'transparent',
               backgroundClip: 'text',
-              filter: 'drop-shadow(0 4px 12px hsl(42 90% 50% / 0.3)) drop-shadow(0 1px 0 hsl(42 80% 30% / 0.5))',
+              filter: 'drop-shadow(0 4px 12px hsl(18 90% 50% / 0.35)) drop-shadow(0 1px 0 hsl(8 80% 25% / 0.5))',
             }}
           >
             What Would
