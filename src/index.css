@@ -252,9 +252,9 @@
     background: linear-gradient(
       105deg,
       transparent 40%,
-      hsl(14 100% 72% / 0.45) 45%,
-      hsl(20 100% 82% / 0.65) 50%,
-      hsl(14 100% 72% / 0.45) 55%,
+      hsl(45 90% 65% / 0.45) 45%,
+      hsl(42 95% 75% / 0.65) 50%,
+      hsl(45 90% 65% / 0.45) 55%,
       transparent 60%
     );
     animation: sweep 3s ease-in-out infinite;
