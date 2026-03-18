@@ -16,7 +16,7 @@ const Particle = ({ delay, size, x, y, dur }: { delay: number; size: number; x: 
       height: size,
       left: `${x}%`,
       top: `${y}%`,
-      background: `radial-gradient(circle, hsl(42 90% 62% / 0.5), hsl(42 90% 62% / 0))`,
+      background: `radial-gradient(circle, hsl(18 90% 55% / 0.5), hsl(18 90% 55% / 0))`,
     }}
     initial={{ opacity: 0, scale: 0 }}
     animate={{
@@ -55,15 +55,15 @@ const Index = () => {
   const level = useMemo(() => getCurrentLevel(progress.totalXP), [progress.totalXP]);
 
   return (
-    <div className="min-h-screen overflow-x-hidden" style={{ background: 'linear-gradient(180deg, hsl(160 20% 5%) 0%, hsl(160 15% 3%) 100%)' }}>
+    <div className="min-h-screen overflow-x-hidden" style={{ background: 'linear-gradient(180deg, hsl(8 30% 6%) 0%, hsl(8 20% 4%) 100%)' }}>
       {/* ═══════════ FULL-SCREEN HERO ═══════════ */}
       <div className="relative flex min-h-[100dvh] flex-col items-center justify-center overflow-hidden">
         {/* Deep cinematic background layers */}
         <div className="absolute inset-0" style={{
-          background: 'radial-gradient(ellipse 80% 60% at 50% 40%, hsl(160 50% 12% / 0.5) 0%, transparent 70%)',
+          background: 'radial-gradient(ellipse 80% 60% at 50% 40%, hsl(8 55% 15% / 0.6) 0%, transparent 70%)',
         }} />
         <div className="absolute inset-0" style={{
-          background: 'radial-gradient(ellipse 60% 50% at 50% 45%, hsl(42 80% 50% / 0.06) 0%, transparent 60%)',
+          background: 'radial-gradient(ellipse 60% 50% at 50% 45%, hsl(20 80% 45% / 0.08) 0%, transparent 60%)',
         }} />
 
         {/* Grain overlay */}
@@ -91,11 +91,11 @@ const Index = () => {
             width: 500, height: 500,
             top: '50%', left: '50%', transform: 'translate(-50%, -55%)',
           }}
-          animate={{
+            animate={{
             background: [
-              'radial-gradient(circle, hsl(42 90% 55% / 0.10) 0%, hsl(160 60% 30% / 0.04) 40%, transparent 70%)',
-              'radial-gradient(circle, hsl(42 90% 55% / 0.16) 0%, hsl(160 60% 30% / 0.07) 40%, transparent 70%)',
-              'radial-gradient(circle, hsl(42 90% 55% / 0.10) 0%, hsl(160 60% 30% / 0.04) 40%, transparent 70%)',
+              'radial-gradient(circle, hsl(18 85% 50% / 0.12) 0%, hsl(8 55% 25% / 0.05) 40%, transparent 70%)',
+              'radial-gradient(circle, hsl(18 85% 50% / 0.20) 0%, hsl(8 55% 25% / 0.08) 40%, transparent 70%)',
+              'radial-gradient(circle, hsl(18 85% 50% / 0.12) 0%, hsl(8 55% 25% / 0.05) 40%, transparent 70%)',
             ],
           }}
           transition={{ duration: 4, repeat: Infinity, ease: 'easeInOut' }}
@@ -111,8 +111,8 @@ const Index = () => {
           <div
             className="relative flex h-24 w-24 items-center justify-center rounded-[1.75rem] gold-sweep"
             style={{
-              background: 'linear-gradient(145deg, hsl(42 70% 45%), hsl(42 85% 55%), hsl(42 70% 40%))',
-              boxShadow: '0 0 40px hsl(42 90% 55% / 0.3), 0 0 80px hsl(42 90% 55% / 0.1), inset 0 1px 1px hsl(42 90% 80% / 0.4)',
+              background: 'linear-gradient(145deg, hsl(8 70% 40%), hsl(18 85% 52%), hsl(25 80% 48%))',
+              boxShadow: '0 0 40px hsl(18 85% 50% / 0.35), 0 0 80px hsl(18 85% 50% / 0.12), inset 0 1px 1px hsl(20 90% 75% / 0.4)',
             }}
           >
             <Shield className="relative z-10 h-12 w-12 text-white drop-shadow-[0_2px_4px_hsl(0_0%_0%/0.5)]" />
@@ -138,11 +138,11 @@ const Index = () => {
             transition={{ delay: 0.5, duration: 1, ease: [0.22, 1, 0.36, 1] }}
             className="text-[2.4rem] leading-[1.1] font-black tracking-[-0.02em] md:text-[4.5rem] uppercase"
             style={{
-              background: 'linear-gradient(170deg, hsl(42 60% 75%) 0%, hsl(42 90% 62%) 30%, hsl(42 100% 50%) 50%, hsl(42 80% 60%) 70%, hsl(42 50% 45%) 100%)',
+              background: 'linear-gradient(170deg, hsl(15 60% 70%) 0%, hsl(18 90% 58%) 30%, hsl(24 100% 52%) 50%, hsl(18 80% 55%) 70%, hsl(8 60% 40%) 100%)',
               WebkitBackgroundClip: 'text',
               WebkitTextFillColor: 'transparent',
               backgroundClip: 'text',
-              filter: 'drop-shadow(0 4px 12px hsl(42 90% 50% / 0.3)) drop-shadow(0 1px 0 hsl(42 80% 30% / 0.5))',
+              filter: 'drop-shadow(0 4px 12px hsl(18 90% 50% / 0.35)) drop-shadow(0 1px 0 hsl(8 80% 25% / 0.5))',
             }}
           >
             What Would
@@ -154,7 +154,7 @@ const Index = () => {
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 1.1, duration: 0.6 }}
             className="mt-2 block text-[0.7rem] font-bold uppercase tracking-[0.35em] md:text-xs"
-            style={{ color: 'hsl(42 70% 60% / 0.7)' }}
+            style={{ color: 'hsl(20 70% 60% / 0.7)' }}
           >
             Founders Edition
           </motion.span>
@@ -166,7 +166,7 @@ const Index = () => {
             transition={{ delay: 1.4, duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
             className="mx-auto mt-3 h-[2px] w-32 origin-center"
             style={{
-              background: 'linear-gradient(90deg, transparent, hsl(42 90% 62% / 0.8), transparent)',
+              background: 'linear-gradient(90deg, transparent, hsl(18 90% 55% / 0.8), transparent)',
             }}
           />
 
@@ -189,12 +189,12 @@ const Index = () => {
           className="relative z-10 mt-8 flex items-center gap-2.5 rounded-full px-5 py-2.5"
           style={{
             background: 'hsl(0 0% 100% / 0.04)',
-            border: '1px solid hsl(42 80% 50% / 0.2)',
+            border: '1px solid hsl(18 80% 50% / 0.25)',
             backdropFilter: 'blur(12px)',
           }}
         >
           <span className="text-lg">{level.icon}</span>
-          <span className="text-sm font-bold" style={{ color: 'hsl(42 80% 60%)' }}>{level.title}</span>
+          <span className="text-sm font-bold" style={{ color: 'hsl(20 80% 58%)' }}>{level.title}</span>
           <span className="h-3 w-px bg-white/15" />
           <span className="text-sm font-bold text-white/70">{progress.totalXP} XP</span>
         </motion.div>
@@ -281,12 +281,12 @@ const Index = () => {
                 <motion.div
                   className="group flex items-center gap-4 rounded-2xl bg-card p-4 cursor-pointer"
                   style={{
-                    border: '1px solid hsl(42 78% 50% / 0.1)',
+                    border: '1px solid hsl(18 85% 50% / 0.12)',
                     boxShadow: '0 2px 8px hsl(0 0% 0% / 0.2), 0 8px 32px hsl(0 0% 0% / 0.15), inset 0 1px 0 hsl(0 0% 100% / 0.03)',
                   }}
                   whileHover={{
                     y: -4,
-                    boxShadow: '0 8px 24px hsl(0 0% 0% / 0.3), 0 16px 48px hsl(0 0% 0% / 0.2), 0 0 20px hsl(42 90% 62% / 0.06), inset 0 1px 0 hsl(0 0% 100% / 0.05)',
+                    boxShadow: '0 8px 24px hsl(0 0% 0% / 0.3), 0 16px 48px hsl(0 0% 0% / 0.2), 0 0 20px hsl(18 90% 55% / 0.08), inset 0 1px 0 hsl(0 0% 100% / 0.05)',
                   }}
                   whileTap={{ scale: 0.98 }}
                   transition={{ type: 'spring', stiffness: 300, damping: 20 }}
@@ -313,9 +313,9 @@ const Index = () => {
           transition={{ delay: 0.2 }}
           className="rounded-2xl p-5 text-center"
           style={{
-            background: 'hsl(42 80% 50% / 0.04)',
-            border: '1px solid hsl(42 78% 50% / 0.12)',
-            boxShadow: '0 0 40px hsl(42 90% 62% / 0.05)',
+            background: 'hsl(18 80% 50% / 0.05)',
+            border: '1px solid hsl(18 80% 50% / 0.14)',
+            boxShadow: '0 0 40px hsl(18 90% 55% / 0.06)',
           }}
         >
           <Shield className="mx-auto mb-2 h-6 w-6 text-gold" />
