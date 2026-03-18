@@ -49,11 +49,11 @@
     --help-blue: 210 80% 50%;
     --gentle-purple: 270 50% 55%;
 
-    /* Vibrant extras — red-orange palette */
-    --gold: 14 100% 55%;
-    --gold-glow: 22 100% 62%;
-    --hero-from: 6 80% 32%;
-    --hero-to: 6 50% 8%;
+    /* Vibrant extras — gold + deep navy */
+    --gold: 45 90% 50%;
+    --gold-glow: 40 95% 58%;
+    --hero-from: 225 50% 18%;
+    --hero-to: 225 40% 6%;
   }
 
   .dark {
