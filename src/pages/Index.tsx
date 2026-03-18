@@ -16,7 +16,7 @@ const Particle = ({ delay, size, x, y, dur }: { delay: number; size: number; x: 
       height: size,
       left: `${x}%`,
       top: `${y}%`,
-      background: `radial-gradient(circle, hsl(42 90% 62% / 0.5), hsl(42 90% 62% / 0))`,
+      background: `radial-gradient(circle, hsl(18 90% 55% / 0.5), hsl(18 90% 55% / 0))`,
     }}
     initial={{ opacity: 0, scale: 0 }}
     animate={{
