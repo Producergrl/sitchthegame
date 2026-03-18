@@ -91,11 +91,11 @@ const Index = () => {
             width: 500, height: 500,
             top: '50%', left: '50%', transform: 'translate(-50%, -55%)',
           }}
-          animate={{
+            animate={{
             background: [
-              'radial-gradient(circle, hsl(42 90% 55% / 0.10) 0%, hsl(160 60% 30% / 0.04) 40%, transparent 70%)',
-              'radial-gradient(circle, hsl(42 90% 55% / 0.16) 0%, hsl(160 60% 30% / 0.07) 40%, transparent 70%)',
-              'radial-gradient(circle, hsl(42 90% 55% / 0.10) 0%, hsl(160 60% 30% / 0.04) 40%, transparent 70%)',
+              'radial-gradient(circle, hsl(18 85% 50% / 0.12) 0%, hsl(8 55% 25% / 0.05) 40%, transparent 70%)',
+              'radial-gradient(circle, hsl(18 85% 50% / 0.20) 0%, hsl(8 55% 25% / 0.08) 40%, transparent 70%)',
+              'radial-gradient(circle, hsl(18 85% 50% / 0.12) 0%, hsl(8 55% 25% / 0.05) 40%, transparent 70%)',
             ],
           }}
           transition={{ duration: 4, repeat: Infinity, ease: 'easeInOut' }}
