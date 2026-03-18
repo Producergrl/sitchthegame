@@ -50,10 +50,10 @@
     --gentle-purple: 270 50% 55%;
 
     /* Vibrant extras — red-orange palette */
-    --gold: 18 85% 52%;
-    --gold-glow: 24 90% 58%;
-    --hero-from: 8 65% 28%;
-    --hero-to: 8 40% 7%;
+    --gold: 14 100% 55%;
+    --gold-glow: 22 100% 62%;
+    --hero-from: 6 80% 32%;
+    --hero-to: 6 50% 8%;
   }
 
   .dark {
