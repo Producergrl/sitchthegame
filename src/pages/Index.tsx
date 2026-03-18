@@ -281,12 +281,12 @@ const Index = () => {
                 <motion.div
                   className="group flex items-center gap-4 rounded-2xl bg-card p-4 cursor-pointer"
                   style={{
-                    border: '1px solid hsl(42 78% 50% / 0.1)',
+                    border: '1px solid hsl(18 85% 50% / 0.12)',
                     boxShadow: '0 2px 8px hsl(0 0% 0% / 0.2), 0 8px 32px hsl(0 0% 0% / 0.15), inset 0 1px 0 hsl(0 0% 100% / 0.03)',
                   }}
                   whileHover={{
                     y: -4,
-                    boxShadow: '0 8px 24px hsl(0 0% 0% / 0.3), 0 16px 48px hsl(0 0% 0% / 0.2), 0 0 20px hsl(42 90% 62% / 0.06), inset 0 1px 0 hsl(0 0% 100% / 0.05)',
+                    boxShadow: '0 8px 24px hsl(0 0% 0% / 0.3), 0 16px 48px hsl(0 0% 0% / 0.2), 0 0 20px hsl(18 90% 55% / 0.08), inset 0 1px 0 hsl(0 0% 100% / 0.05)',
                   }}
                   whileTap={{ scale: 0.98 }}
                   transition={{ type: 'spring', stiffness: 300, damping: 20 }}
