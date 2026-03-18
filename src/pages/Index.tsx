@@ -313,9 +313,9 @@ const Index = () => {
           transition={{ delay: 0.2 }}
           className="rounded-2xl p-5 text-center"
           style={{
-            background: 'hsl(42 80% 50% / 0.04)',
-            border: '1px solid hsl(42 78% 50% / 0.12)',
-            boxShadow: '0 0 40px hsl(42 90% 62% / 0.05)',
+            background: 'hsl(18 80% 50% / 0.05)',
+            border: '1px solid hsl(18 80% 50% / 0.14)',
+            boxShadow: '0 0 40px hsl(18 90% 55% / 0.06)',
           }}
         >
           <Shield className="mx-auto mb-2 h-6 w-6 text-gold" />
