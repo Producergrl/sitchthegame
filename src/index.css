@@ -204,7 +204,7 @@
   }
 
   .cta-glow {
-    box-shadow: 0 4px 24px hsl(22 100% 55% / 0.55), 0 0 50px hsl(22 100% 55% / 0.2);
+    box-shadow: 0 4px 24px hsl(45 90% 50% / 0.55), 0 0 50px hsl(45 90% 50% / 0.2);
   }
 
   .hero-gradient {
