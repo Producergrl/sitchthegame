@@ -166,7 +166,7 @@ const Index = () => {
             transition={{ delay: 1.4, duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
             className="mx-auto mt-3 h-[2px] w-32 origin-center"
             style={{
-              background: 'linear-gradient(90deg, transparent, hsl(42 90% 62% / 0.8), transparent)',
+              background: 'linear-gradient(90deg, transparent, hsl(18 90% 55% / 0.8), transparent)',
             }}
           />
 
