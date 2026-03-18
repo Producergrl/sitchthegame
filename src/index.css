@@ -86,10 +86,10 @@
     --ring: 160 70% 40%;
 
     /* Dark extras — red-orange palette */
-    --gold: 18 85% 52%;
-    --gold-glow: 24 90% 58%;
-    --hero-from: 8 55% 22%;
-    --hero-to: 8 30% 5%;
+    --gold: 14 100% 55%;
+    --gold-glow: 22 100% 62%;
+    --hero-from: 6 80% 32%;
+    --hero-to: 6 50% 8%;
   }
 
   /* ═══ Age-band colour themes ═══ */
