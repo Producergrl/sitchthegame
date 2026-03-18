@@ -154,7 +154,7 @@ const Index = () => {
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 1.1, duration: 0.6 }}
             className="mt-2 block text-[0.7rem] font-bold uppercase tracking-[0.35em] md:text-xs"
-            style={{ color: 'hsl(42 70% 60% / 0.7)' }}
+            style={{ color: 'hsl(20 70% 60% / 0.7)' }}
           >
             Founders Edition
           </motion.span>
