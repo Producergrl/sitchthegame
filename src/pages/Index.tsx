@@ -111,8 +111,8 @@ const Index = () => {
           <div
             className="relative flex h-24 w-24 items-center justify-center rounded-[1.75rem] gold-sweep"
             style={{
-              background: 'linear-gradient(145deg, hsl(42 70% 45%), hsl(42 85% 55%), hsl(42 70% 40%))',
-              boxShadow: '0 0 40px hsl(42 90% 55% / 0.3), 0 0 80px hsl(42 90% 55% / 0.1), inset 0 1px 1px hsl(42 90% 80% / 0.4)',
+              background: 'linear-gradient(145deg, hsl(8 70% 40%), hsl(18 85% 52%), hsl(25 80% 48%))',
+              boxShadow: '0 0 40px hsl(18 85% 50% / 0.35), 0 0 80px hsl(18 85% 50% / 0.12), inset 0 1px 1px hsl(20 90% 75% / 0.4)',
             }}
           >
             <Shield className="relative z-10 h-12 w-12 text-white drop-shadow-[0_2px_4px_hsl(0_0%_0%/0.5)]" />
