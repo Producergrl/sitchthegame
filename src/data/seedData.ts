@@ -840,7 +840,7 @@ const buildCards = (age: AgeBand, deckFn: (scenario: string) => string, scenario
       worst_option: data.worst_option,
       guidance_text: guidanceFor(scenario),
       why_text: whyFor(scenario),
-      practice_phrase: practicePhraseFor(scenario, age),
+      practice_phrase: data.practice_phrase || practicePhraseFor(scenario, age),
       help_prompt: reflectionPromptsFor(age).join(' '),
       reflection_prompts: reflectionPromptsFor(age),
       difficulty: difficultyFor(scenario),
