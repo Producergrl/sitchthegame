@@ -41,7 +41,7 @@ const Legal = () => (
 
     <section className="space-y-4 text-sm text-muted-foreground mb-10">
       <h2 className="text-lg font-semibold text-foreground">Privacy Policy</h2>
-      <p>The What Would You Do? app respects user privacy and is committed to protecting personal information.</p>
+      <p>The Sitch app respects user privacy and is committed to protecting personal information.</p>
       <p>The app may collect limited non-identifiable information such as device type, operating system, gameplay analytics, or crash reports to improve performance and user experience.</p>
       <p>If optional features allow users to submit information (such as usernames or feedback), such information is used solely to operate and improve the app.</p>
       <p>The app does not sell or rent personal data to third parties.</p>
