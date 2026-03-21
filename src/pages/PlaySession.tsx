@@ -698,11 +698,17 @@ const PlaySession = () => {
               </div>
               {/* Only show title as heading if it differs meaningfully from the scenario */}
               {card.scenario.toLowerCase().startsWith(card.title.toLowerCase().replace(/…$/, '')) ? (
-                <h2 className="mb-3 text-xl font-black text-card-foreground">{card.scenario}</h2>
+                <h2 className="mb-3 text-xl font-black text-card-foreground">
+                  <span className="text-primary">Here's the Sitch.. </span>
+                  {card.scenario}
+                </h2>
               ) : (
                 <>
                   <h2 className="mb-3 text-xl font-black text-card-foreground">{card.title}</h2>
-                  <p className="text-base leading-relaxed text-card-foreground">{card.scenario}</p>
+                  <p className="text-base leading-relaxed text-card-foreground">
+                    <span className="font-black text-primary">Here's the Sitch.. </span>
+                    {card.scenario}
+                  </p>
                 </>
               )}
               <Button variant="ghost" size="sm" onClick={handleReadAloud} className="mt-3 gap-1.5 text-primary">
