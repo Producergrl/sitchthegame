@@ -13,7 +13,7 @@ const Legal = () => (
 
     <section className="space-y-4 text-sm text-muted-foreground mb-10">
       <h2 className="text-lg font-semibold text-foreground">Intellectual Property Rights</h2>
-      <p>The What Would You Do? game, including but not limited to its concept, gameplay structure, scenarios, prompts, questions, dialogue, design, graphics, user interface, characters, and all related content, are proprietary intellectual property and are protected under United States and international copyright, trademark, and intellectual property laws.</p>
+      <p>The Sitch game, including but not limited to its concept, gameplay structure, scenarios, prompts, questions, dialogue, design, graphics, user interface, characters, and all related content, are proprietary intellectual property and are protected under United States and international copyright, trademark, and intellectual property laws.</p>
       <p>All rights, title, and interest in and to the game and its content remain exclusively with the creator and rights holder. No ownership rights are transferred to users through use of the game.</p>
       <p>Users are granted a limited, non-exclusive, non-transferable, revocable license to access and play the game solely for personal, non-commercial entertainment or educational purposes.</p>
       <p className="font-medium text-foreground">Users may not:</p>
