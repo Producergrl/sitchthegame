@@ -25,7 +25,7 @@ const Legal = () => (
         <li>publish or reproduce the game's prompts or scenarios in other products or services</li>
       </ul>
       <p>Unauthorized use may result in termination of access and legal action, including claims for damages and injunctive relief.</p>
-      <p>The distinctive structure, format, and gameplay methodology of What Would You Do? constitute proprietary creative work. Any attempt to replicate or commercially exploit the game format without authorization is prohibited.</p>
+      <p>The distinctive structure, format, and gameplay methodology of Sitch constitute proprietary creative work. Any attempt to replicate or commercially exploit the game format without authorization is prohibited.</p>
     </section>
 
     <section className="space-y-4 text-sm text-muted-foreground mb-10">
