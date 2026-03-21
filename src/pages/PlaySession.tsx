@@ -698,11 +698,17 @@ const PlaySession = () => {
               </div>
               {/* Only show title as heading if it differs meaningfully from the scenario */}
               {card.scenario.toLowerCase().startsWith(card.title.toLowerCase().replace(/…$/, '')) ? (
-                <h2 className="mb-3 text-xl font-black text-card-foreground">{card.scenario}</h2>
+                <h2 className="mb-3 text-xl font-black text-card-foreground">
+                  <span className="text-primary">Here's the Sitch.. </span>
+                  {card.scenario}
+                </h2>
               ) : (
                 <>
                   <h2 className="mb-3 text-xl font-black text-card-foreground">{card.title}</h2>
-                  <p className="text-base leading-relaxed text-card-foreground">{card.scenario}</p>
+                  <p className="text-base leading-relaxed text-card-foreground">
+                    <span className="font-black text-primary">Here's the Sitch.. </span>
+                    {card.scenario}
+                  </p>
                 </>
               )}
               <Button variant="ghost" size="sm" onClick={handleReadAloud} className="mt-3 gap-1.5 text-primary">
@@ -802,7 +808,7 @@ const PlaySession = () => {
                             value={customAnswer}
                             onChange={e => setCustomAnswer(e.target.value.slice(0, 500))}
                             maxLength={500}
-                            placeholder={speechSupported ? "Type or tap 🎤 to speak your answer (at least 10 characters)" : "What would YOU do in this situation? (at least 10 characters)"}
+                            placeholder={speechSupported ? "Type or tap 🎤 to speak your answer (at least 10 characters)" : "What would YOU do in this sitch? (at least 10 characters)"}
                             className="w-full rounded-lg border border-border bg-background p-3 pr-12 text-sm text-foreground placeholder:text-muted-foreground focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary min-h-[80px] resize-none"
                           />
                           {speechSupported && !customAnswerSubmitted && (

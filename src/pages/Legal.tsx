@@ -9,11 +9,11 @@ const Legal = () => (
     </Button>
 
     <h1 className="text-2xl font-bold mb-8">Terms of Use, Intellectual Property & Privacy Policy</h1>
-    <p className="text-sm text-muted-foreground mb-10 italic">What Would You Do? Game</p>
+    <p className="text-sm text-muted-foreground mb-10 italic">Sitch Game</p>
 
     <section className="space-y-4 text-sm text-muted-foreground mb-10">
       <h2 className="text-lg font-semibold text-foreground">Intellectual Property Rights</h2>
-      <p>The What Would You Do? game, including but not limited to its concept, gameplay structure, scenarios, prompts, questions, dialogue, design, graphics, user interface, characters, and all related content, are proprietary intellectual property and are protected under United States and international copyright, trademark, and intellectual property laws.</p>
+      <p>The Sitch game, including but not limited to its concept, gameplay structure, scenarios, prompts, questions, dialogue, design, graphics, user interface, characters, and all related content, are proprietary intellectual property and are protected under United States and international copyright, trademark, and intellectual property laws.</p>
       <p>All rights, title, and interest in and to the game and its content remain exclusively with the creator and rights holder. No ownership rights are transferred to users through use of the game.</p>
       <p>Users are granted a limited, non-exclusive, non-transferable, revocable license to access and play the game solely for personal, non-commercial entertainment or educational purposes.</p>
       <p className="font-medium text-foreground">Users may not:</p>
@@ -25,7 +25,7 @@ const Legal = () => (
         <li>publish or reproduce the game's prompts or scenarios in other products or services</li>
       </ul>
       <p>Unauthorized use may result in termination of access and legal action, including claims for damages and injunctive relief.</p>
-      <p>The distinctive structure, format, and gameplay methodology of What Would You Do? constitute proprietary creative work. Any attempt to replicate or commercially exploit the game format without authorization is prohibited.</p>
+      <p>The distinctive structure, format, and gameplay methodology of Sitch constitute proprietary creative work. Any attempt to replicate or commercially exploit the game format without authorization is prohibited.</p>
     </section>
 
     <section className="space-y-4 text-sm text-muted-foreground mb-10">
@@ -41,7 +41,7 @@ const Legal = () => (
 
     <section className="space-y-4 text-sm text-muted-foreground mb-10">
       <h2 className="text-lg font-semibold text-foreground">Privacy Policy</h2>
-      <p>The What Would You Do? app respects user privacy and is committed to protecting personal information.</p>
+      <p>The Sitch app respects user privacy and is committed to protecting personal information.</p>
       <p>The app may collect limited non-identifiable information such as device type, operating system, gameplay analytics, or crash reports to improve performance and user experience.</p>
       <p>If optional features allow users to submit information (such as usernames or feedback), such information is used solely to operate and improve the app.</p>
       <p>The app does not sell or rent personal data to third parties.</p>
