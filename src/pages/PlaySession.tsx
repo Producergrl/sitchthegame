@@ -245,7 +245,7 @@ const PlaySession = () => {
     if (!card) return;
     speechSynthesis.cancel(); // stop any ongoing speech
 
-    const text = card.scenario;
+    const text = `Here's the Sitch.. ${card.scenario}`;
     const utterance = new SpeechSynthesisUtterance(text);
 
     // Pick the most natural-sounding voice available
