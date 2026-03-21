@@ -9,7 +9,7 @@ const Legal = () => (
     </Button>
 
     <h1 className="text-2xl font-bold mb-8">Terms of Use, Intellectual Property & Privacy Policy</h1>
-    <p className="text-sm text-muted-foreground mb-10 italic">What Would You Do? Game</p>
+    <p className="text-sm text-muted-foreground mb-10 italic">Sitch Game</p>
 
     <section className="space-y-4 text-sm text-muted-foreground mb-10">
       <h2 className="text-lg font-semibold text-foreground">Intellectual Property Rights</h2>
