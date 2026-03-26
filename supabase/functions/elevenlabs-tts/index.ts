@@ -6,6 +6,36 @@ const corsHeaders = {
     "authorization, x-client-info, apikey, content-type, x-supabase-client-platform, x-supabase-client-platform-version, x-supabase-client-runtime, x-supabase-client-runtime-version",
 };
 
+type ElevenLabsErrorDetail = {
+  status?: string;
+  message?: string;
+};
+
+function mapElevenLabsStatus(httpStatus: number, detailStatus?: string) {
+  // ElevenLabs sometimes returns 401 for non-auth issues; remap common cases so the client can react appropriately.
+  switch (detailStatus) {
+    case "quota_exceeded":
+      return 402;
+    case "missing_permissions":
+      return 403;
+    case "rate_limited":
+      return 429;
+    default:
+      return httpStatus;
+  }
+}
+
+async function readElevenLabsError(res: Response): Promise<{ raw: string; detail?: ElevenLabsErrorDetail }> {
+  const raw = await res.text();
+  try {
+    const parsed = JSON.parse(raw);
+    const detail = (parsed?.detail ?? parsed?.error?.detail) as ElevenLabsErrorDetail | undefined;
+    return { raw, detail };
+  } catch {
+    return { raw };
+  }
+}
+
 serve(async (req) => {
   if (req.method === "OPTIONS") {
     return new Response(null, { headers: corsHeaders });
@@ -51,12 +81,29 @@ serve(async (req) => {
     );
 
     if (!response.ok) {
-      const errorText = await response.text();
-      console.error("ElevenLabs API error:", response.status, errorText);
+      const { raw, detail } = await readElevenLabsError(response);
+      const mappedStatus = mapElevenLabsStatus(response.status, detail?.status);
+
+      console.error("ElevenLabs API error:", {
+        httpStatus: response.status,
+        mappedStatus,
+        detailStatus: detail?.status,
+        detailMessage: detail?.message,
+        raw,
+      });
+
       return new Response(
-        JSON.stringify({ error: `ElevenLabs API error: ${response.status}` }),
+        JSON.stringify({
+          error: "ElevenLabs API error",
+          httpStatus: response.status,
+          mappedStatus,
+          elevenlabs: {
+            status: detail?.status,
+            message: detail?.message,
+          },
+        }),
         {
-          status: response.status,
+          status: mappedStatus,
           headers: { ...corsHeaders, "Content-Type": "application/json" },
         }
       );
