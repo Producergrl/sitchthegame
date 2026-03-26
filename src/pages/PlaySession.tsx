@@ -80,6 +80,8 @@ const PlaySession = () => {
   const [customAnswer, setCustomAnswer] = useState('');
   const [customAnswerSubmitted, setCustomAnswerSubmitted] = useState(false);
   const [sessionDone, setSessionDone] = useState(false);
+  const [isReadingAloud, setIsReadingAloud] = useState(false);
+  const [activeAudio, setActiveAudio] = useState<HTMLAudioElement | null>(null);
 
   // Streak state
   const [streak, setStreak] = useState(0);
@@ -172,6 +174,15 @@ const PlaySession = () => {
   }, [card, playerProgress, missionXPEarned, stickerProgress, streak]);
 
   const handleNext = useCallback(() => {
+    // Stop any active TTS playback
+    if (activeAudio) {
+      activeAudio.pause();
+      URL.revokeObjectURL(activeAudio.src);
+      setActiveAudio(null);
+      setIsReadingAloud(false);
+    }
+    speechSynthesis.cancel();
+
     // Award mission XP before advancing (whenever an option was selected)
     if (selectedOption !== null) finishCurrentMission();
 
@@ -186,7 +197,7 @@ const PlaySession = () => {
       setCustomAnswerSubmitted(false);
       setShowLevelUp(false);
     }
-  }, [index, sessionCards.length, selectedOption, finishCurrentMission]);
+  }, [index, sessionCards.length, selectedOption, finishCurrentMission, activeAudio]);
 
   const handleSelectOption = (label: string) => {
     if (selectedOption !== null) return;
@@ -242,34 +253,64 @@ const PlaySession = () => {
     }
   };
 
-  const handleReadAloud = () => {
+
+  const handleReadAloud = async () => {
     if (!card) return;
-    speechSynthesis.cancel(); // stop any ongoing speech
 
-    const text = `Here's the Sitch.. ${card.scenario}`;
-    const utterance = new SpeechSynthesisUtterance(text);
+    // Cancel any ongoing playback
+    if (activeAudio) {
+      activeAudio.pause();
+      activeAudio.currentTime = 0;
+      URL.revokeObjectURL(activeAudio.src);
+      setActiveAudio(null);
+    }
+    speechSynthesis.cancel();
 
-    // Pick the most natural-sounding voice available
-    const voices = speechSynthesis.getVoices();
-    const preferred = voices.find(
-      v => v.lang.startsWith('en') && v.name.toLowerCase().includes('samantha'),
-    ) ?? voices.find(
-      v => v.lang.startsWith('en') && v.name.toLowerCase().includes('google uk english female'),
-    ) ?? voices.find(
-      v => v.lang.startsWith('en') && v.name.toLowerCase().includes('natural'),
-    ) ?? voices.find(
-      v => v.lang.startsWith('en') && v.name.toLowerCase().includes('female'),
-    ) ?? voices.find(
-      v => v.lang.startsWith('en') && !v.localService,
-    ) ?? voices.find(v => v.lang.startsWith('en'));
-    if (preferred) utterance.voice = preferred;
+    const text = `Here's the Sitch... ${card.scenario}`;
+    setIsReadingAloud(true);
 
-    // Warm, storytelling pace — slightly slower with natural pitch
-    utterance.rate = 0.88;
-    utterance.pitch = 1.05;
-    utterance.volume = 1.0;
+    try {
+      const response = await fetch(
+        `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/elevenlabs-tts`,
+        {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            apikey: import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY,
+            Authorization: `Bearer ${import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY}`,
+          },
+          body: JSON.stringify({ text }),
+        },
+      );
 
-    speechSynthesis.speak(utterance);
+      if (!response.ok) throw new Error(`TTS failed: ${response.status}`);
+
+      const audioBlob = await response.blob();
+      const audioUrl = URL.createObjectURL(audioBlob);
+      const audio = new Audio(audioUrl);
+      setActiveAudio(audio);
+
+      audio.onended = () => {
+        URL.revokeObjectURL(audioUrl);
+        setActiveAudio(null);
+        setIsReadingAloud(false);
+      };
+      audio.onerror = () => {
+        URL.revokeObjectURL(audioUrl);
+        setActiveAudio(null);
+        setIsReadingAloud(false);
+      };
+
+      await audio.play();
+    } catch (err) {
+      console.error('ElevenLabs TTS error, falling back to browser voice:', err);
+      setIsReadingAloud(false);
+      // Fallback to browser TTS
+      const utterance = new SpeechSynthesisUtterance(text);
+      utterance.rate = 0.88;
+      utterance.pitch = 1.05;
+      speechSynthesis.speak(utterance);
+    }
   };
 
   const toggleDiscussed = () => {
@@ -712,8 +753,8 @@ const PlaySession = () => {
                   </p>
                 </>
               )}
-              <Button variant="ghost" size="sm" onClick={handleReadAloud} className="mt-3 gap-1.5 text-primary">
-                <Volume2 className="h-4 w-4" /> Read Aloud
+              <Button variant="ghost" size="sm" onClick={handleReadAloud} disabled={isReadingAloud} className="mt-3 gap-1.5 text-primary">
+                <Volume2 className={`h-4 w-4 ${isReadingAloud ? 'animate-pulse' : ''}`} /> {isReadingAloud ? 'Speaking…' : 'Read Aloud'}
               </Button>
             </div>
 
