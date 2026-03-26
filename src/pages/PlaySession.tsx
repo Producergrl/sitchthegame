@@ -745,8 +745,8 @@ const PlaySession = () => {
                   </p>
                 </>
               )}
-              <Button variant="ghost" size="sm" onClick={handleReadAloud} className="mt-3 gap-1.5 text-primary">
-                <Volume2 className="h-4 w-4" /> Read Aloud
+              <Button variant="ghost" size="sm" onClick={handleReadAloud} disabled={isReadingAloud} className="mt-3 gap-1.5 text-primary">
+                <Volume2 className={`h-4 w-4 ${isReadingAloud ? 'animate-pulse' : ''}`} /> {isReadingAloud ? 'Speaking…' : 'Read Aloud'}
               </Button>
             </div>
 
