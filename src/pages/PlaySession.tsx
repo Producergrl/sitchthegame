@@ -257,6 +257,14 @@ const PlaySession = () => {
   const handleReadAloud = async () => {
     if (!card) return;
 
+    const speakWithBrowser = (t: string) => {
+      setIsReadingAloud(false);
+      const utterance = new SpeechSynthesisUtterance(t);
+      utterance.rate = 0.88;
+      utterance.pitch = 1.05;
+      speechSynthesis.speak(utterance);
+    };
+
     // Cancel any ongoing playback
     if (activeAudio) {
       activeAudio.pause();
@@ -283,7 +291,38 @@ const PlaySession = () => {
         },
       );
 
-      if (!response.ok) throw new Error(`TTS failed: ${response.status}`);
+      if (!response.ok) {
+        // Try to surface the real ElevenLabs reason (quota/permissions/etc.)
+        let details: any = null;
+        try {
+          details = await response.json();
+        } catch {
+          await response.text();
+        }
+
+        const elevenStatus = details?.elevenlabs?.status as string | undefined;
+        const elevenMessage = details?.elevenlabs?.message as string | undefined;
+
+        if (elevenStatus === 'quota_exceeded') {
+          toast({
+            title: 'Voice credits used up',
+            description: elevenMessage ?? 'Falling back to your device voice for now.',
+          });
+          speakWithBrowser(text);
+          return;
+        }
+
+        if (elevenStatus === 'missing_permissions') {
+          toast({
+            title: 'Voice key missing permissions',
+            description: elevenMessage ?? 'Falling back to your device voice for now.',
+          });
+          speakWithBrowser(text);
+          return;
+        }
+
+        throw new Error(`TTS failed: ${response.status}`);
+      }
 
       const audioBlob = await response.blob();
       const audioUrl = URL.createObjectURL(audioBlob);
@@ -304,12 +343,7 @@ const PlaySession = () => {
       await audio.play();
     } catch (err) {
       console.error('ElevenLabs TTS error, falling back to browser voice:', err);
-      setIsReadingAloud(false);
-      // Fallback to browser TTS
-      const utterance = new SpeechSynthesisUtterance(text);
-      utterance.rate = 0.88;
-      utterance.pitch = 1.05;
-      speechSynthesis.speak(utterance);
+      speakWithBrowser(text);
     }
   };
 
