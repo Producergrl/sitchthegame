@@ -257,12 +257,34 @@ const PlaySession = () => {
   const handleReadAloud = async () => {
     if (!card) return;
 
-    const speakWithBrowser = (t: string) => {
+    const speakWithBrowser = (t: string, fallbackMessage?: string) => {
       setIsReadingAloud(false);
-      const utterance = new SpeechSynthesisUtterance(t);
-      utterance.rate = 0.88;
-      utterance.pitch = 1.05;
-      speechSynthesis.speak(utterance);
+
+      const hasSpeechApi =
+        typeof window !== 'undefined' &&
+        'speechSynthesis' in window &&
+        'SpeechSynthesisUtterance' in window;
+
+      if (!hasSpeechApi) {
+        toast({
+          title: 'Voice unavailable',
+          description: fallbackMessage ?? 'Audio is unavailable right now. Please try again later.',
+        });
+        return;
+      }
+
+      try {
+        const utterance = new SpeechSynthesisUtterance(t);
+        utterance.rate = 0.88;
+        utterance.pitch = 1.05;
+        window.speechSynthesis.speak(utterance);
+      } catch (fallbackErr) {
+        console.error('Browser TTS fallback failed:', fallbackErr);
+        toast({
+          title: 'Voice unavailable',
+          description: fallbackMessage ?? 'Audio is unavailable right now. Please try again later.',
+        });
+      }
     };
 
     // Cancel any ongoing playback
@@ -272,7 +294,10 @@ const PlaySession = () => {
       URL.revokeObjectURL(activeAudio.src);
       setActiveAudio(null);
     }
-    speechSynthesis.cancel();
+
+    if (typeof window !== 'undefined' && 'speechSynthesis' in window) {
+      window.speechSynthesis.cancel();
+    }
 
     const text = `Here's the Sitch... ${card.scenario}`;
     setIsReadingAloud(true);
@@ -293,22 +318,49 @@ const PlaySession = () => {
 
       if (!response.ok) {
         let details: any = null;
-        try { details = await response.json(); } catch { await response.text(); }
+        try {
+          details = await response.json();
+        } catch {
+          try {
+            await response.text();
+          } catch {
+            // ignore body parse issues
+          }
+        }
 
         const elevenStatus = details?.elevenlabs?.status as string | undefined;
         const elevenMessage = details?.elevenlabs?.message as string | undefined;
 
         if (elevenStatus === 'quota_exceeded') {
-          toast({ title: 'Voice credits used up', description: elevenMessage ?? 'Falling back to your device voice for now.' });
-          speakWithBrowser(text);
+          toast({
+            title: 'Voice credits used up',
+            description: elevenMessage ?? 'Using your device voice for now.',
+          });
+          speakWithBrowser(text, 'Voice service quota is currently exceeded.');
           return;
         }
+
         if (elevenStatus === 'missing_permissions') {
-          toast({ title: 'Voice key missing permissions', description: elevenMessage ?? 'Falling back to your device voice for now.' });
-          speakWithBrowser(text);
+          toast({
+            title: 'Voice key missing permissions',
+            description: elevenMessage ?? 'Using your device voice for now.',
+          });
+          speakWithBrowser(text, 'Voice service key permissions are incomplete.');
           return;
         }
-        throw new Error(`TTS failed: ${response.status}`);
+
+        if (elevenStatus === 'rate_limited') {
+          toast({
+            title: 'Voice service busy',
+            description: elevenMessage ?? 'Using your device voice for now.',
+          });
+          speakWithBrowser(text, 'Voice service is temporarily rate-limited.');
+          return;
+        }
+
+        console.error('TTS non-OK response:', { status: response.status, details });
+        speakWithBrowser(text, 'Voice service is temporarily unavailable.');
+        return;
       }
 
       // Check if the edge function returned a cached URL (JSON) or raw audio (binary)
@@ -318,6 +370,11 @@ const PlaySession = () => {
 
       if (contentType.includes('application/json')) {
         const data = await response.json();
+        if (!data?.cachedUrl || typeof data.cachedUrl !== 'string') {
+          console.error('Missing cachedUrl in TTS JSON response:', data);
+          speakWithBrowser(text, 'Voice cache was unavailable.');
+          return;
+        }
         audioUrl = data.cachedUrl;
       } else {
         const audioBlob = await response.blob();
@@ -333,16 +390,17 @@ const PlaySession = () => {
         setActiveAudio(null);
         setIsReadingAloud(false);
       };
+
       audio.onerror = () => {
         if (isBlobUrl) URL.revokeObjectURL(audioUrl);
         setActiveAudio(null);
-        setIsReadingAloud(false);
+        speakWithBrowser(text, 'Failed to play generated audio.');
       };
 
       await audio.play();
     } catch (err) {
       console.error('ElevenLabs TTS error, falling back to browser voice:', err);
-      speakWithBrowser(text);
+      speakWithBrowser(text, 'Voice service is temporarily unavailable.');
     }
   };
 
