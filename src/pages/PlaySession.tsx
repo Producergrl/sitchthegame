@@ -8,7 +8,7 @@ import type { AgeBand, PlayStyle } from '@/types/game';
 import { parsePlayParams, buildPlayUrl } from '@/lib/playParams';
 import { toast } from '@/hooks/use-toast';
 import ThemeToggle from '@/components/ThemeToggle';
-import { playCorrectChime, playWowFanfare } from '@/lib/sounds';
+import { playCorrectChime, playWrongBuzzer, playWowFanfare } from '@/lib/sounds';
 import MissionProgress from '@/components/MissionProgress';
 import ShareMilestoneCard from '@/components/ShareMilestoneCard';
 import Confetti from '@/components/Confetti';
@@ -211,6 +211,7 @@ const PlaySession = () => {
           return next;
         });
       } else {
+        playWrongBuzzer();
         setStreak(0);
       }
       if (isWorst) {

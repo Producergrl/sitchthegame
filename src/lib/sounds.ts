@@ -75,6 +75,29 @@ export function playCorrectChime() {
  * Triumphant fanfare — plays when a custom "wow" answer is approved.
  * Brass-like square-wave trumpet motif with a heroic feel.
  */
+/**
+ * Buzzer + descending "oops" tone — plays on wrong answer.
+ * Short harsh buzz followed by a sad descending slide.
+ */
+export function playWrongBuzzer() {
+  try {
+    const ctx = getCtx();
+    const t = ctx.currentTime;
+
+    // Harsh buzz (low square wave)
+    playTone(ctx, 110, t, 0.18, 'square', 0.16);
+    playTone(ctx, 110, t, 0.18, 'sawtooth', 0.08);
+
+    // Descending "oops" slide (E4 → C4 → A3)
+    playTone(ctx, 330, t + 0.20, 0.22, 'sine', 0.12);    // E4
+    playTone(ctx, 262, t + 0.36, 0.22, 'sine', 0.12);    // C4
+    playTone(ctx, 220, t + 0.52, 0.35, 'sine', 0.10);    // A3 (sad hold)
+    playTone(ctx, 220, t + 0.52, 0.35, 'triangle', 0.05);
+  } catch {
+    // Audio not available — silent fallback
+  }
+}
+
 export function playWowFanfare() {
   try {
     const ctx = getCtx();
