@@ -172,6 +172,15 @@ const PlaySession = () => {
   }, [card, playerProgress, missionXPEarned, stickerProgress, streak]);
 
   const handleNext = useCallback(() => {
+    // Stop any active TTS playback
+    if (activeAudio) {
+      activeAudio.pause();
+      URL.revokeObjectURL(activeAudio.src);
+      setActiveAudio(null);
+      setIsReadingAloud(false);
+    }
+    speechSynthesis.cancel();
+
     // Award mission XP before advancing (whenever an option was selected)
     if (selectedOption !== null) finishCurrentMission();
 
@@ -186,7 +195,7 @@ const PlaySession = () => {
       setCustomAnswerSubmitted(false);
       setShowLevelUp(false);
     }
-  }, [index, sessionCards.length, selectedOption, finishCurrentMission]);
+  }, [index, sessionCards.length, selectedOption, finishCurrentMission, activeAudio]);
 
   const handleSelectOption = (label: string) => {
     if (selectedOption !== null) return;
