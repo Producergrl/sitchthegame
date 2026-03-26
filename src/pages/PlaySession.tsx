@@ -292,50 +292,49 @@ const PlaySession = () => {
       );
 
       if (!response.ok) {
-        // Try to surface the real ElevenLabs reason (quota/permissions/etc.)
         let details: any = null;
-        try {
-          details = await response.json();
-        } catch {
-          await response.text();
-        }
+        try { details = await response.json(); } catch { await response.text(); }
 
         const elevenStatus = details?.elevenlabs?.status as string | undefined;
         const elevenMessage = details?.elevenlabs?.message as string | undefined;
 
         if (elevenStatus === 'quota_exceeded') {
-          toast({
-            title: 'Voice credits used up',
-            description: elevenMessage ?? 'Falling back to your device voice for now.',
-          });
+          toast({ title: 'Voice credits used up', description: elevenMessage ?? 'Falling back to your device voice for now.' });
           speakWithBrowser(text);
           return;
         }
-
         if (elevenStatus === 'missing_permissions') {
-          toast({
-            title: 'Voice key missing permissions',
-            description: elevenMessage ?? 'Falling back to your device voice for now.',
-          });
+          toast({ title: 'Voice key missing permissions', description: elevenMessage ?? 'Falling back to your device voice for now.' });
           speakWithBrowser(text);
           return;
         }
-
         throw new Error(`TTS failed: ${response.status}`);
       }
 
-      const audioBlob = await response.blob();
-      const audioUrl = URL.createObjectURL(audioBlob);
+      // Check if the edge function returned a cached URL (JSON) or raw audio (binary)
+      const contentType = response.headers.get('content-type') || '';
+      let audioUrl: string;
+      let isBlobUrl = false;
+
+      if (contentType.includes('application/json')) {
+        const data = await response.json();
+        audioUrl = data.cachedUrl;
+      } else {
+        const audioBlob = await response.blob();
+        audioUrl = URL.createObjectURL(audioBlob);
+        isBlobUrl = true;
+      }
+
       const audio = new Audio(audioUrl);
       setActiveAudio(audio);
 
       audio.onended = () => {
-        URL.revokeObjectURL(audioUrl);
+        if (isBlobUrl) URL.revokeObjectURL(audioUrl);
         setActiveAudio(null);
         setIsReadingAloud(false);
       };
       audio.onerror = () => {
-        URL.revokeObjectURL(audioUrl);
+        if (isBlobUrl) URL.revokeObjectURL(audioUrl);
         setActiveAudio(null);
         setIsReadingAloud(false);
       };
