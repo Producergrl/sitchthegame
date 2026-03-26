@@ -1,4 +1,6 @@
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
+import { createClient } from "https://esm.sh/@supabase/supabase-js@2.49.1";
+import { encode as hexEncode } from "https://deno.land/std@0.168.0/encoding/hex.ts";
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
@@ -6,34 +8,14 @@ const corsHeaders = {
     "authorization, x-client-info, apikey, content-type, x-supabase-client-platform, x-supabase-client-platform-version, x-supabase-client-runtime, x-supabase-client-runtime-version",
 };
 
-type ElevenLabsErrorDetail = {
-  status?: string;
-  message?: string;
-};
+const BUCKET = "tts-cache";
 
-function mapElevenLabsStatus(httpStatus: number, detailStatus?: string) {
-  // ElevenLabs sometimes returns 401 for non-auth issues; remap common cases so the client can react appropriately.
-  switch (detailStatus) {
-    case "quota_exceeded":
-      return 402;
-    case "missing_permissions":
-      return 403;
-    case "rate_limited":
-      return 429;
-    default:
-      return httpStatus;
-  }
-}
-
-async function readElevenLabsError(res: Response): Promise<{ raw: string; detail?: ElevenLabsErrorDetail }> {
-  const raw = await res.text();
-  try {
-    const parsed = JSON.parse(raw);
-    const detail = (parsed?.detail ?? parsed?.error?.detail) as ElevenLabsErrorDetail | undefined;
-    return { raw, detail };
-  } catch {
-    return { raw };
-  }
+/** Deterministic cache key from text + voice */
+async function cacheKey(text: string, voiceId: string): Promise<string> {
+  const data = new TextEncoder().encode(`${voiceId}::${text}`);
+  const hash = await crypto.subtle.digest("SHA-256", data);
+  const hex = new TextDecoder().decode(hexEncode(new Uint8Array(hash)));
+  return `${hex}.mp3`;
 }
 
 serve(async (req) => {
@@ -44,10 +26,8 @@ serve(async (req) => {
   try {
     const { text, voiceId } = await req.json();
     const ELEVENLABS_API_KEY = Deno.env.get("ELEVENLABS_API_KEY");
-
-    if (!ELEVENLABS_API_KEY) {
-      throw new Error("ELEVENLABS_API_KEY is not configured");
-    }
+    const SUPABASE_URL = Deno.env.get("SUPABASE_URL")!;
+    const SUPABASE_SERVICE_ROLE_KEY = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
 
     if (!text || typeof text !== "string") {
       return new Response(JSON.stringify({ error: "Missing 'text' parameter" }), {
@@ -57,8 +37,29 @@ serve(async (req) => {
     }
 
     const voice = voiceId || "Vy1TILrv7cgImnJ6mEmh"; // Kerry's voice
+    const fileName = await cacheKey(text, voice);
 
-    const response = await fetch(
+    // ── 1. Check cache ──────────────────────────────────────────
+    const supabase = createClient(SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY);
+
+    const { data: existing } = await supabase.storage
+      .from(BUCKET)
+      .createSignedUrl(fileName, 60); // just to check existence
+
+    if (existing?.signedUrl) {
+      // File exists – redirect to the public URL (free, no ElevenLabs cost)
+      const publicUrl = `${SUPABASE_URL}/storage/v1/object/public/${BUCKET}/${fileName}`;
+      return new Response(JSON.stringify({ cachedUrl: publicUrl }), {
+        headers: { ...corsHeaders, "Content-Type": "application/json" },
+      });
+    }
+
+    // ── 2. Generate via ElevenLabs ──────────────────────────────
+    if (!ELEVENLABS_API_KEY) {
+      throw new Error("ELEVENLABS_API_KEY is not configured");
+    }
+
+    const elResponse = await fetch(
       `https://api.elevenlabs.io/v1/text-to-speech/${voice}?output_format=mp3_44100_128`,
       {
         method: "POST",
@@ -80,27 +81,25 @@ serve(async (req) => {
       }
     );
 
-    if (!response.ok) {
-      const { raw, detail } = await readElevenLabsError(response);
-      const mappedStatus = mapElevenLabsStatus(response.status, detail?.status);
+    if (!elResponse.ok) {
+      const errorText = await elResponse.text();
+      let detail: any = {};
+      try { detail = JSON.parse(errorText)?.detail ?? {}; } catch {}
 
-      console.error("ElevenLabs API error:", {
-        httpStatus: response.status,
-        mappedStatus,
-        detailStatus: detail?.status,
-        detailMessage: detail?.message,
-        raw,
-      });
+      const mappedStatus =
+        detail?.status === "quota_exceeded" ? 402 :
+        detail?.status === "missing_permissions" ? 403 :
+        detail?.status === "rate_limited" ? 429 :
+        elResponse.status;
+
+      console.error("ElevenLabs API error:", { httpStatus: elResponse.status, detail });
 
       return new Response(
         JSON.stringify({
           error: "ElevenLabs API error",
-          httpStatus: response.status,
+          httpStatus: elResponse.status,
           mappedStatus,
-          elevenlabs: {
-            status: detail?.status,
-            message: detail?.message,
-          },
+          elevenlabs: { status: detail?.status, message: detail?.message },
         }),
         {
           status: mappedStatus,
@@ -109,8 +108,21 @@ serve(async (req) => {
       );
     }
 
-    const audioBuffer = await response.arrayBuffer();
+    const audioBuffer = await elResponse.arrayBuffer();
 
+    // ── 3. Store in cache (fire-and-forget) ─────────────────────
+    supabase.storage
+      .from(BUCKET)
+      .upload(fileName, audioBuffer, {
+        contentType: "audio/mpeg",
+        upsert: false,
+      })
+      .then(({ error }) => {
+        if (error) console.error("Cache upload error:", error.message);
+        else console.log("Cached TTS audio:", fileName);
+      });
+
+    // ── 4. Return the audio immediately ─────────────────────────
     return new Response(audioBuffer, {
       headers: {
         ...corsHeaders,
