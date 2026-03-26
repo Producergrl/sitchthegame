@@ -80,6 +80,8 @@ const PlaySession = () => {
   const [customAnswer, setCustomAnswer] = useState('');
   const [customAnswerSubmitted, setCustomAnswerSubmitted] = useState(false);
   const [sessionDone, setSessionDone] = useState(false);
+  const [isReadingAloud, setIsReadingAloud] = useState(false);
+  const [activeAudio, setActiveAudio] = useState<HTMLAudioElement | null>(null);
 
   // Streak state
   const [streak, setStreak] = useState(0);
@@ -251,9 +253,6 @@ const PlaySession = () => {
     }
   };
 
-  // Track active audio for cancellation
-  const [isReadingAloud, setIsReadingAloud] = useState(false);
-  const [activeAudio, setActiveAudio] = useState<HTMLAudioElement | null>(null);
 
   const handleReadAloud = async () => {
     if (!card) return;
