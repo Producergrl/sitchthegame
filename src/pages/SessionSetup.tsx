@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { ArrowLeft, Play, Lock } from 'lucide-react';
+import { ArrowLeft, Play } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { decks, COMPILATION_DECK_ID } from '@/data/seedData';
 import type { AgeBand, PlayStyle } from '@/types/game';
@@ -34,8 +34,6 @@ const SessionSetup = () => {
       );
       return;
     }
-    const deck = decks.find(d => d.id === id);
-    if (!deck?.is_free) return;
     setSelectedDecks(prev => {
       const without = prev.filter(d => d !== COMPILATION_DECK_ID);
       return without.includes(id) ? without.filter(d => d !== id) : [...without, id];
@@ -130,37 +128,23 @@ const SessionSetup = () => {
                 <div className="text-xs text-muted-foreground">Random missions from every deck — a surprise each time!</div>
               </div>
             </button>
-            {decks.filter(deck => deck.age_band === ageBand).map(deck => {
-              const isLocked = !deck.is_free;
-              return (
-                <button
-                  key={deck.id}
-                  onClick={() => toggleDeck(deck.id)}
-                  disabled={isLocked}
-                  className={`relative flex items-center gap-3 rounded-2xl border-2 p-4 text-left transition-all ${
-                    isLocked
-                      ? 'cursor-not-allowed border-border bg-muted/50 opacity-60'
-                      : selectedDecks.includes(deck.id)
-                      ? 'border-primary bg-primary/5 shadow-sm'
-                      : 'border-border bg-card hover:border-primary/40'
-                  }`}
-                >
-                  {isLocked && (
-                    <div className="absolute right-3 top-3">
-                      <Lock className="h-4 w-4 text-muted-foreground" />
-                    </div>
-                  )}
-                  <span className="text-3xl">{deck.icon}</span>
-                  <div>
-                    <div className="font-bold text-card-foreground">{deck.name}</div>
-                    <div className="text-xs text-muted-foreground">
-                      Ages {deck.age_band}
-                      {isLocked && <span className="ml-1 text-caution">• Full Access</span>}
-                    </div>
-                  </div>
-                </button>
-              );
-            })}
+            {decks.filter(deck => deck.age_band === ageBand).map(deck => (
+              <button
+                key={deck.id}
+                onClick={() => toggleDeck(deck.id)}
+                className={`relative flex items-center gap-3 rounded-2xl border-2 p-4 text-left transition-all ${
+                  selectedDecks.includes(deck.id)
+                    ? 'border-primary bg-primary/5 shadow-sm'
+                    : 'border-border bg-card hover:border-primary/40'
+                }`}
+              >
+                <span className="text-3xl">{deck.icon}</span>
+                <div>
+                  <div className="font-bold text-card-foreground">{deck.name}</div>
+                  <div className="text-xs text-muted-foreground">Ages {deck.age_band}</div>
+                </div>
+              </button>
+            ))}
           </div>
         </motion.section>
 
