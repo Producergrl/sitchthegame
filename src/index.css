@@ -4,92 +4,92 @@
 
 @layer base {
   :root {
-    --background: 0 0% 98%;
-    --foreground: 160 10% 10%;
+    --background: 43 85% 92%;
+    --foreground: 220 60% 20%;
 
-    --card: 0 0% 100%;
-    --card-foreground: 160 10% 10%;
+    --card: 43 75% 95%;
+    --card-foreground: 220 60% 20%;
 
-    --popover: 0 0% 100%;
-    --popover-foreground: 160 10% 10%;
+    --popover: 43 75% 95%;
+    --popover-foreground: 220 60% 20%;
 
-    --primary: 160 84% 28%;
-    --primary-foreground: 0 0% 100%;
+    --primary: 220 65% 35%;
+    --primary-foreground: 43 85% 95%;
 
     --secondary: 24 95% 52%;
     --secondary-foreground: 0 0% 100%;
 
-    --muted: 160 10% 93%;
-    --muted-foreground: 160 10% 40%;
+    --muted: 43 50% 85%;
+    --muted-foreground: 220 30% 40%;
 
-    --accent: 42 78% 50%;
-    --accent-foreground: 0 0% 100%;
+    --accent: 220 65% 35%;
+    --accent-foreground: 43 85% 95%;
 
     --destructive: 0 72% 50%;
     --destructive-foreground: 0 0% 100%;
 
-    --border: 160 10% 88%;
-    --input: 160 10% 88%;
-    --ring: 160 84% 28%;
+    --border: 43 40% 80%;
+    --input: 43 40% 80%;
+    --ring: 220 65% 35%;
 
     --radius: 1rem;
 
-    --sidebar-background: 0 0% 98%;
-    --sidebar-foreground: 160 10% 20%;
-    --sidebar-primary: 160 84% 28%;
-    --sidebar-primary-foreground: 0 0% 100%;
-    --sidebar-accent: 160 10% 93%;
-    --sidebar-accent-foreground: 160 10% 10%;
-    --sidebar-border: 160 10% 88%;
-    --sidebar-ring: 160 84% 28%;
+    --sidebar-background: 43 85% 92%;
+    --sidebar-foreground: 220 60% 20%;
+    --sidebar-primary: 220 65% 35%;
+    --sidebar-primary-foreground: 43 85% 95%;
+    --sidebar-accent: 43 50% 85%;
+    --sidebar-accent-foreground: 220 60% 20%;
+    --sidebar-border: 43 40% 80%;
+    --sidebar-ring: 220 65% 35%;
 
     /* Custom tokens */
     --safe-green: 155 70% 38%;
     --caution-amber: 24 95% 52%;
-    --help-blue: 210 80% 50%;
+    --help-blue: 220 65% 35%;
     --gentle-purple: 270 50% 55%;
 
-    /* Vibrant extras — gold + deep navy */
+    /* Vibrant extras — blue + gold */
     --gold: 45 90% 50%;
     --gold-glow: 40 95% 58%;
-    --hero-from: 225 50% 18%;
-    --hero-to: 225 40% 6%;
+    --hero-from: 43 80% 75%;
+    --hero-to: 43 85% 88%;
   }
 
   .dark {
-    --background: 160 15% 8%;
-    --foreground: 0 0% 95%;
+    --background: 220 40% 10%;
+    --foreground: 43 80% 90%;
 
-    --card: 160 12% 12%;
-    --card-foreground: 0 0% 95%;
+    --card: 220 35% 14%;
+    --card-foreground: 43 80% 90%;
 
-    --popover: 160 12% 12%;
-    --popover-foreground: 0 0% 95%;
+    --popover: 220 35% 14%;
+    --popover-foreground: 43 80% 90%;
 
-    --primary: 160 70% 40%;
-    --primary-foreground: 0 0% 100%;
+    --primary: 43 85% 55%;
+    --primary-foreground: 220 50% 12%;
 
     --secondary: 24 85% 55%;
     --secondary-foreground: 0 0% 100%;
 
-    --muted: 160 10% 18%;
-    --muted-foreground: 160 10% 55%;
+    --muted: 220 25% 18%;
+    --muted-foreground: 43 30% 60%;
 
-    --accent: 42 78% 50%;
-    --accent-foreground: 0 0% 100%;
+    --accent: 43 85% 55%;
+    --accent-foreground: 220 50% 12%;
 
     --destructive: 0 62.8% 30.6%;
     --destructive-foreground: 0 0% 100%;
 
-    --border: 160 10% 20%;
-    --input: 160 10% 20%;
-    --ring: 160 70% 40%;
+    --border: 220 25% 22%;
+    --input: 220 25% 22%;
+    --ring: 43 85% 55%;
 
-    /* Dark extras — gold + deep navy */
+    /* Dark extras — blue + gold */
     --gold: 45 90% 50%;
     --gold-glow: 40 95% 58%;
-    --hero-from: 225 50% 18%;
-    --hero-to: 225 40% 6%;
+    --hero-from: 220 45% 18%;
+    --hero-to: 220 40% 8%;
   }
 
   /* ═══ Age-band colour themes ═══ */
@@ -252,9 +252,9 @@
     background: linear-gradient(
       105deg,
       transparent 40%,
-      hsl(45 90% 65% / 0.45) 45%,
-      hsl(42 95% 75% / 0.65) 50%,
-      hsl(45 90% 65% / 0.45) 55%,
+      hsl(220 60% 55% / 0.3) 45%,
+      hsl(220 65% 70% / 0.45) 50%,
+      hsl(220 60% 55% / 0.3) 55%,
       transparent 60%
     );
     animation: sweep 3s ease-in-out infinite;
