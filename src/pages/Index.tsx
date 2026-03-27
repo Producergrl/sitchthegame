@@ -93,9 +93,9 @@ const Index = () => {
           }}
             animate={{
             background: [
-              'radial-gradient(circle, hsl(45 85% 50% / 0.12) 0%, hsl(225 40% 20% / 0.05) 40%, transparent 70%)',
-              'radial-gradient(circle, hsl(45 85% 50% / 0.20) 0%, hsl(225 40% 20% / 0.08) 40%, transparent 70%)',
-              'radial-gradient(circle, hsl(45 85% 50% / 0.12) 0%, hsl(225 40% 20% / 0.05) 40%, transparent 70%)',
+              'radial-gradient(circle, hsl(220 60% 40% / 0.08) 0%, hsl(43 80% 70% / 0.04) 40%, transparent 70%)',
+              'radial-gradient(circle, hsl(220 60% 40% / 0.14) 0%, hsl(43 80% 70% / 0.06) 40%, transparent 70%)',
+              'radial-gradient(circle, hsl(220 60% 40% / 0.08) 0%, hsl(43 80% 70% / 0.04) 40%, transparent 70%)',
             ],
           }}
           transition={{ duration: 4, repeat: Infinity, ease: 'easeInOut' }}
