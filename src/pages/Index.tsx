@@ -62,9 +62,7 @@ const Index = () => {
         <div className="absolute inset-0" style={{
           background: 'radial-gradient(ellipse 80% 60% at 50% 40%, hsl(43 90% 70% / 0.5) 0%, transparent 70%)',
         }} />
-        <div className="absolute inset-0" style={{
-          background: 'radial-gradient(ellipse 60% 50% at 50% 45%, hsl(220 60% 30% / 0.04) 0%, transparent 60%)',
-        }} />
+        <div className="absolute inset-0 text-[#020b1d] bg-[#f98c06]" />
 
         {/* Grain overlay */}
         <div className="absolute inset-0 grain-overlay pointer-events-none" />
@@ -151,8 +149,7 @@ const Index = () => {
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 1.1, duration: 0.6 }}
-            className="mt-2 block text-[0.7rem] font-bold uppercase tracking-[0.35em] md:text-xs"
-            style={{ color: 'hsl(220 50% 30% / 0.6)' }}
+            className="mt-2 block text-[0.7rem] font-bold uppercase tracking-[0.35em] md:text-xs text-[#050b52]"
           >
             Founders Edition
           </motion.span>
@@ -172,8 +169,8 @@ const Index = () => {
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 1.6, duration: 0.6 }}
-            className="mx-auto mt-5 max-w-xs text-sm font-medium tracking-wide uppercase"
-            style={{ letterSpacing: '0.15em', color: 'hsl(220 40% 30% / 0.55)' }}
+            className="mx-auto mt-5 max-w-xs text-sm font-medium tracking-wide uppercase text-[#080c5e]"
+            style={{ letterSpacing: '0.15em' }}
           >
             A game of choices & consequences
           </motion.p>
@@ -194,7 +191,7 @@ const Index = () => {
           <span className="text-lg">{level.icon}</span>
           <span className="text-sm font-bold" style={{ color: 'hsl(220 60% 35%)' }}>{level.title}</span>
           <span className="h-3 w-px" style={{ background: 'hsl(220 40% 30% / 0.15)' }} />
-          <span className="text-sm font-bold" style={{ color: 'hsl(220 40% 30% / 0.7)' }}>{progress.totalXP} XP</span>
+          <span className="text-sm font-bold text-[#050f24]">{progress.totalXP} XP</span>
         </motion.div>
 
         {/* ── CTA buttons ── */}
@@ -221,12 +218,8 @@ const Index = () => {
           <Link to="/session/setup">
             <Button
               size="lg"
-              variant="outline"
-              className="gap-2.5 text-base font-bold uppercase tracking-wide active:animate-btn-press transition-all duration-300 hover:scale-105 px-10 py-7 rounded-2xl"
+              className="gap-2.5 text-base font-bold uppercase tracking-wide active:animate-btn-press transition-all duration-300 hover:scale-105 px-10 py-7 rounded-2xl text-primary-foreground bg-primary"
               style={{
-                background: 'hsl(220 50% 35% / 0.06)',
-                border: '1px solid hsl(220 50% 35% / 0.2)',
-                color: 'hsl(220 50% 25% / 0.8)',
                 backdropFilter: 'blur(8px)',
               }}
             >
