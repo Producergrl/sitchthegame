@@ -16,11 +16,11 @@ const Particle = ({ delay, size, x, y, dur }: { delay: number; size: number; x: 
       height: size,
       left: `${x}%`,
       top: `${y}%`,
-      background: `radial-gradient(circle, hsl(45 90% 55% / 0.5), hsl(45 90% 55% / 0))`,
+      background: `radial-gradient(circle, hsl(220 65% 35% / 0.35), hsl(220 65% 35% / 0))`,
     }}
     initial={{ opacity: 0, scale: 0 }}
     animate={{
-      opacity: [0, 0.7, 0],
+      opacity: [0, 0.5, 0],
       scale: [0, 1.2, 0.3],
       y: [0, -80, -160],
     }}
@@ -55,15 +55,15 @@ const Index = () => {
   const level = useMemo(() => getCurrentLevel(progress.totalXP), [progress.totalXP]);
 
   return (
-    <div className="min-h-screen overflow-x-hidden" style={{ background: 'linear-gradient(180deg, hsl(225 45% 8%) 0%, hsl(225 35% 4%) 100%)' }}>
+    <div className="min-h-screen overflow-x-hidden" style={{ background: 'linear-gradient(180deg, hsl(43 85% 82%) 0%, hsl(43 80% 90%) 100%)' }}>
       {/* ═══════════ FULL-SCREEN HERO ═══════════ */}
       <div className="relative flex min-h-[100dvh] flex-col items-center justify-center overflow-hidden">
         {/* Deep cinematic background layers */}
         <div className="absolute inset-0" style={{
-          background: 'radial-gradient(ellipse 80% 60% at 50% 40%, hsl(225 45% 20% / 0.6) 0%, transparent 70%)',
+          background: 'radial-gradient(ellipse 80% 60% at 50% 40%, hsl(43 90% 70% / 0.5) 0%, transparent 70%)',
         }} />
         <div className="absolute inset-0" style={{
-          background: 'radial-gradient(ellipse 60% 50% at 50% 45%, hsl(45 80% 45% / 0.06) 0%, transparent 60%)',
+          background: 'radial-gradient(ellipse 60% 50% at 50% 45%, hsl(220 60% 30% / 0.04) 0%, transparent 60%)',
         }} />
 
         {/* Grain overlay */}
@@ -71,12 +71,12 @@ const Index = () => {
 
         {/* Heavy vignette */}
         <div className="absolute inset-0 pointer-events-none" style={{
-          background: 'radial-gradient(ellipse at center, transparent 30%, hsl(225 30% 3% / 0.7) 100%)',
+          background: 'radial-gradient(ellipse at center, transparent 50%, hsl(43 70% 70% / 0.3) 100%)',
         }} />
 
         {/* Theme toggle */}
         <div className="absolute right-3 top-3 z-30">
-          <ThemeToggle className="text-white/40 hover:text-white/80 hover:bg-white/5" />
+          <ThemeToggle className="text-primary/40 hover:text-primary/80 hover:bg-primary/5" />
         </div>
 
         {/* Floating particles */}
