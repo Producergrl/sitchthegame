@@ -56,7 +56,7 @@ const SessionSetup = () => {
   };
 
   return (
-    <div className="min-h-screen bg-background" data-age-theme={ageBand}>
+    <div className="min-h-screen bg-destructive" data-age-theme={ageBand}>
       <div className="hero-gradient px-4 py-6 text-primary-foreground">
         <div className="mx-auto flex max-w-2xl items-center gap-3">
           <Link to="/">
@@ -77,7 +77,7 @@ const SessionSetup = () => {
               <button
                 key={ab.value}
                 onClick={() => { setAgeBand(ab.value); setSelectedDecks([]); }}
-                className={`rounded-xl border-2 px-5 py-3 text-sm font-bold transition-all ${
+                className={`border-primary rounded-xl border-2 px-5 py-3 text-sm font-bold transition-all ${
                   ageBand === ab.value
                     ? 'border-primary bg-primary text-primary-foreground'
                     : 'border-border bg-card text-card-foreground hover:border-primary/40'
