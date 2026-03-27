@@ -16,7 +16,7 @@ const Particle = ({ delay, size, x, y, dur }: { delay: number; size: number; x: 
       height: size,
       left: `${x}%`,
       top: `${y}%`,
-      background: `radial-gradient(circle, hsl(220 65% 35% / 0.35), hsl(220 65% 35% / 0))`,
+      background: `radial-gradient(circle, hsl(215 60% 30% / 0.35), hsl(215 60% 30% / 0))`,
     }}
     initial={{ opacity: 0, scale: 0 }}
     animate={{
@@ -55,14 +55,16 @@ const Index = () => {
   const level = useMemo(() => getCurrentLevel(progress.totalXP), [progress.totalXP]);
 
   return (
-    <div className="min-h-screen overflow-x-hidden" style={{ background: 'linear-gradient(180deg, hsl(43 85% 82%) 0%, hsl(43 80% 90%) 100%)' }}>
+    <div className="min-h-screen overflow-x-hidden" style={{ background: 'linear-gradient(180deg, #FEF3D0 0%, #FFF8E7 100%)' }}>
       {/* ═══════════ FULL-SCREEN HERO ═══════════ */}
       <div className="relative flex min-h-[100dvh] flex-col items-center justify-center overflow-hidden">
         {/* Deep cinematic background layers */}
         <div className="absolute inset-0" style={{
           background: 'radial-gradient(ellipse 80% 60% at 50% 40%, hsl(43 90% 70% / 0.5) 0%, transparent 70%)',
         }} />
-        <div className="absolute inset-0 text-[#020b1d] bg-[#f98c06]" />
+        <div className="absolute inset-0" style={{
+          background: 'radial-gradient(ellipse at 50% 50%, #FDB913 0%, #F7941D 60%, #F58B1F 100%)',
+        }} />
 
         {/* Grain overlay */}
         <div className="absolute inset-0 grain-overlay pointer-events-none" />
@@ -74,7 +76,7 @@ const Index = () => {
 
         {/* Theme toggle */}
         <div className="absolute right-3 top-3 z-30">
-          <ThemeToggle className="text-primary/40 hover:text-primary/80 hover:bg-primary/5" />
+          <ThemeToggle className="text-[#1E3A5F]/40 hover:text-[#1E3A5F]/80 hover:bg-[#1E3A5F]/5" />
         </div>
 
         {/* Floating particles */}
@@ -89,11 +91,11 @@ const Index = () => {
             width: 500, height: 500,
             top: '50%', left: '50%', transform: 'translate(-50%, -55%)',
           }}
-            animate={{
+          animate={{
             background: [
-              'radial-gradient(circle, hsl(220 60% 40% / 0.08) 0%, hsl(43 80% 70% / 0.04) 40%, transparent 70%)',
-              'radial-gradient(circle, hsl(220 60% 40% / 0.14) 0%, hsl(43 80% 70% / 0.06) 40%, transparent 70%)',
-              'radial-gradient(circle, hsl(220 60% 40% / 0.08) 0%, hsl(43 80% 70% / 0.04) 40%, transparent 70%)',
+              'radial-gradient(circle, hsl(215 60% 30% / 0.08) 0%, hsl(43 80% 70% / 0.04) 40%, transparent 70%)',
+              'radial-gradient(circle, hsl(215 60% 30% / 0.14) 0%, hsl(43 80% 70% / 0.06) 40%, transparent 70%)',
+              'radial-gradient(circle, hsl(215 60% 30% / 0.08) 0%, hsl(43 80% 70% / 0.04) 40%, transparent 70%)',
             ],
           }}
           transition={{ duration: 4, repeat: Infinity, ease: 'easeInOut' }}
@@ -109,20 +111,20 @@ const Index = () => {
           <div
             className="relative flex h-24 w-24 items-center justify-center rounded-[1.75rem] gold-sweep"
             style={{
-              background: 'linear-gradient(145deg, hsl(220 60% 28%), hsl(220 65% 38%), hsl(215 55% 32%))',
-              boxShadow: '0 0 40px hsl(220 60% 40% / 0.3), 0 0 80px hsl(220 60% 40% / 0.1), inset 0 1px 1px hsl(220 70% 60% / 0.3)',
+              background: 'linear-gradient(145deg, #1E3A5F, #2D5F8A, #1E3A5F)',
+              boxShadow: '0 0 40px hsl(215 60% 30% / 0.3), 0 0 80px hsl(215 60% 30% / 0.1), inset 0 1px 1px hsl(215 70% 50% / 0.3)',
             }}
           >
             <Shield className="relative z-10 h-12 w-12 text-amber-100 drop-shadow-[0_2px_4px_hsl(0_0%_0%/0.3)]" />
           </div>
           {/* Orbiting rings */}
           <motion.div
-            className="absolute inset-[-10px] rounded-[2.25rem] border border-primary/15"
+            className="absolute inset-[-10px] rounded-[2.25rem] border border-[#1E3A5F]/15"
             animate={{ rotate: 360 }}
             transition={{ duration: 25, repeat: Infinity, ease: 'linear' }}
           />
           <motion.div
-            className="absolute inset-[-22px] rounded-[2.75rem] border border-primary/8"
+            className="absolute inset-[-22px] rounded-[2.75rem] border border-[#1E3A5F]/8"
             animate={{ rotate: -360 }}
             transition={{ duration: 40, repeat: Infinity, ease: 'linear' }}
           />
@@ -136,11 +138,11 @@ const Index = () => {
             transition={{ delay: 0.5, duration: 1, ease: [0.22, 1, 0.36, 1] }}
             className="text-[2.4rem] leading-[1.1] font-black tracking-[-0.02em] md:text-[4.5rem] uppercase"
             style={{
-              background: 'linear-gradient(170deg, hsl(220 70% 25%) 0%, hsl(220 65% 35%) 30%, hsl(215 70% 40%) 50%, hsl(220 60% 35%) 70%, hsl(225 55% 28%) 100%)',
+              background: 'linear-gradient(170deg, #1E3A5F 0%, #2D5F8A 40%, #1E3A5F 100%)',
               WebkitBackgroundClip: 'text',
               WebkitTextFillColor: 'transparent',
               backgroundClip: 'text',
-              filter: 'drop-shadow(0 4px 12px hsl(220 60% 35% / 0.3)) drop-shadow(0 1px 0 hsl(220 50% 20% / 0.3))',
+              filter: 'drop-shadow(0 4px 12px hsl(215 60% 30% / 0.3)) drop-shadow(0 1px 0 hsl(215 50% 20% / 0.3))',
             }}
           >
             Sitch
@@ -149,7 +151,7 @@ const Index = () => {
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 1.1, duration: 0.6 }}
-            className="mt-2 block text-[0.7rem] font-bold uppercase tracking-[0.35em] md:text-xs text-[#050b52]"
+            className="mt-2 block text-[0.7rem] font-bold uppercase tracking-[0.35em] md:text-xs text-[#2D5F8A]"
           >
             Founders Edition
           </motion.span>
@@ -161,7 +163,7 @@ const Index = () => {
             transition={{ delay: 1.4, duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
             className="mx-auto mt-3 h-[2px] w-32 origin-center"
             style={{
-              background: 'linear-gradient(90deg, transparent, hsl(220 60% 35% / 0.5), transparent)',
+              background: 'linear-gradient(90deg, transparent, #1E3A5F80, transparent)',
             }}
           />
 
@@ -169,7 +171,7 @@ const Index = () => {
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 1.6, duration: 0.6 }}
-            className="mx-auto mt-5 max-w-xs text-sm font-medium tracking-wide uppercase text-[#080c5e]"
+            className="mx-auto mt-5 max-w-xs text-sm font-medium tracking-wide uppercase text-[#2D5F8A]"
             style={{ letterSpacing: '0.15em' }}
           >
             A game of choices & consequences
@@ -183,15 +185,15 @@ const Index = () => {
           transition={{ delay: 1.8, duration: 0.5 }}
           className="relative z-10 mt-8 flex items-center gap-2.5 rounded-full px-5 py-2.5"
           style={{
-            background: 'hsl(220 50% 30% / 0.06)',
-            border: '1px solid hsl(220 50% 35% / 0.2)',
+            background: 'hsl(215 50% 30% / 0.06)',
+            border: '1px solid hsl(215 50% 30% / 0.15)',
             backdropFilter: 'blur(12px)',
           }}
         >
           <span className="text-lg">{level.icon}</span>
-          <span className="text-sm font-bold" style={{ color: 'hsl(220 60% 35%)' }}>{level.title}</span>
-          <span className="h-3 w-px" style={{ background: 'hsl(220 40% 30% / 0.15)' }} />
-          <span className="text-sm font-bold text-[#050f24]">{progress.totalXP} XP</span>
+          <span className="text-sm font-bold text-[#1E3A5F]">{level.title}</span>
+          <span className="h-3 w-px bg-[#1E3A5F]/15" />
+          <span className="text-sm font-bold text-[#1E3A5F]">{progress.totalXP} XP</span>
         </motion.div>
 
         {/* ── CTA buttons ── */}
@@ -206,9 +208,9 @@ const Index = () => {
               size="lg"
               className="group gap-2.5 text-base font-black tracking-wide uppercase shadow-2xl active:animate-btn-press transition-all duration-300 hover:scale-110 px-10 py-7 rounded-2xl border-0"
               style={{
-                background: 'linear-gradient(135deg, hsl(220 60% 30%), hsl(220 65% 38%))',
-                boxShadow: '0 4px 30px hsl(220 60% 35% / 0.35), 0 0 60px hsl(220 60% 35% / 0.1), inset 0 1px 1px hsl(220 60% 55% / 0.3)',
-                color: 'hsl(43 90% 92%)',
+                background: 'linear-gradient(135deg, #1E3A5F, #2D5F8A)',
+                boxShadow: '0 4px 30px hsl(215 60% 30% / 0.35), 0 0 60px hsl(215 60% 30% / 0.1), inset 0 1px 1px hsl(215 60% 50% / 0.3)',
+                color: '#FEF3D0',
               }}
             >
               <Zap className="h-5 w-5 transition-transform group-hover:rotate-12 group-hover:scale-110" />
@@ -218,8 +220,11 @@ const Index = () => {
           <Link to="/session/setup">
             <Button
               size="lg"
-              className="gap-2.5 text-base font-bold uppercase tracking-wide active:animate-btn-press transition-all duration-300 hover:scale-105 px-10 py-7 rounded-2xl text-primary-foreground bg-primary"
+              className="gap-2.5 text-base font-bold uppercase tracking-wide active:animate-btn-press transition-all duration-300 hover:scale-105 px-10 py-7 rounded-2xl"
               style={{
+                background: 'white',
+                color: '#1E3A5F',
+                border: '2px solid #1E3A5F',
                 backdropFilter: 'blur(8px)',
               }}
             >
@@ -236,12 +241,12 @@ const Index = () => {
           transition={{ delay: 2.8 }}
           className="absolute bottom-8 z-10 flex flex-col items-center gap-1.5"
         >
-          <span className="text-[10px] font-medium uppercase tracking-[0.2em]" style={{ color: 'hsl(220 40% 30% / 0.3)' }}>Explore</span>
+          <span className="text-[10px] font-medium uppercase tracking-[0.2em] text-[#1E3A5F]/35">Explore</span>
           <motion.div
             animate={{ y: [0, 5, 0] }}
             transition={{ duration: 2, repeat: Infinity, ease: 'easeInOut' }}
           >
-            <ChevronDown className="h-4 w-4" style={{ color: 'hsl(220 40% 30% / 0.3)' }} />
+            <ChevronDown className="h-4 w-4 text-[#1E3A5F]/35" />
           </motion.div>
         </motion.div>
       </div>
@@ -258,7 +263,7 @@ const Index = () => {
           <MissionProgress progress={progress} />
         </motion.div>
 
-        {/* Navigation cards — premium tactile feel */}
+        {/* Navigation cards */}
         <div className="grid gap-3">
           {navItems.map((item, i) => (
             <motion.div
@@ -270,14 +275,14 @@ const Index = () => {
             >
               <Link to={item.to}>
                 <motion.div
-                  className="group flex items-center gap-4 rounded-2xl bg-card p-4 cursor-pointer"
+                  className="group flex items-center gap-4 rounded-2xl bg-white p-4 cursor-pointer"
                   style={{
-                    border: '1px solid hsl(220 50% 35% / 0.12)',
-                    boxShadow: '0 2px 8px hsl(220 30% 20% / 0.08), 0 8px 32px hsl(220 30% 20% / 0.06), inset 0 1px 0 hsl(0 0% 100% / 0.5)',
+                    border: '1px solid hsl(215 50% 30% / 0.12)',
+                    boxShadow: '0 2px 8px hsl(215 30% 20% / 0.08), 0 8px 32px hsl(215 30% 20% / 0.06), inset 0 1px 0 hsl(0 0% 100% / 0.5)',
                   }}
                   whileHover={{
                     y: -4,
-                    boxShadow: '0 8px 24px hsl(220 30% 20% / 0.12), 0 16px 48px hsl(220 30% 20% / 0.08), 0 0 20px hsl(220 60% 35% / 0.06), inset 0 1px 0 hsl(0 0% 100% / 0.6)',
+                    boxShadow: '0 8px 24px hsl(215 30% 20% / 0.12), 0 16px 48px hsl(215 30% 20% / 0.08), 0 0 20px hsl(215 60% 30% / 0.06), inset 0 1px 0 hsl(0 0% 100% / 0.6)',
                   }}
                   whileTap={{ scale: 0.98 }}
                   transition={{ type: 'spring', stiffness: 300, damping: 20 }}
@@ -286,10 +291,10 @@ const Index = () => {
                     {item.emoji}
                   </div>
                   <div className="flex-1 min-w-0">
-                    <h3 className="text-base font-bold text-card-foreground">{item.title}</h3>
+                    <h3 className="text-base font-bold text-[#1E3A5F]">{item.title}</h3>
                     <p className="text-sm text-muted-foreground">{item.desc}</p>
                   </div>
-                  <ChevronRight className="h-4 w-4 text-muted-foreground transition-transform duration-200 group-hover:translate-x-1 group-hover:text-primary" />
+                  <ChevronRight className="h-4 w-4 text-muted-foreground transition-transform duration-200 group-hover:translate-x-1 group-hover:text-[#1E3A5F]" />
                 </motion.div>
               </Link>
             </motion.div>
@@ -304,13 +309,13 @@ const Index = () => {
           transition={{ delay: 0.2 }}
           className="rounded-2xl p-5 text-center"
           style={{
-            background: 'hsl(220 50% 35% / 0.05)',
-            border: '1px solid hsl(220 50% 35% / 0.14)',
-            boxShadow: '0 0 40px hsl(220 60% 35% / 0.04)',
+            background: 'hsl(215 50% 30% / 0.05)',
+            border: '1px solid hsl(215 50% 30% / 0.14)',
+            boxShadow: '0 0 40px hsl(215 60% 30% / 0.04)',
           }}
         >
-          <Shield className="mx-auto mb-2 h-6 w-6 text-primary" />
-          <p className="text-sm font-bold text-foreground">Designed for Safety</p>
+          <Shield className="mx-auto mb-2 h-6 w-6 text-[#1E3A5F]" />
+          <p className="text-sm font-bold text-[#1E3A5F]">Designed for Safety</p>
           <p className="mt-1 text-xs text-muted-foreground leading-relaxed">
             No public profiles · No messaging · No social sharing · Play with a trusted adult
           </p>
@@ -318,7 +323,7 @@ const Index = () => {
 
         {/* Admin */}
         <div className="text-center pb-8">
-          <Link to="/admin" className="inline-flex items-center gap-1.5 text-xs text-muted-foreground hover:text-foreground transition-colors">
+          <Link to="/admin" className="inline-flex items-center gap-1.5 text-xs text-muted-foreground hover:text-[#1E3A5F] transition-colors">
             <Settings className="h-3.5 w-3.5" />
             Manage Cards
           </Link>
