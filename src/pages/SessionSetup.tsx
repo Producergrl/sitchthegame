@@ -76,7 +76,7 @@ const SessionSetup = () => {
             {ageBands.map(ab => (
               <button
                 key={ab.value}
-                onClick={() => setAgeBand(ab.value)}
+                onClick={() => { setAgeBand(ab.value); setSelectedDecks([]); }}
                 className={`rounded-xl border-2 px-5 py-3 text-sm font-bold transition-all ${
                   ageBand === ab.value
                     ? 'border-primary bg-primary text-primary-foreground'
@@ -130,7 +130,7 @@ const SessionSetup = () => {
                 <div className="text-xs text-muted-foreground">Random missions from every deck — a surprise each time!</div>
               </div>
             </button>
-            {decks.map(deck => {
+            {decks.filter(deck => deck.age_band === ageBand).map(deck => {
               const isLocked = !deck.is_free;
               return (
                 <button
