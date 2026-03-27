@@ -54,7 +54,7 @@ const SessionSetup = () => {
   };
 
   return (
-    <div className="min-h-screen bg-destructive" data-age-theme={ageBand}>
+    <div className="min-h-screen" style={{ background: 'linear-gradient(180deg, #FEF3D0 0%, #FFF8E7 100%)' }} data-age-theme={ageBand}>
       <div className="hero-gradient px-4 py-6 text-primary-foreground">
         <div className="mx-auto flex max-w-2xl items-center gap-3">
           <Link to="/">
