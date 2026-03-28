@@ -2,7 +2,7 @@ import type { ScenarioData } from './scenarioTypes';
 
 export const scenarios_7_9: ScenarioData[] = [
   { scenario: 'Someone says they want to play "doctor" with you and take off clothes.',
-    options: ["Play along because it sounds like a game", "Say 'No! That's not a safe game' and tell a trusted adult", "Take off some clothes but not all", "Play the game if they go first"],
+    options: ["Play along because it sounds like a game", "Say 'No! That's not a safe game' and tell a trusted adult", "Take off some clothes but not all", "Ask them what they mean by play doctor and decide based on their answer"],
     correct_option: 'B', worst_option: 'A' },
   { scenario: "Your friend wants to cheat on a test and asks for your answers.",
     options: ["Give them your answers so they don't get in trouble", "Say 'I can't do that, but I can help you study later'", "Cheat together so you both get good grades", "Ignore them and hope they stop asking"],
