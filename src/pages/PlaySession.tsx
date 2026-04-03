@@ -358,6 +358,35 @@ const PlaySession = () => {
     const text = `Here's the Sitch... ${card.scenario}`;
     setIsReadingAloud(true);
 
+    // Use preloaded audio if available
+    const preloaded = preloadedAudioRef.current;
+    if (preloaded.text === text && preloaded.audio && preloaded.url) {
+      const audio = preloaded.audio;
+      const isBlobUrl = preloaded.isBlobUrl;
+      setActiveAudio(audio);
+      // Clear ref so we don't reuse a played audio element
+      preloadedAudioRef.current = { text: '', audio: null, url: null, isBlobUrl: false };
+
+      audio.onended = () => {
+        if (isBlobUrl) URL.revokeObjectURL(audio.src);
+        setActiveAudio(null);
+        setIsReadingAloud(false);
+      };
+      audio.onerror = () => {
+        if (isBlobUrl) URL.revokeObjectURL(audio.src);
+        setActiveAudio(null);
+        speakWithBrowser(text, 'Failed to play generated audio.');
+      };
+
+      try {
+        await audio.play();
+      } catch {
+        speakWithBrowser(text, 'Failed to play generated audio.');
+      }
+      return;
+    }
+
+    // Fallback: fetch on demand if preload wasn't ready
     try {
       const response = await fetch(
         `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/elevenlabs-tts`,
@@ -419,7 +448,6 @@ const PlaySession = () => {
         return;
       }
 
-      // Check if the edge function returned a cached URL (JSON) or raw audio (binary)
       const contentType = response.headers.get('content-type') || '';
       let audioUrl: string;
       let isBlobUrl = false;
