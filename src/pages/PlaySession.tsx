@@ -355,7 +355,7 @@ const PlaySession = () => {
       window.speechSynthesis.cancel();
     }
 
-    const text = `Here's the Sitch... ${card.scenario}... do you...`;
+    const text = `Here's the Sitch... ${card.scenario}...... do you...`;
     setIsReadingAloud(true);
 
     // Use preloaded audio if available
