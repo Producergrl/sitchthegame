@@ -143,7 +143,62 @@ const PlaySession = () => {
   const card = sessionCards[index];
   const deck = card ? decks.find(d => d.id === card.deck_id) : null;
 
-  // Complete a mission when moving to next card (after guidance revealed)
+  // Preload TTS audio for the current card
+  useEffect(() => {
+    if (!card) return;
+    const text = `Here's the Sitch... ${card.scenario}`;
+    if (preloadedAudioRef.current.text === text) return; // already preloading/preloaded
+
+    // Clean up previous preload
+    const prev = preloadedAudioRef.current;
+    if (prev.url && prev.isBlobUrl) URL.revokeObjectURL(prev.url);
+    preloadedAudioRef.current = { text, audio: null, url: null, isBlobUrl: false };
+
+    const controller = new AbortController();
+    (async () => {
+      try {
+        const response = await fetch(
+          `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/elevenlabs-tts`,
+          {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+              apikey: import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY,
+              Authorization: `Bearer ${import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY}`,
+            },
+            body: JSON.stringify({ text }),
+            signal: controller.signal,
+          },
+        );
+        if (!response.ok) return;
+
+        const contentType = response.headers.get('content-type') || '';
+        let audioUrl: string;
+        let isBlobUrl = false;
+
+        if (contentType.includes('application/json')) {
+          const data = await response.json();
+          if (!data?.cachedUrl) return;
+          audioUrl = data.cachedUrl;
+        } else {
+          const blob = await response.blob();
+          audioUrl = URL.createObjectURL(blob);
+          isBlobUrl = true;
+        }
+
+        const audio = new Audio();
+        audio.preload = 'auto';
+        audio.src = audioUrl;
+        preloadedAudioRef.current = { text, audio, url: audioUrl, isBlobUrl };
+      } catch {
+        // Silently fail — handleReadAloud will fetch on demand
+      }
+    })();
+
+    return () => controller.abort();
+  }, [card]);
+
+
   const finishCurrentMission = useCallback(() => {
     if (!card) return;
     const result = completeMission(playerProgress, card.id, missionXPEarned);
