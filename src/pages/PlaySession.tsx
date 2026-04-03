@@ -146,7 +146,7 @@ const PlaySession = () => {
   // Preload TTS audio for the current card
   useEffect(() => {
     if (!card) return;
-    const text = `Here's the Sitch... ${card.scenario}... do you...`;
+    const text = `Here's the Sitch... ${card.scenario}...... do you...`;
     if (preloadedAudioRef.current.text === text) return; // already preloading/preloaded
 
     // Clean up previous preload
@@ -355,7 +355,7 @@ const PlaySession = () => {
       window.speechSynthesis.cancel();
     }
 
-    const text = `Here's the Sitch... ${card.scenario}... do you...`;
+    const text = `Here's the Sitch... ${card.scenario}...... do you...`;
     setIsReadingAloud(true);
 
     // Use preloaded audio if available
