@@ -82,6 +82,7 @@ const PlaySession = () => {
   const [sessionDone, setSessionDone] = useState(false);
   const [isReadingAloud, setIsReadingAloud] = useState(false);
   const [activeAudio, setActiveAudio] = useState<HTMLAudioElement | null>(null);
+  const preloadedAudioRef = useRef<{ text: string; audio: HTMLAudioElement | null; url: string | null; isBlobUrl: boolean }>({ text: '', audio: null, url: null, isBlobUrl: false });
 
   // Streak state
   const [streak, setStreak] = useState(0);
