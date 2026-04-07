@@ -63,6 +63,11 @@ const Legal = () => (
       <h2 className="text-lg font-semibold text-foreground">Contact</h2>
       <p>For legal inquiries, licensing requests, or copyright concerns, please contact the rights holder through the official website associated with the game.</p>
     </section>
+
+    <footer className="border-t border-border pt-6 pb-10 text-center text-xs text-muted-foreground space-y-1">
+      <p className="font-semibold text-foreground">© 2026 Sayfer Choyce™. All rights reserved.</p>
+      <p>Unauthorized reproduction or distribution prohibited.</p>
+    </footer>
   </div>
 );
 
