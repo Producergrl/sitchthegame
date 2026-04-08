@@ -65,7 +65,7 @@ const Legal = () => (
     </section>
 
     <footer className="border-t border-border pt-6 pb-10 text-center text-xs text-muted-foreground space-y-1">
-      <p className="font-semibold text-foreground">© 2026 Sayfer Choyce™. All rights reserved.</p>
+      <p className="font-semibold text-foreground">© 2026 Here's the Sitch™. All rights reserved.</p>
       <p>Unauthorized reproduction or distribution prohibited.</p>
     </footer>
   </div>
