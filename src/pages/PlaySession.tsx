@@ -146,7 +146,7 @@ const PlaySession = () => {
   // Preload TTS audio for the current card
   useEffect(() => {
     if (!card) return;
-    const text = `Sitch... ${card.scenario}...... do you...`;
+    const text = `Here's the Sitch... ${card.scenario}...... do you...`;
     if (preloadedAudioRef.current.text === text) return; // already preloading/preloaded
 
     // Clean up previous preload
@@ -355,7 +355,7 @@ const PlaySession = () => {
       window.speechSynthesis.cancel();
     }
 
-    const text = `Sitch... ${card.scenario}...... do you...`;
+    const text = `Here's the Sitch... ${card.scenario}...... do you...`;
     setIsReadingAloud(true);
 
     // Use preloaded audio if available
@@ -916,14 +916,14 @@ const PlaySession = () => {
               {/* Only show title as heading if it differs meaningfully from the scenario */}
               {card.scenario.toLowerCase().startsWith(card.title.toLowerCase().replace(/…$/, '')) ? (
                 <h2 className="mb-3 text-xl font-black text-card-foreground">
-                   <span className="text-primary">Sitch.. </span>
-                   {card.scenario}
-                 </h2>
-               ) : (
-                 <>
-                   <h2 className="mb-3 text-xl font-black text-card-foreground">{card.title}</h2>
-                   <p className="text-base leading-relaxed text-card-foreground">
-                     <span className="font-black text-primary">Sitch.. </span>
+                  <span className="text-primary">Here's the Sitch.. </span>
+                  {card.scenario}
+                </h2>
+              ) : (
+                <>
+                  <h2 className="mb-3 text-xl font-black text-card-foreground">{card.title}</h2>
+                  <p className="text-base leading-relaxed text-card-foreground">
+                    <span className="font-black text-primary">Here's the Sitch.. </span>
                     {card.scenario}
                   </p>
                 </>

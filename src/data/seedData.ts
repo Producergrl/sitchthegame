@@ -39,7 +39,7 @@ const DECKS = {
 } as const;
 
 const normalize = (s: string) =>
-  s.replace(/[\u201C\u201D]/g, '"').replace(/[\u2019]/g, "'").replace(/\s*What would you do\?\s*$/i, '').replace(/\s*(?:Here's the )?Sitch\.\.\s*/i, '').trim();
+  s.replace(/[\u201C\u201D]/g, '"').replace(/[\u2019]/g, "'").replace(/\s*What would you do\?\s*$/i, '').replace(/\s*Here's the Sitch\.\.\s*/i, '').trim();
 
 const makeTitle = (scenario: string) => {
   const clean = scenario.replace(/[".]/g, '').trim();

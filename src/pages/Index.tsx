@@ -145,7 +145,7 @@ const Index = () => {
               filter: 'drop-shadow(0 4px 12px hsl(215 60% 30% / 0.3)) drop-shadow(0 1px 0 hsl(215 50% 20% / 0.3))',
             }}
           >
-            Sitch
+            Here's the Sitch
           </motion.h1>
           <motion.span
             initial={{ opacity: 0, y: 10 }}
@@ -174,7 +174,7 @@ const Index = () => {
             className="mx-auto mt-5 max-w-xs text-sm font-medium tracking-wide uppercase text-[#2D5F8A]"
             style={{ letterSpacing: '0.15em' }}
           >
-            A game of choice & consequence
+            A game of choices & consequences
           </motion.p>
         </div>
 
