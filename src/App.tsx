@@ -4,8 +4,6 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import ErrorBoundary from "@/components/ErrorBoundary";
-import UnlockGate, { isUnlocked } from "@/components/UnlockGate";
-import { useState } from "react";
 import Index from "./pages/Index";
 import BrowseDecks from "./pages/BrowseDecks";
 import DeckDetail from "./pages/DeckDetail";
@@ -20,14 +18,7 @@ import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
 
-const App = () => {
-  const [unlocked, setUnlocked] = useState(isUnlocked);
-
-  if (!unlocked) {
-    return <UnlockGate onUnlock={() => setUnlocked(true)} />;
-  }
-
-  return (
+const App = () => (
   <ErrorBoundary>
     <QueryClientProvider client={queryClient}>
       <TooltipProvider>
@@ -51,7 +42,6 @@ const App = () => {
       </TooltipProvider>
     </QueryClientProvider>
   </ErrorBoundary>
-  );
-};
+);
 
 export default App;
