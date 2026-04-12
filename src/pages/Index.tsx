@@ -174,7 +174,7 @@ const Index = () => {
             className="mx-auto mt-5 max-w-xs text-sm font-medium tracking-wide uppercase text-[#2D5F8A]"
             style={{ letterSpacing: '0.15em' }}
           >
-            A game of choices & consequences
+            A game of choice & consequence
           </motion.p>
         </div>
 
