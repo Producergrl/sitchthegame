@@ -259,14 +259,23 @@ const PlaySession = () => {
     if (selectedOption !== null) return;
     setSelectedOption(label);
     setCustomAnswerSubmitted(false);
+
+    // Sound effects play in ALL modes
+    const isCorrect = card?.correct_option === label;
+    const isWorst = card?.worst_option === label;
+
+    if (isCorrect) {
+      playCorrectChime();
+      setShowConfetti(true);
+      setTimeout(() => setShowConfetti(false), 2500);
+    } else {
+      playWrongBuzzer();
+    }
+
+    // Scoring & streaks only in quiz mode
     if (activeMode === 'quiz') {
-      const isCorrect = card?.correct_option === label;
-      const isWorst = card?.worst_option === label;
       if (isCorrect) {
         setScore(s => s + 1);
-        setShowConfetti(true);
-        setTimeout(() => setShowConfetti(false), 2500);
-        playCorrectChime();
         setMissionXPEarned(prev => prev + XP_CORRECT);
         setStreak(prev => {
           const next = prev + 1;
@@ -278,7 +287,6 @@ const PlaySession = () => {
           return next;
         });
       } else {
-        playWrongBuzzer();
         setStreak(0);
       }
       if (isWorst) {
