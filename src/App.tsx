@@ -4,6 +4,7 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import ErrorBoundary from "@/components/ErrorBoundary";
+import UnlockGate from "@/components/UnlockGate";
 import Index from "./pages/Index";
 import BrowseDecks from "./pages/BrowseDecks";
 import DeckDetail from "./pages/DeckDetail";
