@@ -1,9 +1,10 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
 import { Shield, Lock } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { safeGetItem, safeSetItem } from '@/lib/safeStorage';
+import { primeSoundEffects } from '@/lib/sounds';
 
 const STORAGE_KEY = 'sitch_unlocked';
 const VALID_CODE = 'SITCH2026';
@@ -17,10 +18,25 @@ const UnlockGate = ({ children }: UnlockGateProps) => {
   const [code, setCode] = useState('');
   const [error, setError] = useState(false);
 
-  if (unlocked) return <>{children}</>;
+  useEffect(() => {
+    if (!unlocked) return;
+
+    const primeOnGesture = () => {
+      primeSoundEffects();
+    };
+
+    window.addEventListener('pointerdown', primeOnGesture, true);
+    window.addEventListener('keydown', primeOnGesture, true);
+
+    return () => {
+      window.removeEventListener('pointerdown', primeOnGesture, true);
+      window.removeEventListener('keydown', primeOnGesture, true);
+    };
+  }, [unlocked]);
 
   const handleUnlock = () => {
     if (code.trim().toUpperCase() === VALID_CODE) {
+      primeSoundEffects();
       safeSetItem(STORAGE_KEY, 'true');
       setUnlocked(true);
       setError(false);
@@ -28,6 +44,8 @@ const UnlockGate = ({ children }: UnlockGateProps) => {
       setError(true);
     }
   };
+
+  if (unlocked) return <>{children}</>;
 
   return (
     <div

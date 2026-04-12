@@ -5,15 +5,65 @@
 
 let audioCtx: AudioContext | null = null;
 
-function getCtx(): AudioContext {
+function getOrCreateCtx(): AudioContext {
   if (!audioCtx) {
     audioCtx = new AudioContext();
   }
-  // Resume if suspended (browser autoplay policy)
-  if (audioCtx.state === 'suspended') {
-    audioCtx.resume();
-  }
   return audioCtx;
+}
+
+function withReadyContext(playback: (ctx: AudioContext, startTime: number) => void) {
+  try {
+    const ctx = getOrCreateCtx();
+    const startPlayback = () => playback(ctx, ctx.currentTime);
+
+    if (ctx.state === 'running') {
+      startPlayback();
+      return;
+    }
+
+    void ctx.resume().then(() => {
+      startPlayback();
+    }).catch(() => {
+      // Audio not available — silent fallback
+    });
+  } catch {
+    // Audio not available — silent fallback
+  }
+}
+
+export function primeSoundEffects() {
+  try {
+    const ctx = getOrCreateCtx();
+
+    const warmUp = () => {
+      const buffer = ctx.createBuffer(1, 1, 22050);
+      const source = ctx.createBufferSource();
+      const gain = ctx.createGain();
+
+      source.buffer = buffer;
+      gain.gain.value = 0.0001;
+
+      source.connect(gain);
+      gain.connect(ctx.destination);
+
+      source.start();
+      source.stop(ctx.currentTime + 0.001);
+    };
+
+    if (ctx.state === 'running') {
+      warmUp();
+      return;
+    }
+
+    void ctx.resume().then(() => {
+      warmUp();
+    }).catch(() => {
+      // Audio not available — silent fallback
+    });
+  } catch {
+    // Audio not available — silent fallback
+  }
 }
 
 /* ── Helper: play a note ── */
@@ -52,78 +102,46 @@ function playTone(
  * Three bright bell-like tones rising in pitch.
  */
 export function playCorrectChime() {
-  try {
-    const ctx = getCtx();
-    const t = ctx.currentTime;
-
-    // Three ascending bell tones (C6 → E6 → G6)
-    playTone(ctx, 1047, t, 0.35, 'sine', 0.14);         // C6
-    playTone(ctx, 1047, t, 0.35, 'triangle', 0.06);      // shimmer layer
-    playTone(ctx, 1319, t + 0.12, 0.35, 'sine', 0.14);   // E6
+  withReadyContext((ctx, t) => {
+    playTone(ctx, 1047, t, 0.35, 'sine', 0.14);
+    playTone(ctx, 1047, t, 0.35, 'triangle', 0.06);
+    playTone(ctx, 1319, t + 0.12, 0.35, 'sine', 0.14);
     playTone(ctx, 1319, t + 0.12, 0.35, 'triangle', 0.06);
-    playTone(ctx, 1568, t + 0.24, 0.5, 'sine', 0.16);    // G6 (longer ring)
+    playTone(ctx, 1568, t + 0.24, 0.5, 'sine', 0.16);
     playTone(ctx, 1568, t + 0.24, 0.5, 'triangle', 0.07);
-
-    // Subtle sparkle on top
-    playTone(ctx, 3136, t + 0.28, 0.3, 'sine', 0.03);    // G7 whisper
-  } catch {
-    // Audio not available — silent fallback
-  }
+    playTone(ctx, 3136, t + 0.28, 0.3, 'sine', 0.03);
+  });
 }
 
-/**
- * Triumphant fanfare — plays when a custom "wow" answer is approved.
- * Brass-like square-wave trumpet motif with a heroic feel.
- */
 /**
  * Buzzer + descending "oops" tone — plays on wrong answer.
  * Short harsh buzz followed by a sad descending slide.
  */
 export function playWrongBuzzer() {
-  try {
-    const ctx = getCtx();
-    const t = ctx.currentTime;
-
-    // Harsh buzz (low square wave)
+  withReadyContext((ctx, t) => {
     playTone(ctx, 110, t, 0.18, 'square', 0.16);
     playTone(ctx, 110, t, 0.18, 'sawtooth', 0.08);
-
-    // Descending "oops" slide (E4 → C4 → A3)
-    playTone(ctx, 330, t + 0.20, 0.22, 'sine', 0.12);    // E4
-    playTone(ctx, 262, t + 0.36, 0.22, 'sine', 0.12);    // C4
-    playTone(ctx, 220, t + 0.52, 0.35, 'sine', 0.10);    // A3 (sad hold)
+    playTone(ctx, 330, t + 0.20, 0.22, 'sine', 0.12);
+    playTone(ctx, 262, t + 0.36, 0.22, 'sine', 0.12);
+    playTone(ctx, 220, t + 0.52, 0.35, 'sine', 0.10);
     playTone(ctx, 220, t + 0.52, 0.35, 'triangle', 0.05);
-  } catch {
-    // Audio not available — silent fallback
-  }
+  });
 }
 
 export function playWowFanfare() {
-  try {
-    const ctx = getCtx();
-    const t = ctx.currentTime;
-
+  withReadyContext((ctx, t) => {
     const brass = (freq: number, start: number, dur: number, vol = 0.12) => {
-      // Square + sawtooth blend for brass timbre
       playTone(ctx, freq, start, dur, 'square', vol * 0.6);
       playTone(ctx, freq, start, dur, 'sawtooth', vol * 0.4);
-      // Subtle octave overtone
       playTone(ctx, freq * 2, start, dur * 0.7, 'sine', vol * 0.08);
     };
 
-    // Heroic trumpet motif: G5 → B5 → D6 → G6 (G major arpeggio)
-    brass(784, t, 0.18, 0.13);           // G5  — short pickup
-    brass(988, t + 0.15, 0.18, 0.14);    // B5
-    brass(1175, t + 0.30, 0.22, 0.15);   // D6
-    brass(1568, t + 0.48, 0.55, 0.16);   // G6  — triumphant hold
-
-    // Second trumpet harmony (a third below) on the final note
-    brass(1319, t + 0.50, 0.50, 0.10);   // E6 harmony
-
-    // Little sparkle flourish at the end
-    playTone(ctx, 2093, t + 0.65, 0.25, 'sine', 0.04);  // C7 shimmer
-    playTone(ctx, 2637, t + 0.72, 0.20, 'sine', 0.03);  // E7 sparkle
-  } catch {
-    // Audio not available — silent fallback
-  }
+    brass(784, t, 0.18, 0.13);
+    brass(988, t + 0.15, 0.18, 0.14);
+    brass(1175, t + 0.30, 0.22, 0.15);
+    brass(1568, t + 0.48, 0.55, 0.16);
+    brass(1319, t + 0.50, 0.50, 0.10);
+    playTone(ctx, 2093, t + 0.65, 0.25, 'sine', 0.04);
+    playTone(ctx, 2637, t + 0.72, 0.20, 'sine', 0.03);
+  });
 }
