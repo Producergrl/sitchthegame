@@ -4,6 +4,7 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import ErrorBoundary from "@/components/ErrorBoundary";
+import UnlockGate from "@/components/UnlockGate";
 import Index from "./pages/Index";
 import BrowseDecks from "./pages/BrowseDecks";
 import DeckDetail from "./pages/DeckDetail";
@@ -20,27 +21,29 @@ const queryClient = new QueryClient();
 
 const App = () => (
   <ErrorBoundary>
-    <QueryClientProvider client={queryClient}>
-      <TooltipProvider>
-        <Toaster />
-        <Sonner />
-        <BrowserRouter>
-          <Routes>
-            <Route path="/" element={<Index />} />
-            <Route path="/decks" element={<BrowseDecks />} />
-            <Route path="/decks/:deckId" element={<DeckDetail />} />
-            <Route path="/session/setup" element={<SessionSetup />} />
-            <Route path="/play" element={<PlaySession />} />
-            <Route path="/resources" element={<Resources />} />
-            <Route path="/stickers" element={<StickerCollection />} />
-            <Route path="/how-to-play" element={<HowToPlay />} />
-            <Route path="/admin" element={<AdminPage />} />
-            <Route path="/legal" element={<Legal />} />
-            <Route path="*" element={<NotFound />} />
-          </Routes>
-        </BrowserRouter>
-      </TooltipProvider>
-    </QueryClientProvider>
+    <UnlockGate>
+      <QueryClientProvider client={queryClient}>
+        <TooltipProvider>
+          <Toaster />
+          <Sonner />
+          <BrowserRouter>
+            <Routes>
+              <Route path="/" element={<Index />} />
+              <Route path="/decks" element={<BrowseDecks />} />
+              <Route path="/decks/:deckId" element={<DeckDetail />} />
+              <Route path="/session/setup" element={<SessionSetup />} />
+              <Route path="/play" element={<PlaySession />} />
+              <Route path="/resources" element={<Resources />} />
+              <Route path="/stickers" element={<StickerCollection />} />
+              <Route path="/how-to-play" element={<HowToPlay />} />
+              <Route path="/admin" element={<AdminPage />} />
+              <Route path="/legal" element={<Legal />} />
+              <Route path="*" element={<NotFound />} />
+            </Routes>
+          </BrowserRouter>
+        </TooltipProvider>
+      </QueryClientProvider>
+    </UnlockGate>
   </ErrorBoundary>
 );
 
