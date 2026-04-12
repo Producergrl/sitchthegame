@@ -145,7 +145,7 @@ const Index = () => {
               filter: 'drop-shadow(0 4px 12px hsl(215 60% 30% / 0.3)) drop-shadow(0 1px 0 hsl(215 50% 20% / 0.3))',
             }}
           >
-            Here's the Sitch
+            Sitch
           </motion.h1>
           <motion.span
             initial={{ opacity: 0, y: 10 }}
