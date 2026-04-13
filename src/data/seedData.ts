@@ -213,18 +213,74 @@ const deckFor_10plus = (scenario: string) => {
 
 const LABELS = ['A', 'B', 'C', 'D'];
 
+/**
+ * Deterministic shuffle of options A-C so the correct answer isn't always B.
+ * Uses a simple seeded PRNG so the order is stable across renders but varies per card.
+ */
+const shuffleFirstThree = (
+  options: string[],
+  correctLabel: string,
+  worstLabel: string,
+  seed: number,
+): { shuffled: string[]; newCorrect: string; newWorst: string } => {
+  // Build index pairs for the first 3 options only (A=0, B=1, C=2)
+  const indices = [0, 1, 2];
+  // Fisher-Yates with seeded pseudo-random
+  let s = seed;
+  const nextRand = () => {
+    s = (s * 1664525 + 1013904223) & 0x7fffffff;
+    return s / 0x7fffffff;
+  };
+  for (let i = indices.length - 1; i > 0; i--) {
+    const j = Math.floor(nextRand() * (i + 1));
+    [indices[i], indices[j]] = [indices[j], indices[i]];
+  }
+
+  const labelToIdx: Record<string, number> = { A: 0, B: 1, C: 2, D: 3 };
+  const correctIdx = labelToIdx[correctLabel];
+  const worstIdx = labelToIdx[worstLabel];
+
+  const shuffled = [...options];
+  // Apply permutation to first 3
+  const original = options.slice(0, 3);
+  indices.forEach((srcIdx, destIdx) => {
+    shuffled[destIdx] = original[srcIdx];
+  });
+
+  // Map old indices to new positions
+  const oldToNew: Record<number, number> = {};
+  indices.forEach((srcIdx, destIdx) => {
+    oldToNew[srcIdx] = destIdx;
+  });
+
+  const newCorrect = correctIdx < 3 ? LABELS[oldToNew[correctIdx]] : correctLabel;
+  const newWorst = worstIdx < 3 ? LABELS[oldToNew[worstIdx]] : worstLabel;
+
+  return { shuffled, newCorrect, newWorst };
+};
+
 const buildCards = (age: AgeBand, deckFn: (scenario: string) => string, scenarios: { scenario: string; options: string[]; correct_option: string; worst_option: string; practice_phrase?: string }[]): Card[] =>
   scenarios.map((data, idx) => {
     const scenario = normalize(data.scenario);
     const id = `${age === 'teens' ? 'TEENS' : age === '10+' ? '10PLUS' : age}-${String(idx + 1).padStart(3, '0')}`;
+
+    // Shuffle options A-C deterministically per card
+    const seed = id.split('').reduce((acc, ch) => acc * 31 + ch.charCodeAt(0), 0);
+    const { shuffled, newCorrect, newWorst } = shuffleFirstThree(
+      data.options,
+      data.correct_option,
+      data.worst_option,
+      seed,
+    );
+
     return {
       id,
       deck_id: deckFn(scenario),
       title: makeTitle(scenario),
       scenario,
-      options: data.options.map((text, i) => ({ label: LABELS[i], text })),
-      correct_option: data.correct_option,
-      worst_option: data.worst_option,
+      options: shuffled.map((text, i) => ({ label: LABELS[i], text })),
+      correct_option: newCorrect,
+      worst_option: newWorst,
       guidance_text: guidanceFor(scenario),
       why_text: whyFor(scenario),
       practice_phrase: data.practice_phrase || practicePhraseFor(scenario, age),
