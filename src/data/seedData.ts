@@ -334,9 +334,9 @@ export function isFreeDeck(deckId: string): boolean {
 /** Compilation deck ID – signals "pull random cards from all decks" */
 export const COMPILATION_DECK_ID = '__compilation__';
 
-/** Shuffle array (Fisher-Yates) and optionally limit count */
-export function getCompilationCards(limit = 10): Card[] {
-  const published = cards.filter(c => c.status === 'published');
+/** Shuffle array (Fisher-Yates) and optionally limit count, filtered by age band */
+export function getCompilationCards(limit = 10, ageBand?: AgeBand): Card[] {
+  const published = cards.filter(c => c.status === 'published' && (!ageBand || c.age_band === ageBand));
   const shuffled = [...published];
   for (let i = shuffled.length - 1; i > 0; i--) {
     const j = Math.floor(Math.random() * (i + 1));
