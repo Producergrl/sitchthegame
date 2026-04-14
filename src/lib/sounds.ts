@@ -99,30 +99,44 @@ export function playWrongBuzzer() {
 }
 
 /**
- * Ring-ring telephone sound — plays when option D ("wow me") is selected.
- * Positive, distinct from correct/wrong. Two classic phone ring bursts.
+ * Playful "boing-whoosh" sound — plays when option D ("wow me") is selected.
+ * Quirky and distinct: a springy boing followed by a rising whoosh.
  */
 export function playWowRing() {
   try {
     const ctx = getCtx();
     const t = ctx.currentTime;
 
-    const ring = (startTime: number) => {
-      // Classic phone ring: two frequencies beating together
-      playTone(ctx, 440, startTime, 0.12, 'sine', 0.14);
-      playTone(ctx, 480, startTime, 0.12, 'sine', 0.14);
-      playTone(ctx, 440, startTime + 0.14, 0.12, 'sine', 0.14);
-      playTone(ctx, 480, startTime + 0.14, 0.12, 'sine', 0.14);
-    };
+    // Springy boing: rapid pitch drop
+    const osc1 = ctx.createOscillator();
+    const g1 = ctx.createGain();
+    osc1.type = 'sine';
+    osc1.frequency.setValueAtTime(900, t);
+    osc1.frequency.exponentialRampToValueAtTime(180, t + 0.25);
+    osc1.connect(g1);
+    g1.connect(ctx.destination);
+    g1.gain.setValueAtTime(0.18, t);
+    g1.gain.exponentialRampToValueAtTime(0.001, t + 0.3);
+    osc1.start(t);
+    osc1.stop(t + 0.3);
 
-    // Two ring bursts
-    ring(t);
-    ring(t + 0.45);
+    // Second smaller boing
+    const osc2 = ctx.createOscillator();
+    const g2 = ctx.createGain();
+    osc2.type = 'sine';
+    osc2.frequency.setValueAtTime(700, t + 0.28);
+    osc2.frequency.exponentialRampToValueAtTime(220, t + 0.48);
+    osc2.connect(g2);
+    g2.connect(ctx.destination);
+    g2.gain.setValueAtTime(0.12, t + 0.28);
+    g2.gain.exponentialRampToValueAtTime(0.001, t + 0.5);
+    osc2.start(t + 0.28);
+    osc2.stop(t + 0.5);
 
-    // Cheerful rising chime after rings
-    playTone(ctx, 880, t + 0.85, 0.2, 'sine', 0.10);
-    playTone(ctx, 1100, t + 0.95, 0.25, 'sine', 0.12);
-    playTone(ctx, 1320, t + 1.05, 0.3, 'triangle', 0.08);
+    // Rising whoosh (noise-like via detuned oscillators)
+    playTone(ctx, 300, t + 0.45, 0.3, 'sawtooth', 0.04, 1200);
+    playTone(ctx, 500, t + 0.50, 0.25, 'sawtooth', 0.03, 800);
+    playTone(ctx, 800, t + 0.55, 0.2, 'triangle', 0.05);
   } catch {
     // Audio not available — silent fallback
   }
