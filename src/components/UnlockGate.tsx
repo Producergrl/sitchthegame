@@ -1,12 +1,13 @@
 import { useState, type FormEvent } from 'react';
 import { motion } from 'framer-motion';
-import { Shield, Lock } from 'lucide-react';
+import { Shield, Lock, Loader2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { safeGetItem, safeSetItem } from '@/lib/safeStorage';
+import { supabase } from '@/integrations/supabase/client';
 
 const STORAGE_KEY = 'sitch_unlocked';
-const VALID_CODE = 'SITCH2026';
+const HARDCODED_CODE = 'SITCH2026';
 
 interface UnlockGateProps {
   children: React.ReactNode;
@@ -16,16 +17,46 @@ const UnlockGate = ({ children }: UnlockGateProps) => {
   const [unlocked, setUnlocked] = useState(() => safeGetItem(STORAGE_KEY) === 'true');
   const [code, setCode] = useState('');
   const [error, setError] = useState('');
+  const [loading, setLoading] = useState(false);
 
   if (unlocked) return <>{children}</>;
 
-  const handleSubmit = (e: FormEvent) => {
+  const unlock = () => {
+    safeSetItem(STORAGE_KEY, 'true');
+    setUnlocked(true);
+  };
+
+  const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
-    if (code.trim().toUpperCase() === VALID_CODE) {
-      safeSetItem(STORAGE_KEY, 'true');
-      setUnlocked(true);
-    } else {
-      setError("That code doesn't look right. Please check your Gumroad receipt and try again.");
+    const trimmed = code.trim();
+    if (!trimmed) return;
+
+    // Check hardcoded passcode first
+    if (trimmed.toUpperCase() === HARDCODED_CODE) {
+      unlock();
+      return;
+    }
+
+    // Otherwise verify against Gumroad
+    setLoading(true);
+    setError('');
+
+    try {
+      const { data, error: fnError } = await supabase.functions.invoke('verify-license', {
+        body: { license_key: trimmed },
+      });
+
+      if (fnError) throw fnError;
+
+      if (data?.valid) {
+        unlock();
+      } else {
+        setError(data?.error || "That code doesn't look right. Please check your Gumroad receipt and try again.");
+      }
+    } catch {
+      setError("Couldn't verify your code right now. Please try again in a moment.");
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -55,17 +86,19 @@ const UnlockGate = ({ children }: UnlockGateProps) => {
             onChange={(e) => { setCode(e.target.value); setError(''); }}
             className="text-center text-lg font-bold tracking-widest uppercase"
             autoFocus
+            disabled={loading}
           />
           <Button
             type="submit"
+            disabled={loading || !code.trim()}
             className="w-full gap-2 font-bold uppercase tracking-wide rounded-xl py-6"
             style={{
               background: 'linear-gradient(135deg, #1E3A5F, #2D5F8A)',
               color: '#FEF3D0',
             }}
           >
-            <Lock className="h-4 w-4" />
-            Unlock
+            {loading ? <Loader2 className="h-4 w-4 animate-spin" /> : <Lock className="h-4 w-4" />}
+            {loading ? 'Verifying…' : 'Unlock'}
           </Button>
         </form>
 
