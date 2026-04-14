@@ -1,4 +1,7 @@
-import { corsHeaders } from "@supabase/supabase-js/cors";
+const corsHeaders = {
+  'Access-Control-Allow-Origin': '*',
+  'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
+};
 
 const GUMROAD_VERIFY_URL = "https://api.gumroad.com/v2/licenses/verify";
 const PRODUCT_PERMALINK = "Sitch";
