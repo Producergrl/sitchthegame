@@ -64,10 +64,10 @@ const PlaySession = () => {
   const activeAge = isPlaying ? (autoStart ? parsed.age : setupAgeBand) : '7-9';
 
   const sessionCards = useMemo(() => {
-    if (activeDeckIds.includes(COMPILATION_DECK_ID)) return getCompilationCards(10);
+    if (activeDeckIds.includes(COMPILATION_DECK_ID)) return getCompilationCards(10, activeAge);
     if (activeDeckIds.length === 0) return allCards.filter(c => c.status === 'published');
     return allCards.filter(c => activeDeckIds.includes(c.deck_id) && c.status === 'published');
-  }, [activeDeckIds]);
+  }, [activeDeckIds, activeAge]);
 
   const [index, setIndex] = useState(0);
   const [showGuidance, setShowGuidance] = useState(false);
