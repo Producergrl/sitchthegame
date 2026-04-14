@@ -98,6 +98,36 @@ export function playWrongBuzzer() {
   }
 }
 
+/**
+ * Ring-ring telephone sound — plays when option D ("wow me") is selected.
+ * Positive, distinct from correct/wrong. Two classic phone ring bursts.
+ */
+export function playWowRing() {
+  try {
+    const ctx = getCtx();
+    const t = ctx.currentTime;
+
+    const ring = (startTime: number) => {
+      // Classic phone ring: two frequencies beating together
+      playTone(ctx, 440, startTime, 0.12, 'sine', 0.14);
+      playTone(ctx, 480, startTime, 0.12, 'sine', 0.14);
+      playTone(ctx, 440, startTime + 0.14, 0.12, 'sine', 0.14);
+      playTone(ctx, 480, startTime + 0.14, 0.12, 'sine', 0.14);
+    };
+
+    // Two ring bursts
+    ring(t);
+    ring(t + 0.45);
+
+    // Cheerful rising chime after rings
+    playTone(ctx, 880, t + 0.85, 0.2, 'sine', 0.10);
+    playTone(ctx, 1100, t + 0.95, 0.25, 'sine', 0.12);
+    playTone(ctx, 1320, t + 1.05, 0.3, 'triangle', 0.08);
+  } catch {
+    // Audio not available — silent fallback
+  }
+}
+
 export function playWowFanfare() {
   try {
     const ctx = getCtx();
