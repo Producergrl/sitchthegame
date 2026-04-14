@@ -8,7 +8,7 @@ import type { AgeBand, PlayStyle } from '@/types/game';
 import { parsePlayParams, buildPlayUrl } from '@/lib/playParams';
 import { toast } from '@/hooks/use-toast';
 import ThemeToggle from '@/components/ThemeToggle';
-import { playCorrectChime, playWrongBuzzer, playWowFanfare } from '@/lib/sounds';
+import { playCorrectChime, playWrongBuzzer, playWowFanfare, playWowRing } from '@/lib/sounds';
 import MissionProgress from '@/components/MissionProgress';
 import ShareMilestoneCard from '@/components/ShareMilestoneCard';
 import Confetti from '@/components/Confetti';
@@ -264,7 +264,10 @@ const PlaySession = () => {
     const isCorrect = card?.correct_option === label;
     const isWorst = card?.worst_option === label;
 
-    if (isCorrect) {
+    if (label === NONE_LABEL) {
+      // Option D gets its own special ring sound — not correct or wrong
+      playWowRing();
+    } else if (isCorrect) {
       playCorrectChime();
       setShowConfetti(true);
       setTimeout(() => setShowConfetti(false), 2500);
