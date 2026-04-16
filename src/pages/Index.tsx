@@ -151,7 +151,7 @@ const Index = () => {
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 1.1, duration: 0.6 }}
-            className="mt-2 block text-[0.7rem] font-bold uppercase tracking-[0.35em] md:text-xs text-[#2D5F8A]"
+            className="mt-2 block text-[0.7rem] font-bold uppercase tracking-[0.35em] text-primary-foreground md:text-sm"
           >
             Family Edition
           </motion.span>
@@ -159,7 +159,7 @@ const Index = () => {
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 1.3, duration: 0.6 }}
-            className="mt-1 block text-[0.6rem] font-bold uppercase tracking-[0.25em] md:text-[0.7rem] text-[#2D5F8A]/70"
+            className="mt-1 block text-[0.6rem] font-bold uppercase tracking-[0.25em] text-primary-foreground md:text-sm"
           >
             Are You Smart Under Pressure
           </motion.span>
