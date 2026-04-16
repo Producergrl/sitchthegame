@@ -161,7 +161,7 @@ const Index = () => {
             transition={{ delay: 1.3, duration: 0.6 }}
             className="mt-1 block text-[0.6rem] font-bold uppercase tracking-[0.25em] text-primary-foreground font-sans md:text-sm"
           >
-            Are You Smart Under Pressure
+            Are You Smart Under Pressure?
           </motion.span>
 
           {/* Metallic underline accent */}
