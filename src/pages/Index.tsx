@@ -153,7 +153,7 @@ const Index = () => {
             transition={{ delay: 1.1, duration: 0.6 }}
             className="mt-2 block text-[0.7rem] font-bold uppercase tracking-[0.35em] md:text-xs text-[#2D5F8A]"
           >
-            Founders Edition
+            Family Edition
           </motion.span>
 
           {/* Metallic underline accent */}
