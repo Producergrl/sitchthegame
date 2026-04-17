@@ -59,12 +59,12 @@ const Index = () => {
     <div className="min-h-screen overflow-x-hidden" style={{ background: 'linear-gradient(180deg, #8B1A0E 0%, #B8261A 22%, #D63A22 45%, #E87A4A 70%, #FEF3D0 100%)' }}>
       {/* ═══════════ FULL-SCREEN HERO ═══════════ */}
       <div className="relative flex min-h-[100dvh] flex-col items-center justify-center overflow-hidden">
-        {/* Deep cinematic background layers */}
+        {/* Deep cinematic background layers — molten red */}
         <div className="absolute inset-0" style={{
-          background: 'radial-gradient(ellipse 80% 60% at 50% 40%, hsl(43 90% 70% / 0.5) 0%, transparent 70%)',
+          background: 'radial-gradient(ellipse 80% 60% at 50% 40%, hsl(15 85% 45% / 0.55) 0%, transparent 70%)',
         }} />
         <div className="absolute inset-0" style={{
-          background: 'radial-gradient(ellipse at 50% 50%, #FDB913 0%, #F7941D 60%, #F58B1F 100%)',
+          background: 'radial-gradient(ellipse at 50% 45%, #C9281A 0%, #9E1A0E 55%, #6B0F08 100%)',
         }} />
 
         {/* Grain overlay */}
@@ -72,7 +72,7 @@ const Index = () => {
 
         {/* Heavy vignette */}
         <div className="absolute inset-0 pointer-events-none" style={{
-          background: 'radial-gradient(ellipse at center, transparent 50%, hsl(43 70% 70% / 0.3) 100%)',
+          background: 'radial-gradient(ellipse at center, transparent 45%, hsl(10 80% 12% / 0.55) 100%)',
         }} />
 
         {/* Theme toggle */}
