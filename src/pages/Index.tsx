@@ -102,107 +102,101 @@ const Index = () => {
           transition={{ duration: 4, repeat: Infinity, ease: 'easeInOut' }}
         />
 
-        {/* ── Logo (v2) ── */}
+        {/* ── Logo + integrated CTA stack ── */}
         <motion.div
-          initial={{ opacity: 0, scale: 0.9, y: 20 }}
+          initial={{ opacity: 0, scale: 0.94, y: 20 }}
           animate={{ opacity: 1, scale: 1, y: 0 }}
           transition={{ duration: 0.9, ease: [0.22, 1, 0.36, 1], delay: 0.2 }}
-          className="relative z-10 px-4"
+          className="relative z-10 flex flex-col items-center px-4"
         >
           <img
             src={sitchLogoV2}
             alt="Sitch — Family Edition"
-            className="mx-auto w-[min(520px,85vw)] drop-shadow-[0_10px_30px_hsl(15_70%_30%/0.35)]"
+            className="mx-auto w-[min(560px,88vw)] drop-shadow-[0_14px_40px_hsl(15_75%_25%/0.4)]"
           />
-        </motion.div>
 
-        {/* ── Tagline ── */}
-        <div className="relative z-10 text-center px-4">
           <motion.span
-            initial={{ opacity: 0, y: 10 }}
+            initial={{ opacity: 0, y: 8 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 1.3, duration: 0.6 }}
-            className="mt-1 block text-[0.6rem] font-bold uppercase tracking-[0.25em] text-primary-foreground font-sans md:text-sm"
+            transition={{ delay: 0.9, duration: 0.5 }}
+            className="-mt-2 block text-[0.65rem] font-bold uppercase tracking-[0.3em] text-[#FEF3D0] drop-shadow-[0_2px_4px_hsl(15_70%_20%/0.5)] md:text-xs"
           >
             Are You Smart Under Pressure?
           </motion.span>
 
-          {/* Metallic underline accent */}
           <motion.div
             initial={{ scaleX: 0 }}
             animate={{ scaleX: 1 }}
-            transition={{ delay: 1.4, duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
-            className="mx-auto mt-3 h-[2px] w-32 origin-center"
-            style={{
-              background: 'linear-gradient(90deg, transparent, #1E3A5F80, transparent)',
-            }}
+            transition={{ delay: 1.1, duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
+            className="mt-3 h-px w-40 origin-center"
+            style={{ background: 'linear-gradient(90deg, transparent, hsl(45 95% 60% / 0.7), transparent)' }}
           />
 
           <motion.p
-            initial={{ opacity: 0, y: 10 }}
+            initial={{ opacity: 0, y: 8 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 1.6, duration: 0.6 }}
-            className="mx-auto mt-5 max-w-xs text-sm font-medium tracking-wide uppercase text-[#2D5F8A]"
-            style={{ letterSpacing: '0.15em' }}
+            transition={{ delay: 1.2, duration: 0.5 }}
+            className="mt-3 text-[0.7rem] font-semibold uppercase tracking-[0.25em] text-[#7A1A0A] md:text-xs"
           >
             A Game of Choice & Consequence
           </motion.p>
-        </div>
 
-        {/* ── Level badge ── */}
-        <motion.div
-          initial={{ opacity: 0, scale: 0.8 }}
-          animate={{ opacity: 1, scale: 1 }}
-          transition={{ delay: 1.8, duration: 0.5 }}
-          className="relative z-10 mt-8 flex items-center gap-2.5 rounded-full px-5 py-2.5"
-          style={{
-            background: 'hsl(215 50% 30% / 0.06)',
-            border: '1px solid hsl(215 50% 30% / 0.15)',
-            backdropFilter: 'blur(12px)',
-          }}
-        >
-          <span className="text-lg">{level.icon}</span>
-          <span className="text-sm font-bold text-[#1E3A5F]">{level.title}</span>
-          <span className="h-3 w-px bg-[#1E3A5F]/15" />
-          <span className="text-sm font-bold text-[#1E3A5F]">{progress.totalXP} XP</span>
-        </motion.div>
+          {/* CTA pair — styled as an extension of the logo plate */}
+          <motion.div
+            initial={{ opacity: 0, y: 16 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 1.4, duration: 0.6 }}
+            className="mt-8 flex flex-col items-stretch gap-3 sm:flex-row sm:items-center"
+          >
+            <Link to="/play?decks=__compilation__&age=7-9&mode=quiz">
+              <Button
+                size="lg"
+                className="group w-full gap-2.5 text-base font-black tracking-[0.08em] uppercase active:animate-btn-press transition-all duration-300 hover:scale-[1.04] px-9 py-6 rounded-xl border-0 sm:w-auto"
+                style={{
+                  background: 'linear-gradient(180deg, #E63329 0%, #B81E16 100%)',
+                  boxShadow: '0 6px 0 #7A1108, 0 12px 24px hsl(15 70% 20% / 0.35), inset 0 1px 0 hsl(45 95% 75% / 0.4)',
+                  color: '#FEF3D0',
+                  border: '1.5px solid #FDB913',
+                }}
+              >
+                <Zap className="h-5 w-5 transition-transform group-hover:rotate-12 group-hover:scale-110" />
+                Quick Play
+              </Button>
+            </Link>
+            <Link to="/session/setup">
+              <Button
+                size="lg"
+                className="w-full gap-2.5 text-base font-black tracking-[0.08em] uppercase active:animate-btn-press transition-all duration-300 hover:scale-[1.04] px-9 py-6 rounded-xl sm:w-auto"
+                style={{
+                  background: 'linear-gradient(180deg, #FEF3D0 0%, #FAD89A 100%)',
+                  color: '#B81E16',
+                  border: '1.5px solid #FDB913',
+                  boxShadow: '0 6px 0 #B8861A, 0 12px 24px hsl(15 70% 20% / 0.25), inset 0 1px 0 hsl(0 0% 100% / 0.6)',
+                }}
+              >
+                <Sparkles className="h-5 w-5" />
+                Custom Game
+              </Button>
+            </Link>
+          </motion.div>
 
-        {/* ── CTA buttons ── */}
-        <motion.div
-          initial={{ opacity: 0, y: 30 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 2, duration: 0.6 }}
-          className="relative z-10 mt-10 flex flex-col items-center gap-3 sm:flex-row"
-        >
-          <Link to="/play?decks=__compilation__&age=7-9&mode=quiz">
-            <Button
-              size="lg"
-              className="group gap-2.5 text-base font-black tracking-wide uppercase shadow-2xl active:animate-btn-press transition-all duration-300 hover:scale-110 px-10 py-7 rounded-2xl border-0"
-              style={{
-                background: 'linear-gradient(135deg, #1E3A5F, #2D5F8A)',
-                boxShadow: '0 4px 30px hsl(215 60% 30% / 0.35), 0 0 60px hsl(215 60% 30% / 0.1), inset 0 1px 1px hsl(215 60% 50% / 0.3)',
-                color: '#FEF3D0',
-              }}
-            >
-              <Zap className="h-5 w-5 transition-transform group-hover:rotate-12 group-hover:scale-110" />
-              Quick Play
-            </Button>
-          </Link>
-          <Link to="/session/setup">
-            <Button
-              size="lg"
-              className="gap-2.5 text-base font-bold uppercase tracking-wide active:animate-btn-press transition-all duration-300 hover:scale-105 px-10 py-7 rounded-2xl"
-              style={{
-                background: 'white',
-                color: '#1E3A5F',
-                border: '2px solid #1E3A5F',
-                backdropFilter: 'blur(8px)',
-              }}
-            >
-              <Sparkles className="h-5 w-5" />
-              Custom Game
-            </Button>
-          </Link>
+          {/* Slim level chip — secondary */}
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ delay: 1.7, duration: 0.5 }}
+            className="mt-5 flex items-center gap-2 rounded-full px-3.5 py-1.5"
+            style={{
+              background: 'hsl(15 70% 20% / 0.18)',
+              border: '1px solid hsl(45 95% 70% / 0.35)',
+              backdropFilter: 'blur(8px)',
+            }}
+          >
+            <span className="text-sm">{level.icon}</span>
+            <span className="text-xs font-bold uppercase tracking-wider text-[#FEF3D0]">{level.title}</span>
+            <span className="h-3 w-px bg-[#FEF3D0]/30" />
+            <span className="text-xs font-bold text-[#FEF3D0]">{progress.totalXP} XP</span>
+          </motion.div>
         </motion.div>
 
         {/* ── Scroll indicator ── */}
