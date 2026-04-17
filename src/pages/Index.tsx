@@ -249,43 +249,7 @@ const Index = () => {
           <MissionProgress progress={progress} />
         </motion.div>
 
-        {/* Navigation cards */}
-        <div className="grid gap-3">
-          {navItems.map((item, i) => (
-            <motion.div
-              key={item.title}
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ delay: i * 0.08, duration: 0.4 }}
-            >
-              <Link to={item.to}>
-                <motion.div
-                  className="group flex items-center gap-4 rounded-2xl bg-white p-4 cursor-pointer"
-                  style={{
-                    border: '1px solid hsl(215 50% 30% / 0.12)',
-                    boxShadow: '0 2px 8px hsl(215 30% 20% / 0.08), 0 8px 32px hsl(215 30% 20% / 0.06), inset 0 1px 0 hsl(0 0% 100% / 0.5)',
-                  }}
-                  whileHover={{
-                    y: -4,
-                    boxShadow: '0 8px 24px hsl(215 30% 20% / 0.12), 0 16px 48px hsl(215 30% 20% / 0.08), 0 0 20px hsl(215 60% 30% / 0.06), inset 0 1px 0 hsl(0 0% 100% / 0.6)',
-                  }}
-                  whileTap={{ scale: 0.98 }}
-                  transition={{ type: 'spring', stiffness: 300, damping: 20 }}
-                >
-                  <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-muted text-2xl">
-                    {item.emoji}
-                  </div>
-                  <div className="flex-1 min-w-0">
-                    <h3 className="text-base font-bold text-[#1E3A5F]">{item.title}</h3>
-                    <p className="text-sm text-muted-foreground">{item.desc}</p>
-                  </div>
-                  <ChevronRight className="h-4 w-4 text-muted-foreground transition-transform duration-200 group-hover:translate-x-1 group-hover:text-[#1E3A5F]" />
-                </motion.div>
-              </Link>
-            </motion.div>
-          ))}
-        </div>
+        {/* Nav cards moved into the hero */}
 
         {/* Safety badge */}
         <motion.div
