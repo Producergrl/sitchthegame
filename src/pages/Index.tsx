@@ -56,7 +56,7 @@ const Index = () => {
   const level = useMemo(() => getCurrentLevel(progress.totalXP), [progress.totalXP]);
 
   return (
-    <div className="min-h-screen overflow-x-hidden" style={{ background: 'linear-gradient(180deg, #F58B1F 0%, #F7941D 30%, #FEF3D0 100%)' }}>
+    <div className="min-h-screen overflow-x-hidden" style={{ background: 'linear-gradient(180deg, #F58B1F 0%, #F7941D 22%, #F9A642 45%, #FBC97A 70%, #FEF3D0 100%)' }}>
       {/* ═══════════ FULL-SCREEN HERO ═══════════ */}
       <div className="relative flex min-h-[100dvh] flex-col items-center justify-center overflow-hidden">
         {/* Deep cinematic background layers */}
@@ -160,12 +160,53 @@ const Index = () => {
             </Link>
           </motion.div>
 
-          {/* Slim level chip — secondary */}
+          {/* ── Nav trio: Safety Hub enlarged & red ── */}
+          <motion.div
+            initial={{ opacity: 0, y: 12 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 1.7, duration: 0.55 }}
+            className="mt-6 grid w-full max-w-md grid-cols-3 gap-2.5"
+          >
+            {navItems.map((item) => {
+              const isSafety = item.title === 'Safety Hub';
+              return (
+                <Link key={item.title} to={item.to}>
+                  <motion.div
+                    whileHover={{ y: -3 }}
+                    whileTap={{ scale: 0.97 }}
+                    className={`flex h-full flex-col items-center justify-center gap-1 rounded-xl px-2 py-3 text-center ${isSafety ? 'scale-[1.08]' : ''}`}
+                    style={
+                      isSafety
+                        ? {
+                            background: 'linear-gradient(180deg, #E63329 0%, #B81E16 100%)',
+                            border: '1.5px solid #FDB913',
+                            boxShadow: '0 5px 0 #7A1108, 0 10px 22px hsl(15 70% 20% / 0.32), inset 0 1px 0 hsl(45 95% 75% / 0.4)',
+                            color: '#FFFFFF',
+                          }
+                        : {
+                            background: 'hsl(15 70% 20% / 0.14)',
+                            border: '1px solid hsl(45 95% 70% / 0.4)',
+                            backdropFilter: 'blur(8px)',
+                            color: '#FEF3D0',
+                          }
+                    }
+                  >
+                    <span className="text-xl leading-none">{item.emoji}</span>
+                    <span className={`text-[0.7rem] font-black uppercase tracking-wider leading-tight ${isSafety ? 'text-white' : 'text-[#FEF3D0]'}`}>
+                      {item.title}
+                    </span>
+                  </motion.div>
+                </Link>
+              );
+            })}
+          </motion.div>
+
+          {/* Slim level chip */}
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
-            transition={{ delay: 1.7, duration: 0.5 }}
-            className="mt-5 flex items-center gap-2 rounded-full px-3.5 py-1.5"
+            transition={{ delay: 1.9, duration: 0.5 }}
+            className="mt-4 flex items-center gap-2 rounded-full px-3.5 py-1.5"
             style={{
               background: 'hsl(15 70% 20% / 0.18)',
               border: '1px solid hsl(45 95% 70% / 0.35)',
@@ -208,43 +249,7 @@ const Index = () => {
           <MissionProgress progress={progress} />
         </motion.div>
 
-        {/* Navigation cards */}
-        <div className="grid gap-3">
-          {navItems.map((item, i) => (
-            <motion.div
-              key={item.title}
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ delay: i * 0.08, duration: 0.4 }}
-            >
-              <Link to={item.to}>
-                <motion.div
-                  className="group flex items-center gap-4 rounded-2xl bg-white p-4 cursor-pointer"
-                  style={{
-                    border: '1px solid hsl(215 50% 30% / 0.12)',
-                    boxShadow: '0 2px 8px hsl(215 30% 20% / 0.08), 0 8px 32px hsl(215 30% 20% / 0.06), inset 0 1px 0 hsl(0 0% 100% / 0.5)',
-                  }}
-                  whileHover={{
-                    y: -4,
-                    boxShadow: '0 8px 24px hsl(215 30% 20% / 0.12), 0 16px 48px hsl(215 30% 20% / 0.08), 0 0 20px hsl(215 60% 30% / 0.06), inset 0 1px 0 hsl(0 0% 100% / 0.6)',
-                  }}
-                  whileTap={{ scale: 0.98 }}
-                  transition={{ type: 'spring', stiffness: 300, damping: 20 }}
-                >
-                  <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-muted text-2xl">
-                    {item.emoji}
-                  </div>
-                  <div className="flex-1 min-w-0">
-                    <h3 className="text-base font-bold text-[#1E3A5F]">{item.title}</h3>
-                    <p className="text-sm text-muted-foreground">{item.desc}</p>
-                  </div>
-                  <ChevronRight className="h-4 w-4 text-muted-foreground transition-transform duration-200 group-hover:translate-x-1 group-hover:text-[#1E3A5F]" />
-                </motion.div>
-              </Link>
-            </motion.div>
-          ))}
-        </div>
+        {/* Nav cards moved into the hero */}
 
         {/* Safety badge */}
         <motion.div
