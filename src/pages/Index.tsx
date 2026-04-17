@@ -56,7 +56,7 @@ const Index = () => {
   const level = useMemo(() => getCurrentLevel(progress.totalXP), [progress.totalXP]);
 
   return (
-    <div className="min-h-screen overflow-x-hidden" style={{ background: 'linear-gradient(180deg, #FEF3D0 0%, #FFF8E7 100%)' }}>
+    <div className="min-h-screen overflow-x-hidden" style={{ background: 'linear-gradient(180deg, #F58B1F 0%, #F7941D 30%, #FEF3D0 100%)' }}>
       {/* ═══════════ FULL-SCREEN HERO ═══════════ */}
       <div className="relative flex min-h-[100dvh] flex-col items-center justify-center overflow-hidden">
         {/* Deep cinematic background layers */}
@@ -109,37 +109,17 @@ const Index = () => {
           transition={{ duration: 0.9, ease: [0.22, 1, 0.36, 1], delay: 0.2 }}
           className="relative z-10 flex flex-col items-center px-4"
         >
+          {/* Logo bleeds into the orange hero — edges feathered with a radial mask */}
           <img
             src={sitchLogoV2}
-            alt="Sitch — Family Edition"
-            className="mx-auto w-[min(560px,88vw)] drop-shadow-[0_14px_40px_hsl(15_75%_25%/0.4)]"
+            alt="Sitch — Family Edition · Are You Smart Under Pressure? A Game of Choice & Consequence"
+            className="mx-auto w-[min(640px,94vw)] mix-blend-multiply"
+            style={{
+              WebkitMaskImage: 'radial-gradient(ellipse 75% 75% at 50% 50%, #000 55%, transparent 95%)',
+              maskImage: 'radial-gradient(ellipse 75% 75% at 50% 50%, #000 55%, transparent 95%)',
+              filter: 'drop-shadow(0 18px 40px hsl(15 75% 22% / 0.35))',
+            }}
           />
-
-          <motion.span
-            initial={{ opacity: 0, y: 8 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.9, duration: 0.5 }}
-            className="-mt-2 block text-[0.65rem] font-bold uppercase tracking-[0.3em] text-[#FEF3D0] drop-shadow-[0_2px_4px_hsl(15_70%_20%/0.5)] md:text-xs"
-          >
-            Are You Smart Under Pressure?
-          </motion.span>
-
-          <motion.div
-            initial={{ scaleX: 0 }}
-            animate={{ scaleX: 1 }}
-            transition={{ delay: 1.1, duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
-            className="mt-3 h-px w-40 origin-center"
-            style={{ background: 'linear-gradient(90deg, transparent, hsl(45 95% 60% / 0.7), transparent)' }}
-          />
-
-          <motion.p
-            initial={{ opacity: 0, y: 8 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 1.2, duration: 0.5 }}
-            className="mt-3 text-[0.7rem] font-semibold uppercase tracking-[0.25em] text-[#7A1A0A] md:text-xs"
-          >
-            A Game of Choice & Consequence
-          </motion.p>
 
           {/* CTA pair — styled as an extension of the logo plate */}
           <motion.div
