@@ -160,12 +160,53 @@ const Index = () => {
             </Link>
           </motion.div>
 
-          {/* Slim level chip — secondary */}
+          {/* ── Nav trio: Safety Hub enlarged & red ── */}
+          <motion.div
+            initial={{ opacity: 0, y: 12 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 1.7, duration: 0.55 }}
+            className="mt-6 grid w-full max-w-md grid-cols-3 gap-2.5"
+          >
+            {navItems.map((item) => {
+              const isSafety = item.title === 'Safety Hub';
+              return (
+                <Link key={item.title} to={item.to}>
+                  <motion.div
+                    whileHover={{ y: -3 }}
+                    whileTap={{ scale: 0.97 }}
+                    className={`flex h-full flex-col items-center justify-center gap-1 rounded-xl px-2 py-3 text-center ${isSafety ? 'scale-[1.08]' : ''}`}
+                    style={
+                      isSafety
+                        ? {
+                            background: 'linear-gradient(180deg, #E63329 0%, #B81E16 100%)',
+                            border: '1.5px solid #FDB913',
+                            boxShadow: '0 5px 0 #7A1108, 0 10px 22px hsl(15 70% 20% / 0.32), inset 0 1px 0 hsl(45 95% 75% / 0.4)',
+                            color: '#FFFFFF',
+                          }
+                        : {
+                            background: 'hsl(15 70% 20% / 0.14)',
+                            border: '1px solid hsl(45 95% 70% / 0.4)',
+                            backdropFilter: 'blur(8px)',
+                            color: '#FEF3D0',
+                          }
+                    }
+                  >
+                    <span className="text-xl leading-none">{item.emoji}</span>
+                    <span className={`text-[0.7rem] font-black uppercase tracking-wider leading-tight ${isSafety ? 'text-white' : 'text-[#FEF3D0]'}`}>
+                      {item.title}
+                    </span>
+                  </motion.div>
+                </Link>
+              );
+            })}
+          </motion.div>
+
+          {/* Slim level chip */}
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
-            transition={{ delay: 1.7, duration: 0.5 }}
-            className="mt-5 flex items-center gap-2 rounded-full px-3.5 py-1.5"
+            transition={{ delay: 1.9, duration: 0.5 }}
+            className="mt-4 flex items-center gap-2 rounded-full px-3.5 py-1.5"
             style={{
               background: 'hsl(15 70% 20% / 0.18)',
               border: '1px solid hsl(45 95% 70% / 0.35)',
