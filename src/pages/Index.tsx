@@ -160,7 +160,7 @@ const Index = () => {
             </Link>
           </motion.div>
 
-          {/* ── Nav trio: Safety Hub enlarged & red ── */}
+          {/* ── Nav trio: all logo-blue, Safety Hub enlarged ── */}
           <motion.div
             initial={{ opacity: 0, y: 12 }}
             animate={{ opacity: 1, y: 0 }}
@@ -174,25 +174,25 @@ const Index = () => {
                   <motion.div
                     whileHover={{ y: -3 }}
                     whileTap={{ scale: 0.97 }}
-                    className={`flex h-full flex-col items-center justify-center gap-1 rounded-xl px-2 py-3 text-center ${isSafety ? 'scale-[1.08]' : ''}`}
+                    className={`flex h-full flex-col items-center justify-center gap-1 rounded-xl px-2 py-3 text-center ${isSafety ? 'scale-[1.1]' : ''}`}
                     style={
                       isSafety
                         ? {
-                            background: 'linear-gradient(180deg, #E63329 0%, #B81E16 100%)',
+                            background: 'linear-gradient(180deg, #2D5F8A 0%, #1E3A5F 100%)',
                             border: '1.5px solid #FDB913',
-                            boxShadow: '0 5px 0 #7A1108, 0 10px 22px hsl(15 70% 20% / 0.32), inset 0 1px 0 hsl(45 95% 75% / 0.4)',
+                            boxShadow: '0 5px 0 #0F1F33, 0 10px 22px hsl(215 70% 10% / 0.45), inset 0 1px 0 hsl(215 60% 60% / 0.4)',
                             color: '#FFFFFF',
                           }
                         : {
-                            background: 'hsl(15 70% 20% / 0.14)',
-                            border: '1px solid hsl(45 95% 70% / 0.4)',
-                            backdropFilter: 'blur(8px)',
+                            background: 'linear-gradient(180deg, #2D5F8A 0%, #1E3A5F 100%)',
+                            border: '1px solid hsl(215 60% 55% / 0.5)',
+                            boxShadow: '0 3px 0 #0F1F33, 0 6px 14px hsl(215 70% 10% / 0.35), inset 0 1px 0 hsl(215 60% 55% / 0.35)',
                             color: '#FEF3D0',
                           }
                     }
                   >
                     <span className="text-xl leading-none">{item.emoji}</span>
-                    <span className={`text-[0.7rem] font-black uppercase tracking-wider leading-tight ${isSafety ? 'text-white' : 'text-[#FEF3D0]'}`}>
+                    <span className="text-[0.7rem] font-black uppercase tracking-wider leading-tight text-white">
                       {item.title}
                     </span>
                   </motion.div>
@@ -208,8 +208,8 @@ const Index = () => {
             transition={{ delay: 1.9, duration: 0.5 }}
             className="mt-4 flex items-center gap-2 rounded-full px-3.5 py-1.5"
             style={{
-              background: 'hsl(15 70% 20% / 0.18)',
-              border: '1px solid hsl(45 95% 70% / 0.35)',
+              background: 'hsl(10 70% 12% / 0.35)',
+              border: '1px solid hsl(45 95% 70% / 0.4)',
               backdropFilter: 'blur(8px)',
             }}
           >
