@@ -6,6 +6,7 @@ import { Button } from '@/components/ui/button';
 import ThemeToggle from '@/components/ThemeToggle';
 import MissionProgress from '@/components/MissionProgress';
 import { loadProgress, getCurrentLevel, type PlayerProgress } from '@/lib/progression';
+import sitchLogoV2 from '@/assets/sitch-logo-v2.png';
 
 /* ── floating particle field ── */
 const Particle = ({ delay, size, x, y, dur }: { delay: number; size: number; x: number; y: number; dur: number }) => (
@@ -101,60 +102,22 @@ const Index = () => {
           transition={{ duration: 4, repeat: Infinity, ease: 'easeInOut' }}
         />
 
-        {/* ── Shield emblem ── */}
+        {/* ── Logo (v2) ── */}
         <motion.div
-          initial={{ scale: 0, rotate: -180 }}
-          animate={{ scale: 1, rotate: 0 }}
-          transition={{ type: 'spring', damping: 14, stiffness: 80, delay: 0.2 }}
-          className="relative z-10 mb-8"
+          initial={{ opacity: 0, scale: 0.9, y: 20 }}
+          animate={{ opacity: 1, scale: 1, y: 0 }}
+          transition={{ duration: 0.9, ease: [0.22, 1, 0.36, 1], delay: 0.2 }}
+          className="relative z-10 px-4"
         >
-          <div
-            className="relative flex h-24 w-24 items-center justify-center rounded-[1.75rem] gold-sweep"
-            style={{
-              background: 'linear-gradient(145deg, #1E3A5F, #2D5F8A, #1E3A5F)',
-              boxShadow: '0 0 40px hsl(215 60% 30% / 0.3), 0 0 80px hsl(215 60% 30% / 0.1), inset 0 1px 1px hsl(215 70% 50% / 0.3)',
-            }}
-          >
-            <Shield className="relative z-10 h-12 w-12 text-amber-100 drop-shadow-[0_2px_4px_hsl(0_0%_0%/0.3)]" />
-          </div>
-          {/* Orbiting rings */}
-          <motion.div
-            className="absolute inset-[-10px] rounded-[2.25rem] border border-[#1E3A5F]/15"
-            animate={{ rotate: 360 }}
-            transition={{ duration: 25, repeat: Infinity, ease: 'linear' }}
-          />
-          <motion.div
-            className="absolute inset-[-22px] rounded-[2.75rem] border border-[#1E3A5F]/8"
-            animate={{ rotate: -360 }}
-            transition={{ duration: 40, repeat: Infinity, ease: 'linear' }}
+          <img
+            src={sitchLogoV2}
+            alt="Sitch — Family Edition"
+            className="mx-auto w-[min(520px,85vw)] drop-shadow-[0_10px_30px_hsl(15_70%_30%/0.35)]"
           />
         </motion.div>
 
-        {/* ── CINEMATIC TITLE ── */}
+        {/* ── Tagline ── */}
         <div className="relative z-10 text-center px-4">
-          <motion.h1
-            initial={{ opacity: 0, y: 30, scale: 0.9 }}
-            animate={{ opacity: 1, y: 0, scale: 1 }}
-            transition={{ delay: 0.5, duration: 1, ease: [0.22, 1, 0.36, 1] }}
-            className="text-[2.4rem] leading-[1.1] font-black tracking-[-0.02em] md:text-[4.5rem] uppercase"
-            style={{
-              background: 'linear-gradient(170deg, #1E3A5F 0%, #2D5F8A 40%, #1E3A5F 100%)',
-              WebkitBackgroundClip: 'text',
-              WebkitTextFillColor: 'transparent',
-              backgroundClip: 'text',
-              filter: 'drop-shadow(0 4px 12px hsl(215 60% 30% / 0.3)) drop-shadow(0 1px 0 hsl(215 50% 20% / 0.3))',
-            }}
-          >
-            Sitch
-          </motion.h1>
-          <motion.span
-            initial={{ opacity: 0, y: 10 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 1.1, duration: 0.6 }}
-            className="mt-2 block text-[0.7rem] font-bold uppercase tracking-[0.35em] text-primary-foreground md:text-sm font-sans"
-          >
-            Family Edition
-          </motion.span>
           <motion.span
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
