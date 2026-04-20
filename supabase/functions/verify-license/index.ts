@@ -4,7 +4,7 @@ const corsHeaders = {
 };
 
 const GUMROAD_VERIFY_URL = "https://api.gumroad.com/v2/licenses/verify";
-const PRODUCT_PERMALINK = "Sitch";
+const PRODUCT_ID = "mUZK2cfq7Yxo5xNEIQzS7g==";
 
 Deno.serve(async (req) => {
   if (req.method === "OPTIONS") {
@@ -22,8 +22,9 @@ Deno.serve(async (req) => {
     }
 
     const formData = new URLSearchParams();
-    formData.append("product_permalink", PRODUCT_PERMALINK);
+    formData.append("product_id", PRODUCT_ID);
     formData.append("license_key", license_key.trim());
+    formData.append("increment_uses_count", "false");
 
     const response = await fetch(GUMROAD_VERIFY_URL, {
       method: "POST",
