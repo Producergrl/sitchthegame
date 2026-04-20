@@ -7,7 +7,6 @@ import { safeGetItem, safeSetItem } from '@/lib/safeStorage';
 import { supabase } from '@/integrations/supabase/client';
 
 const STORAGE_KEY = 'sitch_unlocked';
-const HARDCODED_CODE = 'SITCH2026';
 
 interface UnlockGateProps {
   children: React.ReactNode;
@@ -31,13 +30,7 @@ const UnlockGate = ({ children }: UnlockGateProps) => {
     const trimmed = code.trim();
     if (!trimmed) return;
 
-    // Check hardcoded passcode first
-    if (trimmed.toUpperCase() === HARDCODED_CODE) {
-      unlock();
-      return;
-    }
-
-    // Otherwise verify against Gumroad
+    // Verify against Gumroad license server (no client-side bypass)
     setLoading(true);
     setError('');
 

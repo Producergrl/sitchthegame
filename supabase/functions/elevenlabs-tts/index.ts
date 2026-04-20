@@ -9,6 +9,12 @@ const corsHeaders = {
 };
 
 const BUCKET = "tts-cache";
+const MAX_TEXT_LENGTH = 500;
+// Whitelist of allowed voice IDs to prevent path injection and cost abuse
+const ALLOWED_VOICE_IDS = new Set<string>([
+  "Vy1TILrv7cgImnJ6mEmh", // Kerry (default)
+]);
+const DEFAULT_VOICE_ID = "Vy1TILrv7cgImnJ6mEmh";
 
 /** Deterministic cache key from text + voice */
 async function cacheKey(text: string, voiceId: string): Promise<string> {
@@ -29,6 +35,7 @@ serve(async (req) => {
     const SUPABASE_URL = Deno.env.get("SUPABASE_URL")!;
     const SUPABASE_SERVICE_ROLE_KEY = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
 
+    // ── Input validation ────────────────────────────────────────
     if (!text || typeof text !== "string") {
       return new Response(JSON.stringify({ error: "Missing 'text' parameter" }), {
         status: 400,
@@ -36,8 +43,32 @@ serve(async (req) => {
       });
     }
 
-    const voice = voiceId || "Vy1TILrv7cgImnJ6mEmh"; // Kerry's voice
-    const fileName = await cacheKey(text, voice);
+    const trimmedText = text.trim();
+    if (trimmedText.length === 0) {
+      return new Response(JSON.stringify({ error: "Text cannot be empty" }), {
+        status: 400,
+        headers: { ...corsHeaders, "Content-Type": "application/json" },
+      });
+    }
+
+    if (trimmedText.length > MAX_TEXT_LENGTH) {
+      return new Response(
+        JSON.stringify({ error: `Text exceeds maximum length of ${MAX_TEXT_LENGTH} characters` }),
+        { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+      );
+    }
+
+    // Whitelist voice IDs to prevent path injection and quota abuse
+    const requestedVoice = typeof voiceId === "string" && voiceId.length > 0 ? voiceId : DEFAULT_VOICE_ID;
+    if (!ALLOWED_VOICE_IDS.has(requestedVoice)) {
+      return new Response(JSON.stringify({ error: "Voice not allowed" }), {
+        status: 400,
+        headers: { ...corsHeaders, "Content-Type": "application/json" },
+      });
+    }
+    const voice = requestedVoice;
+
+    const fileName = await cacheKey(trimmedText, voice);
 
     // ── 1. Check cache ──────────────────────────────────────────
     const supabase = createClient(SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY);
@@ -60,7 +91,7 @@ serve(async (req) => {
     }
 
     const elResponse = await fetch(
-      `https://api.elevenlabs.io/v1/text-to-speech/${voice}?output_format=mp3_44100_128`,
+      `https://api.elevenlabs.io/v1/text-to-speech/${encodeURIComponent(voice)}?output_format=mp3_44100_128`,
       {
         method: "POST",
         headers: {
@@ -68,7 +99,7 @@ serve(async (req) => {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          text,
+          text: trimmedText,
           model_id: "eleven_multilingual_v2",
           voice_settings: {
             stability: 0.75,
