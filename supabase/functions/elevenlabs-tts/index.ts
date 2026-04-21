@@ -124,6 +124,27 @@ serve(async (req) => {
       throw new Error("ELEVENLABS_API_KEY is not configured");
     }
 
+    // Per-IP rate limit (only counts cache misses)
+    const ip = getClientIp(req);
+    if (ipRateLimited(ip)) {
+      console.warn("Rate limited IP:", ip);
+      return new Response(
+        JSON.stringify({ error: "Too many requests. Please slow down." }),
+        { status: 429, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+      );
+    }
+
+    // Monthly character cap (hard ceiling on ElevenLabs spend)
+    const monthKey = currentMonthKey();
+    const usedThisMonth = usageCounter.get(monthKey) ?? 0;
+    if (usedThisMonth + trimmedText.length > MONTHLY_CHAR_LIMIT) {
+      console.error("Monthly TTS quota reached:", { monthKey, usedThisMonth, limit: MONTHLY_CHAR_LIMIT });
+      return new Response(
+        JSON.stringify({ error: "Monthly audio quota reached. Please try again next month." }),
+        { status: 429, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+      );
+    }
+
     const elResponse = await fetch(
       `https://api.elevenlabs.io/v1/text-to-speech/${encodeURIComponent(voice)}?output_format=mp3_44100_128`,
       {
