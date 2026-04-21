@@ -196,6 +196,10 @@ serve(async (req) => {
 
     const audioBuffer = await elResponse.arrayBuffer();
 
+    // Increment monthly usage counter (chars actually sent)
+    usageCounter.set(monthKey, (usageCounter.get(monthKey) ?? 0) + trimmedText.length);
+
+
     // ── 3. Store in cache (fire-and-forget) ─────────────────────
     supabase.storage
       .from(BUCKET)
