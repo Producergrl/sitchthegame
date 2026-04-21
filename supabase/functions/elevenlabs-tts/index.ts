@@ -16,6 +16,40 @@ const ALLOWED_VOICE_IDS = new Set<string>([
 ]);
 const DEFAULT_VOICE_ID = "Vy1TILrv7cgImnJ6mEmh";
 
+// ── Cost guards ───────────────────────────────────────────────
+// Hard monthly cap on characters sent to ElevenLabs (across ALL users).
+// ElevenLabs bills per character. Tune this to your plan/budget.
+// Example: 500,000 chars/month ≈ Creator plan allowance.
+const MONTHLY_CHAR_LIMIT = 500_000;
+// Per-IP throttle: max NEW (uncached) generations per rolling minute.
+const PER_IP_PER_MINUTE = 20;
+
+const usageCounter = new Map<string, number>(); // monthKey -> chars used (in-memory, per instance)
+const ipHits = new Map<string, number[]>();     // ip -> timestamps (ms)
+
+function currentMonthKey(): string {
+  const d = new Date();
+  return `${d.getUTCFullYear()}-${String(d.getUTCMonth() + 1).padStart(2, "0")}`;
+}
+
+function getClientIp(req: Request): string {
+  const fwd = req.headers.get("x-forwarded-for") ?? "";
+  return fwd.split(",")[0].trim() || req.headers.get("cf-connecting-ip") || "unknown";
+}
+
+function ipRateLimited(ip: string): boolean {
+  const now = Date.now();
+  const windowStart = now - 60_000;
+  const hits = (ipHits.get(ip) ?? []).filter((t) => t > windowStart);
+  if (hits.length >= PER_IP_PER_MINUTE) {
+    ipHits.set(ip, hits);
+    return true;
+  }
+  hits.push(now);
+  ipHits.set(ip, hits);
+  return false;
+}
+
 /** Deterministic cache key from text + voice */
 async function cacheKey(text: string, voiceId: string): Promise<string> {
   const data = new TextEncoder().encode(`${voiceId}::${text}`);
