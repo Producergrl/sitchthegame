@@ -146,7 +146,7 @@ const PlaySession = () => {
   // Preload TTS audio for the current card
   useEffect(() => {
     if (!card) return;
-    const text = `Here's the Sitch... ${card.scenario}...... do you...`;
+    const text = `Here's the Sitch... ${card.scenario}`;
     if (preloadedAudioRef.current.text === text) return; // already preloading/preloaded
 
     // Clean up previous preload
@@ -366,7 +366,7 @@ const PlaySession = () => {
       window.speechSynthesis.cancel();
     }
 
-    const text = `Here's the Sitch... ${card.scenario}...... do you...`;
+    const text = `Here's the Sitch... ${card.scenario}`;
     setIsReadingAloud(true);
 
     // Use preloaded audio if available
@@ -576,12 +576,27 @@ const PlaySession = () => {
               {setupStep} / 3
             </span>
           </div>
-          {/* Step progress */}
+          {/* Step progress — clickable to jump back to a completed step */}
           <div className="mx-auto mt-3 max-w-2xl">
-            <div className="flex gap-2">
-              {[1, 2, 3].map(s => (
-                <div key={s} className={`h-1.5 flex-1 rounded-full transition-all ${s <= setupStep ? 'bg-primary-foreground' : 'bg-primary-foreground/20'}`} />
-              ))}
+            <div className="flex gap-2" role="tablist" aria-label="Setup steps">
+              {[1, 2, 3].map(s => {
+                const isReachable = s < setupStep;
+                const isCurrent = s === setupStep;
+                return (
+                  <button
+                    key={s}
+                    type="button"
+                    role="tab"
+                    aria-selected={isCurrent}
+                    aria-label={`Go to step ${s}`}
+                    disabled={!isReachable}
+                    onClick={() => isReachable && setSetupStep(s)}
+                    className={`h-1.5 flex-1 rounded-full transition-all ${
+                      s <= setupStep ? 'bg-primary-foreground' : 'bg-primary-foreground/20'
+                    } ${isReachable ? 'cursor-pointer hover:opacity-80 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary-foreground' : 'cursor-default'}`}
+                  />
+                );
+              })}
             </div>
           </div>
         </div>
@@ -927,14 +942,14 @@ const PlaySession = () => {
               {/* Only show title as heading if it differs meaningfully from the scenario */}
               {card.scenario.toLowerCase().startsWith(card.title.toLowerCase().replace(/…$/, '')) ? (
                 <h2 className="mb-3 text-xl font-black text-card-foreground">
-                  <span className="text-primary">Here's the Sitch.. </span>
+                  <span className="text-primary">Here's the Sitch… </span>
                   {card.scenario}
                 </h2>
               ) : (
                 <>
                   <h2 className="mb-3 text-xl font-black text-card-foreground">{card.title}</h2>
                   <p className="text-base leading-relaxed text-card-foreground">
-                    <span className="font-black text-primary">Here's the Sitch.. </span>
+                    <span className="font-black text-primary">Here's the Sitch… </span>
                     {card.scenario}
                   </p>
                 </>
