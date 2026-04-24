@@ -1,6 +1,6 @@
 import { useState, type FormEvent } from 'react';
 import { motion } from 'framer-motion';
-import { Shield, Lock, Loader2 } from 'lucide-react';
+import { Shield, Lock, Loader2, ShoppingBag } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { safeGetItem, safeSetItem } from '@/lib/safeStorage';
@@ -104,6 +104,29 @@ const UnlockGate = ({ children }: UnlockGateProps) => {
             {error}
           </motion.p>
         )}
+
+        <div className="mt-6 flex items-center gap-3">
+          <div className="h-px flex-1 bg-[#1E3A5F]/15" />
+          <span className="text-xs font-bold uppercase tracking-wider text-[#2D5F8A]">
+            No code yet?
+          </span>
+          <div className="h-px flex-1 bg-[#1E3A5F]/15" />
+        </div>
+
+        <a
+          href="https://sitchthegame.gumroad.com/l/sitch"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="mt-4 flex w-full items-center justify-center gap-2 rounded-xl border-2 border-[#1E3A5F] bg-white py-4 px-4 font-bold uppercase tracking-wide text-[#1E3A5F] transition-transform hover:scale-[1.02] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#1E3A5F] focus-visible:ring-offset-2"
+          aria-label="Buy Sitch on Gumroad to get an unlock code"
+        >
+          <ShoppingBag className="h-4 w-4" />
+          Buy Sitch on Gumroad
+        </a>
+
+        <p className="mt-3 text-xs text-[#2D5F8A]/80">
+          You'll receive an unlock code instantly with your Gumroad receipt.
+        </p>
       </motion.div>
     </div>
   );
