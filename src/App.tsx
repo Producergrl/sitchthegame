@@ -15,6 +15,7 @@ import AdminPage from "./pages/AdminPage";
 import StickerCollection from "./pages/StickerCollection";
 import HowToPlay from "./pages/HowToPlay";
 import Legal from "./pages/Legal";
+import TestPurchase from "./pages/TestPurchase";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -38,6 +39,7 @@ const App = () => (
             <Route path="/how-to-play" element={<HowToPlay />} />
             <Route path="/admin" element={<AdminPage />} />
             <Route path="/legal" element={<Legal />} />
+            <Route path="/test-purchase" element={<TestPurchase />} />
             <Route path="*" element={<NotFound />} />
           </Routes>
         </BrowserRouter>
