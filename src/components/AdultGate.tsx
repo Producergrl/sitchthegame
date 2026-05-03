@@ -62,17 +62,17 @@ const AdultGate = ({ children, title = 'Adults Only', description = 'This sectio
             onTouchStart={startHold}
             onTouchEnd={endHold}
             onTouchCancel={endHold}
-            className="relative w-full select-none overflow-hidden rounded-xl border-2 border-primary bg-primary/5 px-6 py-4 text-sm font-bold text-primary transition-colors active:bg-primary/10"
+            className="relative w-full select-none overflow-hidden rounded-xl border-2 border-primary bg-primary/5 px-6 py-4 text-sm font-bold text-primary transition-colors active:bg-primary/10 min-h-[56px]"
           >
-            {/* Progress fill */}
+            {/* Progress fill — bigger and more obvious */}
             <motion.div
-              className="absolute inset-0 bg-primary/20"
+              className="absolute inset-0 bg-primary"
               style={{ originX: 0 }}
               animate={{ scaleX: progress }}
               transition={{ duration: 0.03 }}
             />
-            <span className="relative">
-              {progress > 0 ? 'Keep holding…' : 'Press & hold to continue'}
+            <span className="relative z-10" style={{ color: progress > 0.5 ? 'white' : undefined }}>
+              {progress >= 1 ? '✓ Unlocked!' : progress > 0 ? `Keep holding… ${Math.round(progress * 100)}%` : 'Press & hold to continue'}
             </span>
           </button>
           <p className="mt-2 text-xs text-muted-foreground">
