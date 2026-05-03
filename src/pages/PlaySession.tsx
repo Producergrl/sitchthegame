@@ -63,11 +63,26 @@ const PlaySession = () => {
   const activeMode = isPlaying ? (autoStart ? parsed.mode : setupMode) : 'discussion';
   const activeAge = isPlaying ? (autoStart ? parsed.age : setupAgeBand) : '7-9';
 
-  const sessionCards = useMemo(() => {
-    if (activeDeckIds.includes(COMPILATION_DECK_ID)) return getCompilationCards(10, activeAge);
-    if (activeDeckIds.length === 0) return allCards.filter(c => c.status === 'published');
-    return allCards.filter(c => activeDeckIds.includes(c.deck_id) && c.status === 'published');
-  }, [activeDeckIds, activeAge]);
+  // Build session cards ONCE per session — keyed by stable inputs so we never reshuffle mid-play
+  const sessionKey = `${activeDeckIds.join(',')}|${activeAge}|${isPlaying ? '1' : '0'}`;
+  const [sessionCards, setSessionCards] = useState<typeof allCards>([]);
+  const sessionKeyRef = useRef<string>('');
+  useEffect(() => {
+    if (!isPlaying) return;
+    if (sessionKeyRef.current === sessionKey && sessionCards.length > 0) return;
+    sessionKeyRef.current = sessionKey;
+    let next: typeof allCards;
+    if (activeDeckIds.includes(COMPILATION_DECK_ID)) {
+      next = getCompilationCards(10, activeAge);
+    } else if (activeDeckIds.length === 0) {
+      next = allCards.filter(c => c.status === 'published');
+    } else {
+      next = allCards.filter(c => activeDeckIds.includes(c.deck_id) && c.status === 'published');
+    }
+    setSessionCards(next);
+    setIndex(0);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [sessionKey, isPlaying]);
 
   const [index, setIndex] = useState(0);
   const [showGuidance, setShowGuidance] = useState(false);
