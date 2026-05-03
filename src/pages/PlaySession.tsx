@@ -21,6 +21,8 @@ import {
   loadStickerProgress, checkNewStickers, awardStickers,
   type StickerProgress, type Sticker as StickerDef,
 } from '@/lib/stickers';
+import { saveWowResponse, getSessionResponses } from '@/lib/wowReview';
+import AdultGate from '@/components/AdultGate';
 
 const ageBands: { value: AgeBand; label: string }[] = [
   { value: '4-6', label: '4–6 years' },
@@ -314,10 +316,26 @@ const PlaySession = () => {
     }
   };
 
+  const sessionIdRef = useRef<string>(`s_${Date.now()}_${Math.random().toString(36).slice(2, 8)}`);
+
   const handleSubmitCustomAnswer = () => {
     if (customAnswer.trim().length >= 10) {
       setCustomAnswerSubmitted(true);
       playWowFanfare();
+      // Persist to local session log so an adult can review later
+      if (card) {
+        saveWowResponse(
+          sessionIdRef.current,
+          { ageBand: activeAge, mode: activeMode },
+          {
+            cardId: card.id,
+            cardTitle: card.title,
+            scenario: card.scenario,
+            answer: customAnswer.trim(),
+            timestamp: Date.now(),
+          },
+        );
+      }
       if (activeMode === 'quiz') {
         setBonusPoints(b => b + 1);
         setMissionXPEarned(prev => prev + XP_BONUS);
@@ -841,7 +859,26 @@ const PlaySession = () => {
                   >
                     <div className={`flex h-12 w-12 items-center justify-center rounded-xl ${s.color} shadow-md`}>
                       <span className="text-2xl">{s.emoji}</span>
-                    </div>
+          </div>
+
+          {/* Adult-only: Wow-Me responses review */}
+          {getSessionResponses(sessionIdRef.current).length > 0 && (
+            <AdultGate
+              title="Review ✨ Wow-Me Answers"
+              description={`${getSessionResponses(sessionIdRef.current).length} custom answer(s) saved this session. Press & hold to review.`}
+            >
+              <div className="rounded-2xl border-2 border-primary/30 bg-card p-4 text-left space-y-3">
+                <p className="text-sm font-black text-primary">✨ Wow-Me Responses</p>
+                {getSessionResponses(sessionIdRef.current).map((r) => (
+                  <div key={r.cardId + r.timestamp} className="rounded-xl border bg-background/60 p-3">
+                    <p className="text-xs font-bold text-card-foreground">{r.cardTitle}</p>
+                    <p className="mt-1 text-xs italic text-muted-foreground">"{r.scenario}"</p>
+                    <p className="mt-2 text-sm text-foreground">{r.answer}</p>
+                  </div>
+                ))}
+              </div>
+            </AdultGate>
+          )}
                     <span className="text-xs font-bold text-card-foreground">{s.name}</span>
                   </motion.div>
                 ))}
