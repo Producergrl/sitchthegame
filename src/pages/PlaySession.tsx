@@ -21,6 +21,8 @@ import {
   loadStickerProgress, checkNewStickers, awardStickers,
   type StickerProgress, type Sticker as StickerDef,
 } from '@/lib/stickers';
+import { saveWowResponse, getSessionResponses } from '@/lib/wowReview';
+import AdultGate from '@/components/AdultGate';
 
 const ageBands: { value: AgeBand; label: string }[] = [
   { value: '4-6', label: '4–6 years' },
