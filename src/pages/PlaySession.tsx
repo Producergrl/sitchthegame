@@ -316,10 +316,26 @@ const PlaySession = () => {
     }
   };
 
+  const sessionIdRef = useRef<string>(`s_${Date.now()}_${Math.random().toString(36).slice(2, 8)}`);
+
   const handleSubmitCustomAnswer = () => {
     if (customAnswer.trim().length >= 10) {
       setCustomAnswerSubmitted(true);
       playWowFanfare();
+      // Persist to local session log so an adult can review later
+      if (card) {
+        saveWowResponse(
+          sessionIdRef.current,
+          { ageBand: activeAge, mode: activeMode },
+          {
+            cardId: card.id,
+            cardTitle: card.title,
+            scenario: card.scenario,
+            answer: customAnswer.trim(),
+            timestamp: Date.now(),
+          },
+        );
+      }
       if (activeMode === 'quiz') {
         setBonusPoints(b => b + 1);
         setMissionXPEarned(prev => prev + XP_BONUS);
