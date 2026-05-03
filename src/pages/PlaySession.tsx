@@ -1080,16 +1080,20 @@ const PlaySession = () => {
                       <motion.div
                         initial={{ opacity: 0, height: 0 }}
                         animate={{ opacity: 1, height: 'auto' }}
-                        className="rounded-xl border border-primary/30 bg-card p-4 space-y-3"
+                        className="rounded-xl border-2 border-primary/40 bg-primary/5 p-4 space-y-3 shadow-sm"
                       >
-                        <p className="text-sm font-bold text-card-foreground">💭 Share your answer:</p>
+                        <div>
+                          <p className="text-sm font-black text-primary">✨ Wow us with your answer!</p>
+                          <p className="mt-0.5 text-xs text-muted-foreground">What would YOU do? Type or speak it — there's no wrong answer.</p>
+                        </div>
                         <div className="relative">
                           <textarea
+                            autoFocus
                             value={customAnswer}
                             onChange={e => setCustomAnswer(e.target.value.slice(0, 500))}
                             maxLength={500}
-                            placeholder={speechSupported ? "Type or tap 🎤 to speak your answer (at least 10 characters)" : "What would YOU do in this sitch? (at least 10 characters)"}
-                            className="w-full rounded-lg border border-border bg-background p-3 pr-12 text-sm text-foreground placeholder:text-muted-foreground focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary min-h-[80px] resize-none"
+                            placeholder={speechSupported ? "Type your idea, or tap 🎤 to speak it…" : "Type your idea here…"}
+                            className="w-full rounded-lg border border-border bg-background p-3 pr-12 text-sm text-foreground placeholder:text-muted-foreground focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/40 min-h-[80px] resize-none"
                           />
                           {speechSupported && !customAnswerSubmitted && (
                             <button
