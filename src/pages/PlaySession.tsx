@@ -860,6 +860,28 @@ const PlaySession = () => {
               <p className="text-sm text-primary">✨ Critical thinking answers: {bonusPoints}</p>
             )}
           </div>
+          {/* Try this next — recommend a different mode/deck combo */}
+          <div className="rounded-2xl border-2 border-primary/30 bg-primary/5 p-4 text-left">
+            <p className="mb-2 text-sm font-black text-primary">🎯 Try this next</p>
+            <div className="grid gap-2">
+              <Link to={`/play?decks=__compilation__&age=${activeAge}&mode=${activeMode === 'quiz' ? 'discussion' : 'quiz'}`}>
+                <Button variant="outline" className="w-full justify-start font-bold">
+                  {activeMode === 'quiz' ? '💬 Switch to Discussion mode' : '🎯 Try Quiz mode for points'}
+                </Button>
+              </Link>
+              <Link to="/decks">
+                <Button variant="outline" className="w-full justify-start font-bold">
+                  📦 Browse a different deck
+                </Button>
+              </Link>
+              <Link to="/stickers">
+                <Button variant="outline" className="w-full justify-start font-bold">
+                  ⭐ See your sticker collection
+                </Button>
+              </Link>
+            </div>
+          </div>
+
           <div className="flex flex-col gap-2">
             <Link to="/play">
               <Button className="w-full gap-2 font-bold"><RotateCcw className="h-4 w-4" /> New Mission</Button>
