@@ -63,11 +63,26 @@ const PlaySession = () => {
   const activeMode = isPlaying ? (autoStart ? parsed.mode : setupMode) : 'discussion';
   const activeAge = isPlaying ? (autoStart ? parsed.age : setupAgeBand) : '7-9';
 
-  const sessionCards = useMemo(() => {
-    if (activeDeckIds.includes(COMPILATION_DECK_ID)) return getCompilationCards(10, activeAge);
-    if (activeDeckIds.length === 0) return allCards.filter(c => c.status === 'published');
-    return allCards.filter(c => activeDeckIds.includes(c.deck_id) && c.status === 'published');
-  }, [activeDeckIds, activeAge]);
+  // Build session cards ONCE per session — keyed by stable inputs so we never reshuffle mid-play
+  const sessionKey = `${activeDeckIds.join(',')}|${activeAge}|${isPlaying ? '1' : '0'}`;
+  const [sessionCards, setSessionCards] = useState<typeof allCards>([]);
+  const sessionKeyRef = useRef<string>('');
+  useEffect(() => {
+    if (!isPlaying) return;
+    if (sessionKeyRef.current === sessionKey && sessionCards.length > 0) return;
+    sessionKeyRef.current = sessionKey;
+    let next: typeof allCards;
+    if (activeDeckIds.includes(COMPILATION_DECK_ID)) {
+      next = getCompilationCards(10, activeAge);
+    } else if (activeDeckIds.length === 0) {
+      next = allCards.filter(c => c.status === 'published');
+    } else {
+      next = allCards.filter(c => activeDeckIds.includes(c.deck_id) && c.status === 'published');
+    }
+    setSessionCards(next);
+    setIndex(0);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [sessionKey, isPlaying]);
 
   const [index, setIndex] = useState(0);
   const [showGuidance, setShowGuidance] = useState(false);
@@ -845,6 +860,28 @@ const PlaySession = () => {
               <p className="text-sm text-primary">✨ Critical thinking answers: {bonusPoints}</p>
             )}
           </div>
+          {/* Try this next — recommend a different mode/deck combo */}
+          <div className="rounded-2xl border-2 border-primary/30 bg-primary/5 p-4 text-left">
+            <p className="mb-2 text-sm font-black text-primary">🎯 Try this next</p>
+            <div className="grid gap-2">
+              <Link to={`/play?decks=__compilation__&age=${activeAge}&mode=${activeMode === 'quiz' ? 'discussion' : 'quiz'}`}>
+                <Button variant="outline" className="w-full justify-start font-bold">
+                  {activeMode === 'quiz' ? '💬 Switch to Discussion mode' : '🎯 Try Quiz mode for points'}
+                </Button>
+              </Link>
+              <Link to="/decks">
+                <Button variant="outline" className="w-full justify-start font-bold">
+                  📦 Browse a different deck
+                </Button>
+              </Link>
+              <Link to="/stickers">
+                <Button variant="outline" className="w-full justify-start font-bold">
+                  ⭐ See your sticker collection
+                </Button>
+              </Link>
+            </div>
+          </div>
+
           <div className="flex flex-col gap-2">
             <Link to="/play">
               <Button className="w-full gap-2 font-bold"><RotateCcw className="h-4 w-4" /> New Mission</Button>
@@ -1107,16 +1144,18 @@ const PlaySession = () => {
                   animate={{ opacity: 1, height: 'auto' }}
                   className="space-y-3"
                 >
-                  {/* Demerit warning */}
+                  {/* Demerit warning — use scenario-specific reasoning */}
                   {activeMode === 'quiz' && selectedOption && card.worst_option === selectedOption && (
                     <motion.div
                       initial={{ scale: 0.9, opacity: 0 }}
                       animate={{ scale: 1, opacity: 1 }}
                       className="rounded-2xl border-2 border-destructive bg-destructive/10 p-5"
                     >
-                      <p className="mb-1 text-sm font-bold text-destructive">⚠️ Demerit Point (-1)</p>
+                      <p className="mb-1 text-sm font-bold text-destructive">⚠️ Demerit Point (-1) — here's why</p>
                       <p className="text-sm text-card-foreground">
-                        This was the most dangerous choice. In real life, this could put you or others at serious risk. Let's learn why the better option matters!
+                        {card.why_text
+                          ? `In this sitch, that's the riskiest move. ${card.why_text}`
+                          : 'This was the most dangerous choice in this scenario. Let\'s look at the safer move.'}
                       </p>
                     </motion.div>
                   )}

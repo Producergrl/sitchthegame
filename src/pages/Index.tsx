@@ -121,14 +121,25 @@ const Index = () => {
             }}
           />
 
+          {/* One-line value prop */}
+          <motion.p
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 1.1, duration: 0.6 }}
+            className="mt-5 max-w-md text-center text-sm sm:text-base font-bold leading-snug text-[#FEF3D0]"
+            style={{ textShadow: '0 2px 8px hsl(10 70% 12% / 0.55)' }}
+          >
+            A family safety game. Real-world scenarios — your child picks what they'd do, then you talk it through together.
+          </motion.p>
+
           {/* CTA pair — styled as an extension of the logo plate */}
           <motion.div
             initial={{ opacity: 0, y: 16 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 1.4, duration: 0.6 }}
-            className="mt-8 flex flex-col items-stretch gap-3 sm:flex-row sm:items-center"
+            className="mt-6 flex flex-col items-stretch gap-3 sm:flex-row sm:items-center"
           >
-            <Link to="/play?decks=__compilation__&age=7-9&mode=quiz">
+            <Link to="/play?decks=__compilation__&age=7-9&mode=quiz" className="flex flex-col items-center">
               <Button
                 size="lg"
                 className="group w-full gap-2.5 text-base font-black tracking-[0.08em] uppercase active:animate-btn-press transition-all duration-300 hover:scale-[1.04] px-9 py-6 rounded-xl border-0 sm:w-auto"
@@ -142,8 +153,9 @@ const Index = () => {
                 <Zap className="h-5 w-5 transition-transform group-hover:rotate-12 group-hover:scale-110" />
                 Quick Play
               </Button>
+              <span className="mt-1.5 text-[10px] font-bold uppercase tracking-wider text-[#FEF3D0]/85">10 random missions · ages 7–9</span>
             </Link>
-            <Link to="/session/setup">
+            <Link to="/session/setup" className="flex flex-col items-center">
               <Button
                 size="lg"
                 className="w-full gap-2.5 text-base font-black tracking-[0.08em] uppercase active:animate-btn-press transition-all duration-300 hover:scale-[1.04] px-9 py-6 rounded-xl sm:w-auto"
@@ -157,6 +169,7 @@ const Index = () => {
                 <Sparkles className="h-5 w-5" />
                 Custom Game
               </Button>
+              <span className="mt-1.5 text-[10px] font-bold uppercase tracking-wider text-[#FEF3D0]/85">Pick age, mode & decks</span>
             </Link>
           </motion.div>
 
