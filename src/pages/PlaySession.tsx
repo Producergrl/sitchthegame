@@ -1122,16 +1122,18 @@ const PlaySession = () => {
                   animate={{ opacity: 1, height: 'auto' }}
                   className="space-y-3"
                 >
-                  {/* Demerit warning */}
+                  {/* Demerit warning — use scenario-specific reasoning */}
                   {activeMode === 'quiz' && selectedOption && card.worst_option === selectedOption && (
                     <motion.div
                       initial={{ scale: 0.9, opacity: 0 }}
                       animate={{ scale: 1, opacity: 1 }}
                       className="rounded-2xl border-2 border-destructive bg-destructive/10 p-5"
                     >
-                      <p className="mb-1 text-sm font-bold text-destructive">⚠️ Demerit Point (-1)</p>
+                      <p className="mb-1 text-sm font-bold text-destructive">⚠️ Demerit Point (-1) — here's why</p>
                       <p className="text-sm text-card-foreground">
-                        This was the most dangerous choice. In real life, this could put you or others at serious risk. Let's learn why the better option matters!
+                        {card.why_text
+                          ? `In this sitch, that's the riskiest move. ${card.why_text}`
+                          : 'This was the most dangerous choice in this scenario. Let\'s look at the safer move.'}
                       </p>
                     </motion.div>
                   )}
