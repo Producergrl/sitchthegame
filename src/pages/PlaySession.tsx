@@ -441,6 +441,7 @@ const PlaySession = () => {
             'Content-Type': 'application/json',
             apikey: import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY,
             Authorization: `Bearer ${import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY}`,
+            'x-sitch-license': (typeof localStorage !== 'undefined' && localStorage.getItem('sitch_license_key')) || '',
           },
           body: JSON.stringify({ text }),
         },
