@@ -10,6 +10,12 @@ const corsHeaders = {
 
 const BUCKET = "tts-cache";
 const MAX_TEXT_LENGTH = 500;
+// SECURITY NOTE: The `tts-cache` bucket is public-read but list-disabled.
+// Object keys are SHA-256(voiceId::text), so individual URLs are not enumerable.
+// Only static, non-sensitive scenario text from `src/data/seedData` is ever
+// passed as input to this function. Do NOT pass user-generated text, PII, or
+// any sensitive content here without first making the bucket private and
+// switching client playback to short-lived signed URLs.
 // Whitelist of allowed voice IDs to prevent path injection and cost abuse
 const ALLOWED_VOICE_IDS = new Set<string>([
   "Vy1TILrv7cgImnJ6mEmh", // Kerry (default)
