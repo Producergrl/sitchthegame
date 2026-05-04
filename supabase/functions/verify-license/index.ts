@@ -35,6 +35,34 @@ Deno.serve(async (req) => {
   }
 
   try {
+    // Per-IP rate limiting (max 10 attempts/minute) to deter brute force.
+    const ip =
+      (req.headers.get("x-forwarded-for") ?? "").split(",")[0].trim() ||
+      req.headers.get("cf-connecting-ip") ||
+      "unknown";
+    try {
+      const SUPABASE_URL = Deno.env.get("SUPABASE_URL");
+      const SERVICE = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY");
+      if (SUPABASE_URL && SERVICE) {
+        const sb = createClient(SUPABASE_URL, SERVICE);
+        const since = new Date(Date.now() - 60_000).toISOString();
+        const { count } = await sb
+          .from("tts_ip_hits")
+          .select("id", { count: "exact", head: true })
+          .eq("ip", `verify:${ip}`)
+          .gte("hit_at", since);
+        if ((count ?? 0) >= 10) {
+          return new Response(
+            JSON.stringify({ valid: false, error: "Too many attempts. Please wait a minute." }),
+            { status: 429, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+          );
+        }
+        await sb.from("tts_ip_hits").insert({ ip: `verify:${ip}` });
+      }
+    } catch (e) {
+      console.error("rate limit check failed:", e);
+    }
+
     const { license_key } = await req.json();
 
     if (!license_key || typeof license_key !== "string" || license_key.trim().length === 0) {
@@ -87,6 +115,8 @@ Deno.serve(async (req) => {
       );
     }
 
+    // Slow down enumeration on failed attempts.
+    await new Promise((r) => setTimeout(r, 400));
     return new Response(
       JSON.stringify({ valid: false, error: "Invalid license key" }),
       { status: 200, headers: { ...corsHeaders, "Content-Type": "application/json" } }
