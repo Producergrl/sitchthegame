@@ -21,9 +21,25 @@ Deno.serve(async (req) => {
       );
     }
 
+    const trimmed = license_key.trim();
+
+    // Server-side beta tester bypass codes (comma-separated in BETA_CODES secret).
+    // Kept on the server so they cannot be discovered by inspecting the client bundle.
+    const betaCodesRaw = Deno.env.get("BETA_CODES") ?? "";
+    const betaCodes = betaCodesRaw
+      .split(",")
+      .map((c) => c.trim().toUpperCase())
+      .filter(Boolean);
+    if (betaCodes.length > 0 && betaCodes.includes(trimmed.toUpperCase())) {
+      return new Response(
+        JSON.stringify({ valid: true }),
+        { status: 200, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+      );
+    }
+
     const formData = new URLSearchParams();
     formData.append("product_id", PRODUCT_ID);
-    formData.append("license_key", license_key.trim());
+    formData.append("license_key", trimmed);
     formData.append("increment_uses_count", "false");
 
     const response = await fetch(GUMROAD_VERIFY_URL, {
