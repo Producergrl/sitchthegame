@@ -115,6 +115,8 @@ Deno.serve(async (req) => {
       );
     }
 
+    // Slow down enumeration on failed attempts.
+    await new Promise((r) => setTimeout(r, 400));
     return new Response(
       JSON.stringify({ valid: false, error: "Invalid license key" }),
       { status: 200, headers: { ...corsHeaders, "Content-Type": "application/json" } }
