@@ -30,13 +30,8 @@ const UnlockGate = ({ children }: UnlockGateProps) => {
     const trimmed = code.trim();
     if (!trimmed) return;
 
-    // Beta tester bypass code (case-insensitive)
-    if (trimmed.toUpperCase() === 'SITCHBETA2026') {
-      unlock();
-      return;
-    }
-
-    // Verify against Gumroad license server (no client-side bypass)
+    // All codes (including beta tester bypass codes) are validated server-side
+    // in the verify-license edge function. No bypass logic exists in the client bundle.
     setLoading(true);
     setError('');
 
