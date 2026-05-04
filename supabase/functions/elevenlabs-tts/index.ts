@@ -15,7 +15,27 @@ const ALLOWED_VOICE_IDS = new Set<string>(["Vy1TILrv7cgImnJ6mEmh"]);
 const DEFAULT_VOICE_ID = "Vy1TILrv7cgImnJ6mEmh";
 
 const MONTHLY_CHAR_LIMIT = 500_000;
+const PER_LICENSE_MONTHLY_CHAR_LIMIT = 50_000;
 const PER_IP_PER_MINUTE = 20;
+
+const ALLOWED_ORIGINS = new Set<string>([
+  "https://sitchthegame.com",
+  "https://www.sitchthegame.com",
+  "https://sitchthegame.lovable.app",
+]);
+const ALLOWED_ORIGIN_SUFFIXES = [".lovable.app", ".lovableproject.com"];
+
+function isOriginAllowed(origin: string | null): boolean {
+  if (!origin) return true; // non-browser callers (curl/tests) — license check still gates them
+  try {
+    const u = new URL(origin);
+    if (u.hostname === "localhost" || u.hostname === "127.0.0.1") return true;
+    if (ALLOWED_ORIGINS.has(origin)) return true;
+    return ALLOWED_ORIGIN_SUFFIXES.some((s) => u.hostname.endsWith(s));
+  } catch {
+    return false;
+  }
+}
 
 function currentMonthKey(): string {
   const d = new Date();
