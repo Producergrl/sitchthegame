@@ -14,7 +14,57 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      tts_ip_hits: {
+        Row: {
+          hit_at: string
+          id: number
+          ip: string
+        }
+        Insert: {
+          hit_at?: string
+          id?: number
+          ip: string
+        }
+        Update: {
+          hit_at?: string
+          id?: number
+          ip?: string
+        }
+        Relationships: []
+      }
+      tts_license_cache: {
+        Row: {
+          license_hash: string
+          verified_at: string
+        }
+        Insert: {
+          license_hash: string
+          verified_at?: string
+        }
+        Update: {
+          license_hash?: string
+          verified_at?: string
+        }
+        Relationships: []
+      }
+      tts_usage: {
+        Row: {
+          chars_used: number
+          month_key: string
+          updated_at: string
+        }
+        Insert: {
+          chars_used?: number
+          month_key: string
+          updated_at?: string
+        }
+        Update: {
+          chars_used?: number
+          month_key?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
