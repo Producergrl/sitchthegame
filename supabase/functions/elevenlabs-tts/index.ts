@@ -209,6 +209,22 @@ serve(async (req) => {
       console.warn("TTS usage above 80% of monthly quota:", { monthKey, usedThisMonth, limit: MONTHLY_CHAR_LIMIT });
     }
 
+    // Per-license monthly cap so a single buyer can't drain the global quota.
+    const { data: licUsageRow } = await supabase
+      .from("tts_license_usage")
+      .select("chars_used")
+      .eq("license_hash", licenseHash)
+      .eq("month_key", monthKey)
+      .maybeSingle();
+    const licUsedThisMonth = Number(licUsageRow?.chars_used ?? 0);
+    if (licUsedThisMonth + trimmedText.length > PER_LICENSE_MONTHLY_CHAR_LIMIT) {
+      console.warn("Per-license quota reached", { monthKey, licUsedThisMonth });
+      return new Response(
+        JSON.stringify({ error: "Monthly audio limit reached for this unlock code." }),
+        { status: 429, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+      );
+    }
+
     const elResponse = await fetch(
       `https://api.elevenlabs.io/v1/text-to-speech/${encodeURIComponent(voice)}?output_format=mp3_44100_128`,
       {
