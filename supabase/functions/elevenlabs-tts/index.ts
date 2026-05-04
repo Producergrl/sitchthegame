@@ -68,13 +68,28 @@ serve(async (req) => {
   }
 
   try {
+    // ── Origin allowlist ────────────────────────────────────────
+    const origin = req.headers.get("origin");
+    if (!isOriginAllowed(origin)) {
+      console.warn("Blocked origin:", origin);
+      return new Response(
+        JSON.stringify({ error: "Origin not allowed" }),
+        { status: 403, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+      );
+    }
+
     const SUPABASE_URL = Deno.env.get("SUPABASE_URL")!;
     const SUPABASE_SERVICE_ROLE_KEY = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
     const supabase = createClient(SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY);
 
+    // Best-effort cleanup of stale rate-limit rows (ignore errors).
+    supabase
+      .from("tts_ip_hits")
+      .delete()
+      .lt("hit_at", new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString())
+      .then(({ error }) => { if (error) console.warn("ip_hits cleanup:", error.message); });
+
     // ── Server-side license check ───────────────────────────────
-    // Client must include a valid license key (previously verified by verify-license)
-    // in the x-sitch-license header. We check its SHA-256 hash against our cache table.
     const licenseKey = req.headers.get("x-sitch-license")?.trim() ?? "";
     if (!licenseKey || licenseKey.length > 200) {
       return new Response(
@@ -85,12 +100,18 @@ serve(async (req) => {
     const licenseHash = await sha256Hex(licenseKey);
     const { data: licenseRow, error: licenseErr } = await supabase
       .from("tts_license_cache")
-      .select("license_hash")
+      .select("license_hash, expires_at")
       .eq("license_hash", licenseHash)
       .maybeSingle();
     if (licenseErr || !licenseRow) {
       return new Response(
         JSON.stringify({ error: "License not recognized. Please re-enter your unlock code." }),
+        { status: 401, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+      );
+    }
+    if (licenseRow.expires_at && new Date(licenseRow.expires_at).getTime() < Date.now()) {
+      return new Response(
+        JSON.stringify({ error: "License needs to be re-verified. Please re-enter your unlock code." }),
         { status: 401, headers: { ...corsHeaders, "Content-Type": "application/json" } }
       );
     }
