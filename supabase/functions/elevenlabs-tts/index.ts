@@ -5,33 +5,17 @@ import { encode as hexEncode } from "https://deno.land/std@0.168.0/encoding/hex.
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
   "Access-Control-Allow-Headers":
-    "authorization, x-client-info, apikey, content-type, x-supabase-client-platform, x-supabase-client-platform-version, x-supabase-client-runtime, x-supabase-client-runtime-version",
+    "authorization, x-client-info, apikey, content-type, x-supabase-client-platform, x-supabase-client-platform-version, x-supabase-client-runtime, x-supabase-client-runtime-version, x-sitch-license",
 };
 
 const BUCKET = "tts-cache";
 const MAX_TEXT_LENGTH = 500;
-// SECURITY NOTE: The `tts-cache` bucket is public-read but list-disabled.
-// Object keys are SHA-256(voiceId::text), so individual URLs are not enumerable.
-// Only static, non-sensitive scenario text from `src/data/seedData` is ever
-// passed as input to this function. Do NOT pass user-generated text, PII, or
-// any sensitive content here without first making the bucket private and
-// switching client playback to short-lived signed URLs.
-// Whitelist of allowed voice IDs to prevent path injection and cost abuse
-const ALLOWED_VOICE_IDS = new Set<string>([
-  "Vy1TILrv7cgImnJ6mEmh", // Kerry (default)
-]);
+
+const ALLOWED_VOICE_IDS = new Set<string>(["Vy1TILrv7cgImnJ6mEmh"]);
 const DEFAULT_VOICE_ID = "Vy1TILrv7cgImnJ6mEmh";
 
-// ── Cost guards ───────────────────────────────────────────────
-// Hard monthly cap on characters sent to ElevenLabs (across ALL users).
-// ElevenLabs bills per character. Tune this to your plan/budget.
-// Example: 500,000 chars/month ≈ Creator plan allowance.
 const MONTHLY_CHAR_LIMIT = 500_000;
-// Per-IP throttle: max NEW (uncached) generations per rolling minute.
 const PER_IP_PER_MINUTE = 20;
-
-const usageCounter = new Map<string, number>(); // monthKey -> chars used (in-memory, per instance)
-const ipHits = new Map<string, number[]>();     // ip -> timestamps (ms)
 
 function currentMonthKey(): string {
   const d = new Date();
@@ -43,20 +27,14 @@ function getClientIp(req: Request): string {
   return fwd.split(",")[0].trim() || req.headers.get("cf-connecting-ip") || "unknown";
 }
 
-function ipRateLimited(ip: string): boolean {
-  const now = Date.now();
-  const windowStart = now - 60_000;
-  const hits = (ipHits.get(ip) ?? []).filter((t) => t > windowStart);
-  if (hits.length >= PER_IP_PER_MINUTE) {
-    ipHits.set(ip, hits);
-    return true;
-  }
-  hits.push(now);
-  ipHits.set(ip, hits);
-  return false;
+async function sha256Hex(input: string): Promise<string> {
+  const data = new TextEncoder().encode(input);
+  const hash = await crypto.subtle.digest("SHA-256", data);
+  return Array.from(new Uint8Array(hash))
+    .map((b) => b.toString(16).padStart(2, "0"))
+    .join("");
 }
 
-/** Deterministic cache key from text + voice */
 async function cacheKey(text: string, voiceId: string): Promise<string> {
   const data = new TextEncoder().encode(`${voiceId}::${text}`);
   const hash = await crypto.subtle.digest("SHA-256", data);
@@ -70,10 +48,35 @@ serve(async (req) => {
   }
 
   try {
-    const { text, voiceId } = await req.json();
-    const ELEVENLABS_API_KEY = Deno.env.get("ELEVENLABS_API_KEY");
     const SUPABASE_URL = Deno.env.get("SUPABASE_URL")!;
     const SUPABASE_SERVICE_ROLE_KEY = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
+    const supabase = createClient(SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY);
+
+    // ── Server-side license check ───────────────────────────────
+    // Client must include a valid license key (previously verified by verify-license)
+    // in the x-sitch-license header. We check its SHA-256 hash against our cache table.
+    const licenseKey = req.headers.get("x-sitch-license")?.trim() ?? "";
+    if (!licenseKey || licenseKey.length > 200) {
+      return new Response(
+        JSON.stringify({ error: "License required" }),
+        { status: 401, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+      );
+    }
+    const licenseHash = await sha256Hex(licenseKey);
+    const { data: licenseRow, error: licenseErr } = await supabase
+      .from("tts_license_cache")
+      .select("license_hash")
+      .eq("license_hash", licenseHash)
+      .maybeSingle();
+    if (licenseErr || !licenseRow) {
+      return new Response(
+        JSON.stringify({ error: "License not recognized. Please re-enter your unlock code." }),
+        { status: 401, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+      );
+    }
+
+    const { text, voiceId } = await req.json();
+    const ELEVENLABS_API_KEY = Deno.env.get("ELEVENLABS_API_KEY");
 
     // ── Input validation ────────────────────────────────────────
     if (!text || typeof text !== "string") {
@@ -98,7 +101,6 @@ serve(async (req) => {
       );
     }
 
-    // Whitelist voice IDs to prevent path injection and quota abuse
     const requestedVoice = typeof voiceId === "string" && voiceId.length > 0 ? voiceId : DEFAULT_VOICE_ID;
     if (!ALLOWED_VOICE_IDS.has(requestedVoice)) {
       return new Response(JSON.stringify({ error: "Voice not allowed" }), {
@@ -111,14 +113,11 @@ serve(async (req) => {
     const fileName = await cacheKey(trimmedText, voice);
 
     // ── 1. Check cache ──────────────────────────────────────────
-    const supabase = createClient(SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY);
-
     const { data: existing } = await supabase.storage
       .from(BUCKET)
-      .createSignedUrl(fileName, 60); // just to check existence
+      .createSignedUrl(fileName, 60);
 
     if (existing?.signedUrl) {
-      // File exists – redirect to the public URL (free, no ElevenLabs cost)
       const publicUrl = `${SUPABASE_URL}/storage/v1/object/public/${BUCKET}/${fileName}`;
       return new Response(JSON.stringify({ cachedUrl: publicUrl }), {
         headers: { ...corsHeaders, "Content-Type": "application/json" },
@@ -130,25 +129,43 @@ serve(async (req) => {
       throw new Error("ELEVENLABS_API_KEY is not configured");
     }
 
-    // Per-IP rate limit (only counts cache misses)
+    // Persistent per-IP rate limit (only counts cache misses).
     const ip = getClientIp(req);
-    if (ipRateLimited(ip)) {
+    const windowStartIso = new Date(Date.now() - 60_000).toISOString();
+    const { count: recentHits } = await supabase
+      .from("tts_ip_hits")
+      .select("id", { count: "exact", head: true })
+      .eq("ip", ip)
+      .gte("hit_at", windowStartIso);
+
+    if ((recentHits ?? 0) >= PER_IP_PER_MINUTE) {
       console.warn("Rate limited IP:", ip);
       return new Response(
         JSON.stringify({ error: "Too many requests. Please slow down." }),
         { status: 429, headers: { ...corsHeaders, "Content-Type": "application/json" } }
       );
     }
+    await supabase.from("tts_ip_hits").insert({ ip });
 
-    // Monthly character cap (hard ceiling on ElevenLabs spend)
+    // Persistent monthly character cap.
     const monthKey = currentMonthKey();
-    const usedThisMonth = usageCounter.get(monthKey) ?? 0;
+    const { data: usageRow } = await supabase
+      .from("tts_usage")
+      .select("chars_used")
+      .eq("month_key", monthKey)
+      .maybeSingle();
+    const usedThisMonth = Number(usageRow?.chars_used ?? 0);
+
     if (usedThisMonth + trimmedText.length > MONTHLY_CHAR_LIMIT) {
       console.error("Monthly TTS quota reached:", { monthKey, usedThisMonth, limit: MONTHLY_CHAR_LIMIT });
       return new Response(
         JSON.stringify({ error: "Monthly audio quota reached. Please try again next month." }),
         { status: 429, headers: { ...corsHeaders, "Content-Type": "application/json" } }
       );
+    }
+
+    if (usedThisMonth + trimmedText.length > MONTHLY_CHAR_LIMIT * 0.8) {
+      console.warn("TTS usage above 80% of monthly quota:", { monthKey, usedThisMonth, limit: MONTHLY_CHAR_LIMIT });
     }
 
     const elResponse = await fetch(
@@ -202,9 +219,11 @@ serve(async (req) => {
 
     const audioBuffer = await elResponse.arrayBuffer();
 
-    // Increment monthly usage counter (chars actually sent)
-    usageCounter.set(monthKey, (usageCounter.get(monthKey) ?? 0) + trimmedText.length);
-
+    // Persist monthly usage counter (chars actually sent).
+    const newTotal = usedThisMonth + trimmedText.length;
+    await supabase
+      .from("tts_usage")
+      .upsert({ month_key: monthKey, chars_used: newTotal, updated_at: new Date().toISOString() });
 
     // ── 3. Store in cache (fire-and-forget) ─────────────────────
     supabase.storage
@@ -218,7 +237,6 @@ serve(async (req) => {
         else console.log("Cached TTS audio:", fileName);
       });
 
-    // ── 4. Return the audio immediately ─────────────────────────
     return new Response(audioBuffer, {
       headers: {
         ...corsHeaders,
