@@ -276,11 +276,22 @@ serve(async (req) => {
 
     const audioBuffer = await elResponse.arrayBuffer();
 
-    // Persist monthly usage counter (chars actually sent).
+    // Persist monthly usage counters (chars actually sent).
     const newTotal = usedThisMonth + trimmedText.length;
-    await supabase
-      .from("tts_usage")
-      .upsert({ month_key: monthKey, chars_used: newTotal, updated_at: new Date().toISOString() });
+    const newLicTotal = licUsedThisMonth + trimmedText.length;
+    await Promise.all([
+      supabase
+        .from("tts_usage")
+        .upsert({ month_key: monthKey, chars_used: newTotal, updated_at: new Date().toISOString() }),
+      supabase
+        .from("tts_license_usage")
+        .upsert({
+          license_hash: licenseHash,
+          month_key: monthKey,
+          chars_used: newLicTotal,
+          updated_at: new Date().toISOString(),
+        }),
+    ]);
 
     // ── 3. Store in cache (fire-and-forget) ─────────────────────
     supabase.storage
