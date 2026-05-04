@@ -34,16 +34,40 @@ export type Database = {
       }
       tts_license_cache: {
         Row: {
+          expires_at: string
           license_hash: string
           verified_at: string
         }
         Insert: {
+          expires_at?: string
           license_hash: string
           verified_at?: string
         }
         Update: {
+          expires_at?: string
           license_hash?: string
           verified_at?: string
+        }
+        Relationships: []
+      }
+      tts_license_usage: {
+        Row: {
+          chars_used: number
+          license_hash: string
+          month_key: string
+          updated_at: string
+        }
+        Insert: {
+          chars_used?: number
+          license_hash: string
+          month_key: string
+          updated_at?: string
+        }
+        Update: {
+          chars_used?: number
+          license_hash?: string
+          month_key?: string
+          updated_at?: string
         }
         Relationships: []
       }
