@@ -15,7 +15,27 @@ const ALLOWED_VOICE_IDS = new Set<string>(["Vy1TILrv7cgImnJ6mEmh"]);
 const DEFAULT_VOICE_ID = "Vy1TILrv7cgImnJ6mEmh";
 
 const MONTHLY_CHAR_LIMIT = 500_000;
+const PER_LICENSE_MONTHLY_CHAR_LIMIT = 50_000;
 const PER_IP_PER_MINUTE = 20;
+
+const ALLOWED_ORIGINS = new Set<string>([
+  "https://sitchthegame.com",
+  "https://www.sitchthegame.com",
+  "https://sitchthegame.lovable.app",
+]);
+const ALLOWED_ORIGIN_SUFFIXES = [".lovable.app", ".lovableproject.com"];
+
+function isOriginAllowed(origin: string | null): boolean {
+  if (!origin) return true; // non-browser callers (curl/tests) — license check still gates them
+  try {
+    const u = new URL(origin);
+    if (u.hostname === "localhost" || u.hostname === "127.0.0.1") return true;
+    if (ALLOWED_ORIGINS.has(origin)) return true;
+    return ALLOWED_ORIGIN_SUFFIXES.some((s) => u.hostname.endsWith(s));
+  } catch {
+    return false;
+  }
+}
 
 function currentMonthKey(): string {
   const d = new Date();
@@ -48,13 +68,28 @@ serve(async (req) => {
   }
 
   try {
+    // ── Origin allowlist ────────────────────────────────────────
+    const origin = req.headers.get("origin");
+    if (!isOriginAllowed(origin)) {
+      console.warn("Blocked origin:", origin);
+      return new Response(
+        JSON.stringify({ error: "Origin not allowed" }),
+        { status: 403, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+      );
+    }
+
     const SUPABASE_URL = Deno.env.get("SUPABASE_URL")!;
     const SUPABASE_SERVICE_ROLE_KEY = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
     const supabase = createClient(SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY);
 
+    // Best-effort cleanup of stale rate-limit rows (ignore errors).
+    supabase
+      .from("tts_ip_hits")
+      .delete()
+      .lt("hit_at", new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString())
+      .then(({ error }) => { if (error) console.warn("ip_hits cleanup:", error.message); });
+
     // ── Server-side license check ───────────────────────────────
-    // Client must include a valid license key (previously verified by verify-license)
-    // in the x-sitch-license header. We check its SHA-256 hash against our cache table.
     const licenseKey = req.headers.get("x-sitch-license")?.trim() ?? "";
     if (!licenseKey || licenseKey.length > 200) {
       return new Response(
@@ -65,12 +100,18 @@ serve(async (req) => {
     const licenseHash = await sha256Hex(licenseKey);
     const { data: licenseRow, error: licenseErr } = await supabase
       .from("tts_license_cache")
-      .select("license_hash")
+      .select("license_hash, expires_at")
       .eq("license_hash", licenseHash)
       .maybeSingle();
     if (licenseErr || !licenseRow) {
       return new Response(
         JSON.stringify({ error: "License not recognized. Please re-enter your unlock code." }),
+        { status: 401, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+      );
+    }
+    if (licenseRow.expires_at && new Date(licenseRow.expires_at).getTime() < Date.now()) {
+      return new Response(
+        JSON.stringify({ error: "License needs to be re-verified. Please re-enter your unlock code." }),
         { status: 401, headers: { ...corsHeaders, "Content-Type": "application/json" } }
       );
     }
@@ -168,6 +209,22 @@ serve(async (req) => {
       console.warn("TTS usage above 80% of monthly quota:", { monthKey, usedThisMonth, limit: MONTHLY_CHAR_LIMIT });
     }
 
+    // Per-license monthly cap so a single buyer can't drain the global quota.
+    const { data: licUsageRow } = await supabase
+      .from("tts_license_usage")
+      .select("chars_used")
+      .eq("license_hash", licenseHash)
+      .eq("month_key", monthKey)
+      .maybeSingle();
+    const licUsedThisMonth = Number(licUsageRow?.chars_used ?? 0);
+    if (licUsedThisMonth + trimmedText.length > PER_LICENSE_MONTHLY_CHAR_LIMIT) {
+      console.warn("Per-license quota reached", { monthKey, licUsedThisMonth });
+      return new Response(
+        JSON.stringify({ error: "Monthly audio limit reached for this unlock code." }),
+        { status: 429, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+      );
+    }
+
     const elResponse = await fetch(
       `https://api.elevenlabs.io/v1/text-to-speech/${encodeURIComponent(voice)}?output_format=mp3_44100_128`,
       {
@@ -219,11 +276,22 @@ serve(async (req) => {
 
     const audioBuffer = await elResponse.arrayBuffer();
 
-    // Persist monthly usage counter (chars actually sent).
+    // Persist monthly usage counters (chars actually sent).
     const newTotal = usedThisMonth + trimmedText.length;
-    await supabase
-      .from("tts_usage")
-      .upsert({ month_key: monthKey, chars_used: newTotal, updated_at: new Date().toISOString() });
+    const newLicTotal = licUsedThisMonth + trimmedText.length;
+    await Promise.all([
+      supabase
+        .from("tts_usage")
+        .upsert({ month_key: monthKey, chars_used: newTotal, updated_at: new Date().toISOString() }),
+      supabase
+        .from("tts_license_usage")
+        .upsert({
+          license_hash: licenseHash,
+          month_key: monthKey,
+          chars_used: newLicTotal,
+          updated_at: new Date().toISOString(),
+        }),
+    ]);
 
     // ── 3. Store in cache (fire-and-forget) ─────────────────────
     supabase.storage

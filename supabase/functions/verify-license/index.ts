@@ -23,7 +23,10 @@ async function cacheValidLicense(key: string): Promise<void> {
     if (!SUPABASE_URL || !SERVICE) return;
     const supabase = createClient(SUPABASE_URL, SERVICE);
     const license_hash = await hashLicense(key);
-    await supabase.from("tts_license_cache").upsert({ license_hash });
+    const expires_at = new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString();
+    await supabase
+      .from("tts_license_cache")
+      .upsert({ license_hash, verified_at: new Date().toISOString(), expires_at });
   } catch (e) {
     console.error("license cache write failed:", e);
   }
