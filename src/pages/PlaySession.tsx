@@ -65,28 +65,25 @@ const PlaySession = () => {
   const activeMode = isPlaying ? (autoStart ? parsed.mode : setupMode) : 'discussion';
   const activeAge = isPlaying ? (autoStart ? parsed.age : setupAgeBand) : '7-9';
 
-  // Build session cards ONCE per session — keyed by stable inputs so we never reshuffle mid-play
+  // Build session cards ONCE per session — memoized so React never re-creates them mid-play.
   const sessionKey = `${activeDeckIds.join(',')}|${activeAge}|${isPlaying ? '1' : '0'}`;
-  const [sessionCards, setSessionCards] = useState<typeof allCards>([]);
-  const sessionKeyRef = useRef<string>('');
-  useEffect(() => {
-    if (!isPlaying) return;
-    if (sessionKeyRef.current === sessionKey && sessionCards.length > 0) return;
-    sessionKeyRef.current = sessionKey;
-    let next: typeof allCards;
-    if (activeDeckIds.includes(COMPILATION_DECK_ID)) {
-      next = getCompilationCards(10, activeAge);
-    } else if (activeDeckIds.length === 0) {
-      next = allCards.filter(c => c.status === 'published');
-    } else {
-      next = allCards.filter(c => activeDeckIds.includes(c.deck_id) && c.status === 'published');
-    }
-    setSessionCards(next);
-    setIndex(0);
+  const sessionCards = useMemo<typeof allCards>(() => {
+    if (!isPlaying) return [];
+    if (activeDeckIds.includes(COMPILATION_DECK_ID)) return getCompilationCards(10, activeAge);
+    if (activeDeckIds.length === 0) return allCards.filter(c => c.status === 'published');
+    return allCards.filter(c => activeDeckIds.includes(c.deck_id) && c.status === 'published');
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [sessionKey, isPlaying]);
+  }, [sessionKey]);
 
   const [index, setIndex] = useState(0);
+  // Reset index ONLY when the session key actually changes (new session/deck/age)
+  const lastSessionKeyRef = useRef<string>(sessionKey);
+  useEffect(() => {
+    if (lastSessionKeyRef.current !== sessionKey) {
+      lastSessionKeyRef.current = sessionKey;
+      setIndex(0);
+    }
+  }, [sessionKey]);
   const [showGuidance, setShowGuidance] = useState(false);
   const [selectedOption, setSelectedOption] = useState<string | null>(null);
   const [discussed, setDiscussed] = useState<Set<string>>(new Set());
@@ -251,16 +248,18 @@ const PlaySession = () => {
     // Stop any active TTS playback
     if (activeAudio) {
       activeAudio.pause();
-      URL.revokeObjectURL(activeAudio.src);
+      try { URL.revokeObjectURL(activeAudio.src); } catch { /* not a blob URL */ }
       setActiveAudio(null);
       setIsReadingAloud(false);
     }
-    speechSynthesis.cancel();
+    if (typeof window !== 'undefined' && 'speechSynthesis' in window) {
+      window.speechSynthesis.cancel();
+    }
 
-    // Award mission XP before advancing (whenever an option was selected)
-    if (selectedOption !== null) finishCurrentMission();
+    const isLast = index + 1 >= sessionCards.length;
 
-    if (index + 1 >= sessionCards.length) {
+    // Advance UI FIRST so progression-state updates can never stomp on the index change.
+    if (isLast) {
       setSessionDone(true);
       setShowConfetti(true);
     } else {
@@ -271,6 +270,9 @@ const PlaySession = () => {
       setCustomAnswerSubmitted(false);
       setShowLevelUp(false);
     }
+
+    // Then award mission XP for the card we just left
+    if (selectedOption !== null) finishCurrentMission();
   }, [index, sessionCards.length, selectedOption, finishCurrentMission, activeAudio]);
 
   const handleSelectOption = (label: string) => {
@@ -861,7 +863,16 @@ const PlaySession = () => {
                   >
                     <div className={`flex h-12 w-12 items-center justify-center rounded-xl ${s.color} shadow-md`}>
                       <span className="text-2xl">{s.emoji}</span>
-          </div>
+                    </div>
+                    <span className="text-xs font-bold text-card-foreground">{s.name}</span>
+                  </motion.div>
+                ))}
+              </div>
+              <Link to="/stickers" className="mt-3 inline-block text-xs font-bold text-primary underline">
+                View Collection →
+              </Link>
+            </motion.div>
+          )}
 
           {/* Adult-only: Wow-Me responses review */}
           {getSessionResponses(sessionIdRef.current).length > 0 && (
@@ -880,15 +891,6 @@ const PlaySession = () => {
                 ))}
               </div>
             </AdultGate>
-          )}
-                    <span className="text-xs font-bold text-card-foreground">{s.name}</span>
-                  </motion.div>
-                ))}
-              </div>
-              <Link to="/stickers" className="mt-3 inline-block text-xs font-bold text-primary underline">
-                View Collection →
-              </Link>
-            </motion.div>
           )}
 
           <div className="space-y-2 rounded-2xl border bg-card p-4 text-left">
@@ -1094,29 +1096,42 @@ const PlaySession = () => {
                 const isSelected = selectedOption === NONE_LABEL;
                 return (
                   <>
-                    <button
-                      onClick={() => handleSelectOption(NONE_LABEL)}
+                    <motion.button
+                      onClick={() => {
+                        handleSelectOption(NONE_LABEL);
+                        // Scroll the textarea into view on the next frame
+                        setTimeout(() => {
+                          document.getElementById('wow-me-textarea')?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                        }, 80);
+                      }}
                       disabled={showGuidance}
-                      className={`w-full rounded-xl border p-4 text-left transition-all ${
+                      animate={isSelected && !customAnswerSubmitted ? { scale: [1, 1.04, 1] } : {}}
+                      transition={{ duration: 0.5, repeat: isSelected && !customAnswerSubmitted ? Infinity : 0, repeatDelay: 0.8 }}
+                      className={`w-full rounded-xl border-2 p-4 text-left transition-all ${
                         showGuidance && isSelected && customAnswerSubmitted ? 'border-primary bg-primary/10 ring-2 ring-primary/30' :
                         showGuidance && isSelected ? 'border-caution bg-caution/5' :
-                        isSelected ? 'border-primary bg-primary/5' :
-                        'card-edge-lit bg-card hover:border-gold/30'
+                        isSelected ? 'border-primary bg-primary/10 ring-2 ring-primary/30 shadow-lg' :
+                        'border-border card-edge-lit bg-card hover:border-gold/30'
                       }`}
                     >
                       <span className="mr-2 inline-flex h-7 w-7 items-center justify-center rounded-full bg-gradient-to-br from-primary to-accent text-sm font-bold text-primary-foreground">
                         ✨
                       </span>
-                      <span className="font-semibold text-card-foreground">None of the above — I'm going to wow you with my answer!</span>
+                      <span className="font-semibold text-card-foreground">
+                        {isSelected && !customAnswerSubmitted
+                          ? "Your turn — tell us your idea below ↓"
+                          : "None of the above — I'm going to wow you with my answer!"}
+                      </span>
                       {showGuidance && isSelected && customAnswerSubmitted && (
                         <span className="ml-2 inline-flex items-center gap-1 rounded-full bg-primary/20 px-2 py-0.5 text-xs font-bold text-primary">
                           ✨ +1 Bonus
                         </span>
                       )}
-                    </button>
+                    </motion.button>
                     {/* Custom answer input */}
                     {isSelected && !showGuidance && (
                       <motion.div
+                        id="wow-me-textarea"
                         initial={{ opacity: 0, height: 0 }}
                         animate={{ opacity: 1, height: 'auto' }}
                         className="rounded-xl border-2 border-primary/40 bg-primary/5 p-4 space-y-3 shadow-sm"
@@ -1187,21 +1202,25 @@ const PlaySession = () => {
                   animate={{ opacity: 1, height: 'auto' }}
                   className="space-y-3"
                 >
-                  {/* Demerit warning — use scenario-specific reasoning */}
-                  {activeMode === 'quiz' && selectedOption && card.worst_option === selectedOption && (
-                    <motion.div
-                      initial={{ scale: 0.9, opacity: 0 }}
-                      animate={{ scale: 1, opacity: 1 }}
-                      className="rounded-2xl border-2 border-destructive bg-destructive/10 p-5"
-                    >
-                      <p className="mb-1 text-sm font-bold text-destructive">⚠️ Demerit Point (-1) — here's why</p>
-                      <p className="text-sm text-card-foreground">
-                        {card.why_text
-                          ? `In this sitch, that's the riskiest move. ${card.why_text}`
-                          : 'This was the most dangerous choice in this scenario. Let\'s look at the safer move.'}
-                      </p>
-                    </motion.div>
-                  )}
+                  {/* Demerit warning — references the actual choice + scenario */}
+                  {activeMode === 'quiz' && selectedOption && card.worst_option === selectedOption && (() => {
+                    const chosen = card.options.find(o => o.label === selectedOption);
+                    return (
+                      <motion.div
+                        initial={{ scale: 0.9, opacity: 0 }}
+                        animate={{ scale: 1, opacity: 1 }}
+                        className="rounded-2xl border-2 border-destructive bg-destructive/10 p-5"
+                      >
+                        <p className="mb-1 text-sm font-bold text-destructive">⚠️ Demerit Point (-1) — here's why</p>
+                        {chosen && (
+                          <p className="mb-2 text-xs italic text-muted-foreground">You chose: "{chosen.text}"</p>
+                        )}
+                        <p className="text-sm text-card-foreground">
+                          In this sitch, that's the riskiest move.{card.why_text ? ` ${card.why_text}` : ''}
+                        </p>
+                      </motion.div>
+                    );
+                  })()}
                   {/* Bonus acknowledgment */}
                   {activeMode === 'quiz' && selectedOption === NONE_LABEL && customAnswerSubmitted && (
                     <motion.div

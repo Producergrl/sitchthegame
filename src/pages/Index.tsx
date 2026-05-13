@@ -41,7 +41,7 @@ const particles = Array.from({ length: 22 }, (_, i) => ({
 /* ── nav items ── */
 const navItems = [
   { title: 'Mission Packs', desc: 'Explore all decks', to: '/decks', emoji: '📦' },
-  { title: 'Sticker Album', desc: 'Your collection', to: '/stickers', emoji: '⭐' },
+  { title: 'Profile', desc: 'Stickers & level', to: '/stickers', emoji: '⭐' },
   { title: 'Safety Hub', desc: 'Help & resources', to: '/resources', emoji: '💙' },
 ];
 

@@ -177,10 +177,49 @@ const practicePhraseFor = (scenario: string, age: AgeBand) => {
   return 'I\'m not comfortable with that. I\'m getting help.';
 };
 
-const reflectionPromptsFor = (age: AgeBand): string[] => {
-  if (age === '4-6') return ['What did your tummy feel like?', 'Who is your safe grown-up to tell?'];
-  if (age === '7-9') return ['Who is the best trusted adult to tell first?', 'What is one safe boundary you can set?'];
-  return ['What\'s the safest next step right now?', 'Who can support you without making it worse?'];
+const reflectionPromptsFor = (age: AgeBand, scenario = ''): string[] => {
+  const s = scenario.toLowerCase();
+  const ageBaseline =
+    age === '4-6' ? 'Who is your safe grown-up to tell?' :
+    age === '7-9' ? 'Who is the best trusted adult to tell first?' :
+    'Who can support you without making it worse?';
+
+  // Pick ONE scenario-specific opener based on keywords
+  let specific = '';
+  if (s.includes('private parts') || s.includes('touch') || s.includes('hug') || s.includes('tickle') || s.includes('lap') || s.includes('bottom') || s.includes('boundary'))
+    specific = 'What words could you use to make someone stop?';
+  else if (s.includes('secret') || s.includes('just between'))
+    specific = 'How do you know if a secret is the bad kind that should be told?';
+  else if (s.includes('online') || s.includes('text') || s.includes('group chat') || s.includes('social media') || s.includes('message') || s.includes('hack'))
+    specific = 'What clue in the message would make you stop and check with an adult?';
+  else if (s.includes('photo') || s.includes('picture') || s.includes('nude') || s.includes('personal pic'))
+    specific = 'Why is a photo so hard to take back once you send it?';
+  else if (s.includes('grooming') || s.includes('mature') || s.includes('favorite') || s.includes('special treatment') || s.includes('isolat'))
+    specific = 'Why might an adult try to make you feel "special" or different from your friends?';
+  else if (s.includes('vape') || s.includes('alcohol') || s.includes('drugs') || s.includes('pills') || s.includes('weed') || s.includes('smok'))
+    specific = 'What could you say to a friend without making it weird?';
+  else if (s.includes('weapon'))
+    specific = 'Where is the safest place you could go right now?';
+  else if (s.includes('end their life') || s.includes('want to die') || s.includes('self-harm') || s.includes('unconscious'))
+    specific = 'Who is one adult you could call right this minute?';
+  else if (s.includes('bully') || s.includes('mean') || s.includes('makes fun'))
+    specific = 'What\'s the difference between telling and tattling here?';
+  else if (s.includes('lost') || s.includes("can't find") || s.includes("can\u2019t find"))
+    specific = 'What would help an adult find you faster?';
+  else if (s.includes('candy') || s.includes('car') || s.includes('dog') || s.includes('follow') || s.includes('truck'))
+    specific = 'What is your "no, I\'m going to my adult" plan?';
+  else if (s.includes('sleepover'))
+    specific = 'What\'s our code word if you need to come home, no questions asked?';
+  else if (s.includes('pressure') || s.includes('dare'))
+    specific = 'What does it feel like in your body when something feels wrong?';
+  else if (s.includes('package') || s.includes('hold') || s.includes('hide'))
+    specific = 'Why might someone want a kid to hold something for them?';
+  else if (s.includes('instinct') || s.includes('uh-oh') || s.includes('gut'))
+    specific = 'When was the last time your gut told you something was off?';
+  else
+    specific = 'Has anything like this ever happened to you, or to someone you know?';
+
+  return [specific, ageBaseline];
 };
 
 const deckFor_4_6 = (scenario: string) => {
@@ -284,8 +323,8 @@ const buildCards = (age: AgeBand, deckFn: (scenario: string) => string, scenario
       guidance_text: guidanceFor(scenario),
       why_text: whyFor(scenario),
       practice_phrase: data.practice_phrase || practicePhraseFor(scenario, age),
-      help_prompt: reflectionPromptsFor(age).join(' '),
-      reflection_prompts: reflectionPromptsFor(age),
+      help_prompt: reflectionPromptsFor(age, scenario).join(' '),
+      reflection_prompts: reflectionPromptsFor(age, scenario),
       difficulty: difficultyFor(scenario),
       age_band: age,
       tags: tagsFor(scenario),
