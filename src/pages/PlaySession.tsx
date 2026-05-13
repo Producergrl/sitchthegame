@@ -248,16 +248,18 @@ const PlaySession = () => {
     // Stop any active TTS playback
     if (activeAudio) {
       activeAudio.pause();
-      URL.revokeObjectURL(activeAudio.src);
+      try { URL.revokeObjectURL(activeAudio.src); } catch { /* not a blob URL */ }
       setActiveAudio(null);
       setIsReadingAloud(false);
     }
-    speechSynthesis.cancel();
+    if (typeof window !== 'undefined' && 'speechSynthesis' in window) {
+      window.speechSynthesis.cancel();
+    }
 
-    // Award mission XP before advancing (whenever an option was selected)
-    if (selectedOption !== null) finishCurrentMission();
+    const isLast = index + 1 >= sessionCards.length;
 
-    if (index + 1 >= sessionCards.length) {
+    // Advance UI FIRST so progression-state updates can never stomp on the index change.
+    if (isLast) {
       setSessionDone(true);
       setShowConfetti(true);
     } else {
@@ -268,6 +270,9 @@ const PlaySession = () => {
       setCustomAnswerSubmitted(false);
       setShowLevelUp(false);
     }
+
+    // Then award mission XP for the card we just left
+    if (selectedOption !== null) finishCurrentMission();
   }, [index, sessionCards.length, selectedOption, finishCurrentMission, activeAudio]);
 
   const handleSelectOption = (label: string) => {
