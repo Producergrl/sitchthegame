@@ -863,7 +863,16 @@ const PlaySession = () => {
                   >
                     <div className={`flex h-12 w-12 items-center justify-center rounded-xl ${s.color} shadow-md`}>
                       <span className="text-2xl">{s.emoji}</span>
-          </div>
+                    </div>
+                    <span className="text-xs font-bold text-card-foreground">{s.name}</span>
+                  </motion.div>
+                ))}
+              </div>
+              <Link to="/stickers" className="mt-3 inline-block text-xs font-bold text-primary underline">
+                View Collection →
+              </Link>
+            </motion.div>
+          )}
 
           {/* Adult-only: Wow-Me responses review */}
           {getSessionResponses(sessionIdRef.current).length > 0 && (
@@ -882,15 +891,6 @@ const PlaySession = () => {
                 ))}
               </div>
             </AdultGate>
-          )}
-                    <span className="text-xs font-bold text-card-foreground">{s.name}</span>
-                  </motion.div>
-                ))}
-              </div>
-              <Link to="/stickers" className="mt-3 inline-block text-xs font-bold text-primary underline">
-                View Collection →
-              </Link>
-            </motion.div>
           )}
 
           <div className="space-y-2 rounded-2xl border bg-card p-4 text-left">
