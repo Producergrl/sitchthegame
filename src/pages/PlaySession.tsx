@@ -1096,29 +1096,42 @@ const PlaySession = () => {
                 const isSelected = selectedOption === NONE_LABEL;
                 return (
                   <>
-                    <button
-                      onClick={() => handleSelectOption(NONE_LABEL)}
+                    <motion.button
+                      onClick={() => {
+                        handleSelectOption(NONE_LABEL);
+                        // Scroll the textarea into view on the next frame
+                        setTimeout(() => {
+                          document.getElementById('wow-me-textarea')?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                        }, 80);
+                      }}
                       disabled={showGuidance}
-                      className={`w-full rounded-xl border p-4 text-left transition-all ${
+                      animate={isSelected && !customAnswerSubmitted ? { scale: [1, 1.04, 1] } : {}}
+                      transition={{ duration: 0.5, repeat: isSelected && !customAnswerSubmitted ? Infinity : 0, repeatDelay: 0.8 }}
+                      className={`w-full rounded-xl border-2 p-4 text-left transition-all ${
                         showGuidance && isSelected && customAnswerSubmitted ? 'border-primary bg-primary/10 ring-2 ring-primary/30' :
                         showGuidance && isSelected ? 'border-caution bg-caution/5' :
-                        isSelected ? 'border-primary bg-primary/5' :
-                        'card-edge-lit bg-card hover:border-gold/30'
+                        isSelected ? 'border-primary bg-primary/10 ring-2 ring-primary/30 shadow-lg' :
+                        'border-border card-edge-lit bg-card hover:border-gold/30'
                       }`}
                     >
                       <span className="mr-2 inline-flex h-7 w-7 items-center justify-center rounded-full bg-gradient-to-br from-primary to-accent text-sm font-bold text-primary-foreground">
                         ✨
                       </span>
-                      <span className="font-semibold text-card-foreground">None of the above — I'm going to wow you with my answer!</span>
+                      <span className="font-semibold text-card-foreground">
+                        {isSelected && !customAnswerSubmitted
+                          ? "Your turn — tell us your idea below ↓"
+                          : "None of the above — I'm going to wow you with my answer!"}
+                      </span>
                       {showGuidance && isSelected && customAnswerSubmitted && (
                         <span className="ml-2 inline-flex items-center gap-1 rounded-full bg-primary/20 px-2 py-0.5 text-xs font-bold text-primary">
                           ✨ +1 Bonus
                         </span>
                       )}
-                    </button>
+                    </motion.button>
                     {/* Custom answer input */}
                     {isSelected && !showGuidance && (
                       <motion.div
+                        id="wow-me-textarea"
                         initial={{ opacity: 0, height: 0 }}
                         animate={{ opacity: 1, height: 'auto' }}
                         className="rounded-xl border-2 border-primary/40 bg-primary/5 p-4 space-y-3 shadow-sm"
