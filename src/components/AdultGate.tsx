@@ -62,17 +62,35 @@ const AdultGate = ({ children, title = 'Adults Only', description = 'This sectio
             onTouchStart={startHold}
             onTouchEnd={endHold}
             onTouchCancel={endHold}
-            className="relative w-full select-none overflow-hidden rounded-xl border-2 border-primary bg-primary/5 px-6 py-4 text-sm font-bold text-primary transition-colors active:bg-primary/10 min-h-[56px]"
+            className="relative w-full select-none overflow-hidden rounded-xl border-2 border-primary bg-primary/5 px-6 py-4 text-sm font-bold text-primary transition-colors active:bg-primary/10 min-h-[64px] focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-primary/30"
+            aria-label={`Press and hold for ${HOLD_DURATION_MS / 1000} seconds to confirm you are an adult`}
           >
-            {/* Progress fill — bigger and more obvious */}
+            {/* Progress fill — primer width so it's visible immediately */}
             <motion.div
               className="absolute inset-0 bg-primary"
               style={{ originX: 0 }}
-              animate={{ scaleX: progress }}
+              animate={{ scaleX: Math.max(progress, progress > 0 ? 0.04 : 0) }}
               transition={{ duration: 0.03 }}
             />
-            <span className="relative z-10" style={{ color: progress > 0.5 ? 'white' : undefined }}>
-              {progress >= 1 ? '✓ Unlocked!' : progress > 0 ? `Keep holding… ${Math.round(progress * 100)}%` : 'Press & hold to continue'}
+            {/* Pulsing ring while holding */}
+            {progress > 0 && progress < 1 && (
+              <motion.div
+                className="absolute inset-0 rounded-xl border-4 border-primary/60 pointer-events-none"
+                animate={{ opacity: [0.4, 1, 0.4], scale: [1, 1.02, 1] }}
+                transition={{ duration: 0.8, repeat: Infinity }}
+              />
+            )}
+            <span className="relative z-10 inline-flex items-center gap-2" style={{ color: progress > 0.5 ? 'white' : undefined }}>
+              {progress >= 1 ? (
+                <>✓ Unlocked!</>
+              ) : progress > 0 ? (
+                <>
+                  <span className="inline-block h-2 w-2 animate-pulse rounded-full bg-current" />
+                  Keep holding… {Math.round(progress * 100)}%
+                </>
+              ) : (
+                <>👆 Press &amp; hold to continue</>
+              )}
             </span>
           </button>
           <p className="mt-2 text-xs text-muted-foreground">
