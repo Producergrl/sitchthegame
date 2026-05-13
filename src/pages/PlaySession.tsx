@@ -1202,21 +1202,25 @@ const PlaySession = () => {
                   animate={{ opacity: 1, height: 'auto' }}
                   className="space-y-3"
                 >
-                  {/* Demerit warning — use scenario-specific reasoning */}
-                  {activeMode === 'quiz' && selectedOption && card.worst_option === selectedOption && (
-                    <motion.div
-                      initial={{ scale: 0.9, opacity: 0 }}
-                      animate={{ scale: 1, opacity: 1 }}
-                      className="rounded-2xl border-2 border-destructive bg-destructive/10 p-5"
-                    >
-                      <p className="mb-1 text-sm font-bold text-destructive">⚠️ Demerit Point (-1) — here's why</p>
-                      <p className="text-sm text-card-foreground">
-                        {card.why_text
-                          ? `In this sitch, that's the riskiest move. ${card.why_text}`
-                          : 'This was the most dangerous choice in this scenario. Let\'s look at the safer move.'}
-                      </p>
-                    </motion.div>
-                  )}
+                  {/* Demerit warning — references the actual choice + scenario */}
+                  {activeMode === 'quiz' && selectedOption && card.worst_option === selectedOption && (() => {
+                    const chosen = card.options.find(o => o.label === selectedOption);
+                    return (
+                      <motion.div
+                        initial={{ scale: 0.9, opacity: 0 }}
+                        animate={{ scale: 1, opacity: 1 }}
+                        className="rounded-2xl border-2 border-destructive bg-destructive/10 p-5"
+                      >
+                        <p className="mb-1 text-sm font-bold text-destructive">⚠️ Demerit Point (-1) — here's why</p>
+                        {chosen && (
+                          <p className="mb-2 text-xs italic text-muted-foreground">You chose: "{chosen.text}"</p>
+                        )}
+                        <p className="text-sm text-card-foreground">
+                          In this sitch, that's the riskiest move.{card.why_text ? ` ${card.why_text}` : ''}
+                        </p>
+                      </motion.div>
+                    );
+                  })()}
                   {/* Bonus acknowledgment */}
                   {activeMode === 'quiz' && selectedOption === NONE_LABEL && customAnswerSubmitted && (
                     <motion.div
