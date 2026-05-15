@@ -1,7 +1,7 @@
 import { useState, useMemo, useCallback, useEffect, useRef } from 'react';
 import { Link, useSearchParams, useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
-import { ArrowLeft, ChevronRight, Volume2, Eye, CheckCircle2, Flag, RotateCcw, Share2, Lock, Mic, MicOff } from 'lucide-react';
+import { ArrowLeft, ChevronRight, Eye, CheckCircle2, Flag, RotateCcw, Share2, Lock, Mic, MicOff } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { cards as allCards, decks, COMPILATION_DECK_ID, getCompilationCards } from '@/data/seedData';
 import type { AgeBand, PlayStyle } from '@/types/game';
@@ -94,9 +94,6 @@ const PlaySession = () => {
   const [customAnswer, setCustomAnswer] = useState('');
   const [customAnswerSubmitted, setCustomAnswerSubmitted] = useState(false);
   const [sessionDone, setSessionDone] = useState(false);
-  const [isReadingAloud, setIsReadingAloud] = useState(false);
-  const [activeAudio, setActiveAudio] = useState<HTMLAudioElement | null>(null);
-  const preloadedAudioRef = useRef<{ text: string; audio: HTMLAudioElement | null; url: string | null; isBlobUrl: boolean }>({ text: '', audio: null, url: null, isBlobUrl: false });
 
   // Streak state
   const [streak, setStreak] = useState(0);
@@ -157,63 +154,6 @@ const PlaySession = () => {
   const card = sessionCards[index];
   const deck = card ? decks.find(d => d.id === card.deck_id) : null;
 
-  // Preload TTS audio for the current card
-  useEffect(() => {
-    if (!card) return;
-    const text = `Here's the Sitch... ${card.scenario}`;
-    if (preloadedAudioRef.current.text === text) return; // already preloading/preloaded
-
-    // Clean up previous preload
-    const prev = preloadedAudioRef.current;
-    if (prev.url && prev.isBlobUrl) URL.revokeObjectURL(prev.url);
-    preloadedAudioRef.current = { text, audio: null, url: null, isBlobUrl: false };
-
-    const controller = new AbortController();
-    (async () => {
-      try {
-        const response = await fetch(
-          `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/elevenlabs-tts`,
-          {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json',
-              apikey: import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY,
-              Authorization: `Bearer ${import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY}`,
-              'x-sitch-license': (typeof localStorage !== 'undefined' && localStorage.getItem('sitch_license_key')) || '',
-            },
-            body: JSON.stringify({ text }),
-            signal: controller.signal,
-          },
-        );
-        if (!response.ok) return;
-
-        const contentType = response.headers.get('content-type') || '';
-        let audioUrl: string;
-        let isBlobUrl = false;
-
-        if (contentType.includes('application/json')) {
-          const data = await response.json();
-          if (!data?.cachedUrl) return;
-          audioUrl = data.cachedUrl;
-        } else {
-          const blob = await response.blob();
-          audioUrl = URL.createObjectURL(blob);
-          isBlobUrl = true;
-        }
-
-        const audio = new Audio();
-        audio.preload = 'auto';
-        audio.src = audioUrl;
-        preloadedAudioRef.current = { text, audio, url: audioUrl, isBlobUrl };
-      } catch {
-        // Silently fail — handleReadAloud will fetch on demand
-      }
-    })();
-
-    return () => controller.abort();
-  }, [card]);
-
-
   const finishCurrentMission = useCallback(() => {
     if (!card) return;
     const result = completeMission(playerProgress, card.id, missionXPEarned);
@@ -245,17 +185,6 @@ const PlaySession = () => {
   }, [card, playerProgress, missionXPEarned, stickerProgress, streak]);
 
   const handleNext = useCallback(() => {
-    // Stop any active TTS playback
-    if (activeAudio) {
-      activeAudio.pause();
-      try { URL.revokeObjectURL(activeAudio.src); } catch { /* not a blob URL */ }
-      setActiveAudio(null);
-      setIsReadingAloud(false);
-    }
-    if (typeof window !== 'undefined' && 'speechSynthesis' in window) {
-      window.speechSynthesis.cancel();
-    }
-
     const isLast = index + 1 >= sessionCards.length;
 
     // Advance UI FIRST so progression-state updates can never stomp on the index change.
@@ -273,7 +202,7 @@ const PlaySession = () => {
 
     // Then award mission XP for the card we just left
     if (selectedOption !== null) finishCurrentMission();
-  }, [index, sessionCards.length, selectedOption, finishCurrentMission, activeAudio]);
+  }, [index, sessionCards.length, selectedOption, finishCurrentMission]);
 
   const handleSelectOption = (label: string) => {
     if (selectedOption !== null) return;
@@ -356,185 +285,6 @@ const PlaySession = () => {
     }
   };
 
-
-  const handleReadAloud = async () => {
-    if (!card) return;
-
-    const speakWithBrowser = (t: string, fallbackMessage?: string) => {
-      setIsReadingAloud(false);
-
-      const hasSpeechApi =
-        typeof window !== 'undefined' &&
-        'speechSynthesis' in window &&
-        'SpeechSynthesisUtterance' in window;
-
-      if (!hasSpeechApi) {
-        toast({
-          title: 'Voice unavailable',
-          description: fallbackMessage ?? 'Audio is unavailable right now. Please try again later.',
-        });
-        return;
-      }
-
-      try {
-        const utterance = new SpeechSynthesisUtterance(t);
-        utterance.rate = 0.88;
-        utterance.pitch = 1.05;
-        window.speechSynthesis.speak(utterance);
-      } catch (fallbackErr) {
-        console.error('Browser TTS fallback failed:', fallbackErr);
-        toast({
-          title: 'Voice unavailable',
-          description: fallbackMessage ?? 'Audio is unavailable right now. Please try again later.',
-        });
-      }
-    };
-
-    // Cancel any ongoing playback
-    if (activeAudio) {
-      activeAudio.pause();
-      activeAudio.currentTime = 0;
-      URL.revokeObjectURL(activeAudio.src);
-      setActiveAudio(null);
-    }
-
-    if (typeof window !== 'undefined' && 'speechSynthesis' in window) {
-      window.speechSynthesis.cancel();
-    }
-
-    const text = `Here's the Sitch... ${card.scenario}`;
-    setIsReadingAloud(true);
-
-    // Use preloaded audio if available
-    const preloaded = preloadedAudioRef.current;
-    if (preloaded.text === text && preloaded.audio && preloaded.url) {
-      const audio = preloaded.audio;
-      const isBlobUrl = preloaded.isBlobUrl;
-      setActiveAudio(audio);
-      // Clear ref so we don't reuse a played audio element
-      preloadedAudioRef.current = { text: '', audio: null, url: null, isBlobUrl: false };
-
-      audio.onended = () => {
-        if (isBlobUrl) URL.revokeObjectURL(audio.src);
-        setActiveAudio(null);
-        setIsReadingAloud(false);
-      };
-      audio.onerror = () => {
-        if (isBlobUrl) URL.revokeObjectURL(audio.src);
-        setActiveAudio(null);
-        speakWithBrowser(text, 'Failed to play generated audio.');
-      };
-
-      try {
-        await audio.play();
-      } catch {
-        speakWithBrowser(text, 'Failed to play generated audio.');
-      }
-      return;
-    }
-
-    // Fallback: fetch on demand if preload wasn't ready
-    try {
-      const response = await fetch(
-        `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/elevenlabs-tts`,
-        {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            apikey: import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY,
-            Authorization: `Bearer ${import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY}`,
-            'x-sitch-license': (typeof localStorage !== 'undefined' && localStorage.getItem('sitch_license_key')) || '',
-          },
-          body: JSON.stringify({ text }),
-        },
-      );
-
-      if (!response.ok) {
-        let details: any = null;
-        try {
-          details = await response.json();
-        } catch {
-          try {
-            await response.text();
-          } catch {
-            // ignore body parse issues
-          }
-        }
-
-        const elevenStatus = details?.elevenlabs?.status as string | undefined;
-        const elevenMessage = details?.elevenlabs?.message as string | undefined;
-
-        if (elevenStatus === 'quota_exceeded') {
-          toast({
-            title: 'Voice credits used up',
-            description: elevenMessage ?? 'Using your device voice for now.',
-          });
-          speakWithBrowser(text, 'Voice service quota is currently exceeded.');
-          return;
-        }
-
-        if (elevenStatus === 'missing_permissions') {
-          toast({
-            title: 'Voice key missing permissions',
-            description: elevenMessage ?? 'Using your device voice for now.',
-          });
-          speakWithBrowser(text, 'Voice service key permissions are incomplete.');
-          return;
-        }
-
-        if (elevenStatus === 'rate_limited') {
-          toast({
-            title: 'Voice service busy',
-            description: elevenMessage ?? 'Using your device voice for now.',
-          });
-          speakWithBrowser(text, 'Voice service is temporarily rate-limited.');
-          return;
-        }
-
-        console.error('TTS non-OK response:', { status: response.status, details });
-        speakWithBrowser(text, 'Voice service is temporarily unavailable.');
-        return;
-      }
-
-      const contentType = response.headers.get('content-type') || '';
-      let audioUrl: string;
-      let isBlobUrl = false;
-
-      if (contentType.includes('application/json')) {
-        const data = await response.json();
-        if (!data?.cachedUrl || typeof data.cachedUrl !== 'string') {
-          console.error('Missing cachedUrl in TTS JSON response:', data);
-          speakWithBrowser(text, 'Voice cache was unavailable.');
-          return;
-        }
-        audioUrl = data.cachedUrl;
-      } else {
-        const audioBlob = await response.blob();
-        audioUrl = URL.createObjectURL(audioBlob);
-        isBlobUrl = true;
-      }
-
-      const audio = new Audio(audioUrl);
-      setActiveAudio(audio);
-
-      audio.onended = () => {
-        if (isBlobUrl) URL.revokeObjectURL(audioUrl);
-        setActiveAudio(null);
-        setIsReadingAloud(false);
-      };
-
-      audio.onerror = () => {
-        if (isBlobUrl) URL.revokeObjectURL(audioUrl);
-        setActiveAudio(null);
-        speakWithBrowser(text, 'Failed to play generated audio.');
-      };
-
-      await audio.play();
-    } catch (err) {
-      console.error('ElevenLabs TTS error, falling back to browser voice:', err);
-      speakWithBrowser(text, 'Voice service is temporarily unavailable.');
-    }
-  };
 
   const toggleDiscussed = () => {
     if (!card) return;
@@ -1032,9 +782,6 @@ const PlaySession = () => {
                   </p>
                 </>
               )}
-              <Button variant="ghost" size="sm" onClick={handleReadAloud} disabled={isReadingAloud} className="mt-3 gap-1.5 text-primary">
-                <Volume2 className={`h-4 w-4 ${isReadingAloud ? 'animate-pulse' : ''}`} /> {isReadingAloud ? 'Speaking…' : 'Read Aloud'}
-              </Button>
             </div>
 
             {/* Options */}
