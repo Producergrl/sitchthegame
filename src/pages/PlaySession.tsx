@@ -900,14 +900,15 @@ const PlaySession = () => {
                             <button
                               type="button"
                               onClick={toggleSpeechToText}
-                              aria-label={isListening ? 'Stop recording' : 'Speak your answer'}
-                              className={`absolute right-2 top-2 rounded-full p-2 transition-all ${
+                              aria-label={isListening ? 'Stop recording your answer' : 'Speak your answer with the microphone'}
+                              aria-pressed={isListening}
+                              className={`absolute right-2 top-2 flex min-h-[44px] min-w-[44px] items-center justify-center rounded-full transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary ${
                                 isListening
                                   ? 'bg-destructive text-destructive-foreground animate-pulse'
                                   : 'bg-primary/10 text-primary hover:bg-primary/20'
                               }`}
                             >
-                              {isListening ? <MicOff className="h-4 w-4" /> : <Mic className="h-4 w-4" />}
+                              {isListening ? <MicOff className="h-5 w-5" /> : <Mic className="h-5 w-5" />}
                             </button>
                           )}
                         </div>
