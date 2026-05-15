@@ -43,7 +43,7 @@ const UnlockGate = ({ children }: UnlockGateProps) => {
       if (fnError) throw fnError;
 
       if (data?.valid) {
-        // Persist the license so backend calls (e.g. TTS) can re-authenticate server-side
+        // Persist the license so backend calls can re-authenticate server-side
         safeSetItem('sitch_license_key', trimmed);
         unlock();
       } else {
