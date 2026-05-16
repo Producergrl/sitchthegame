@@ -1,0 +1,27 @@
+name: No TTS Regression
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+jobs:
+  no-tts-regression:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Install ripgrep
+        run: sudo apt-get update && sudo apt-get install -y ripgrep
+
+      - name: Setup Bun
+        uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: latest
+
+      - name: Install dependencies
+        run: bun install --frozen-lockfile
+
+      - name: Run no-TTS regression test
+        run: bunx vitest run src/test/noTtsRegression.test.ts
