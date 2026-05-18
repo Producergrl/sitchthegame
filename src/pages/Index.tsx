@@ -173,6 +173,24 @@ const Index = () => {
             </Link>
           </motion.div>
 
+          {/* New-user helper link */}
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ delay: 1.55, duration: 0.5 }}
+            className="mt-3"
+          >
+            <Link
+              to="/how-to-play"
+              className="inline-flex items-center gap-1.5 rounded-full px-3 py-1.5 text-xs font-bold uppercase tracking-wider text-[#FEF3D0] underline-offset-4 hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#FDB913] min-h-[44px]"
+              style={{ textShadow: '0 2px 8px hsl(10 70% 12% / 0.55)' }}
+              aria-label="New here? Read the How to Play guide"
+            >
+              <BookOpen className="h-3.5 w-3.5" />
+              New here? How to Play →
+            </Link>
+          </motion.div>
+
           {/* ── Nav trio: all logo-blue, Safety Hub enlarged ── */}
           <motion.div
             initial={{ opacity: 0, y: 12 }}
