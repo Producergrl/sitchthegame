@@ -41,7 +41,7 @@ const StickerCollection = () => {
               </Button>
             </Link>
             <div>
-              <h1 className="text-2xl font-black">Sticker Collection</h1>
+              <h1 className="text-2xl font-black">Profile</h1>
               <p className="text-sm text-white/70">{earned.length} / {STICKERS.length} collected</p>
             </div>
           </div>
