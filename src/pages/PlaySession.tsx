@@ -184,25 +184,25 @@ const PlaySession = () => {
     setMissionXPEarned(0);
   }, [card, playerProgress, missionXPEarned, stickerProgress, streak]);
 
-  const handleNext = useCallback(() => {
+  const handleNext = () => {
     const isLast = index + 1 >= sessionCards.length;
-
-    // Advance UI FIRST so progression-state updates can never stomp on the index change.
+    // Award XP for the card we're leaving (uses current `card`)
+    if (selectedOption !== null) {
+      try { finishCurrentMission(); } catch (e) { console.error('finishCurrentMission failed', e); }
+    }
     if (isLast) {
       setSessionDone(true);
       setShowConfetti(true);
-    } else {
-      setIndex(i => i + 1);
-      setShowGuidance(false);
-      setSelectedOption(null);
-      setCustomAnswer('');
-      setCustomAnswerSubmitted(false);
-      setShowLevelUp(false);
+      return;
     }
-
-    // Then award mission XP for the card we just left
-    if (selectedOption !== null) finishCurrentMission();
-  }, [index, sessionCards.length, selectedOption, finishCurrentMission]);
+    setIndex(i => i + 1);
+    setShowGuidance(false);
+    setSelectedOption(null);
+    setCustomAnswer('');
+    setCustomAnswerSubmitted(false);
+    setShowLevelUp(false);
+    requestAnimationFrame(() => window.scrollTo({ top: 0, behavior: 'smooth' }));
+  };
 
   const handleSelectOption = (label: string) => {
     if (selectedOption !== null) return;
