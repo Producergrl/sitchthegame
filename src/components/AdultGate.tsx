@@ -62,46 +62,69 @@ const AdultGate = ({ children, title = 'Adults Only', description = 'This sectio
         <p className="mt-2 text-sm text-muted-foreground">{description}</p>
 
         <div className="mt-6">
-          <button
+          <motion.button
             onMouseDown={startHold}
             onMouseUp={endHold}
             onMouseLeave={endHold}
             onTouchStart={startHold}
             onTouchEnd={endHold}
             onTouchCancel={endHold}
-            className="relative w-full select-none overflow-hidden rounded-xl border-2 border-primary bg-primary/5 px-6 py-4 text-sm font-bold text-primary transition-colors active:bg-primary/10 min-h-[64px] focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-primary/30"
+            animate={progress > 0 && progress < 1 ? { scale: [1, 1.02, 1] } : { scale: 1 }}
+            transition={{ duration: 0.45, repeat: progress > 0 && progress < 1 ? Infinity : 0 }}
+            className="relative w-full select-none overflow-hidden rounded-xl border-2 border-primary bg-primary/5 px-6 py-5 text-sm font-bold text-primary transition-colors active:bg-primary/10 min-h-[68px] focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-primary/30 touch-none"
             aria-label={`Press and hold for ${HOLD_DURATION_MS / 1000} seconds to confirm you are an adult`}
+            style={{
+              boxShadow: progress > 0
+                ? `0 0 0 ${Math.round(progress * 12)}px hsl(var(--primary) / ${0.15 + progress * 0.25})`
+                : '0 0 0 0 hsl(var(--primary) / 0)',
+            }}
           >
-            {/* Progress fill — primer width so it's visible immediately */}
+            {/* Progress fill */}
             <motion.div
-              className="absolute inset-0 bg-primary"
-              style={{ originX: 0 }}
-              animate={{ scaleX: Math.max(progress, progress > 0 ? 0.04 : 0) }}
-              transition={{ duration: 0.03 }}
+              className="absolute inset-y-0 left-0 bg-primary"
+              animate={{ width: `${Math.max(progress * 100, progress > 0 ? 4 : 0)}%` }}
+              transition={{ duration: 0.05, ease: 'linear' }}
             />
-            {/* Pulsing ring while holding */}
+            {/* Shimmer sweep while holding */}
             {progress > 0 && progress < 1 && (
               <motion.div
-                className="absolute inset-0 rounded-xl border-4 border-primary/60 pointer-events-none"
-                animate={{ opacity: [0.4, 1, 0.4], scale: [1, 1.02, 1] }}
-                transition={{ duration: 0.8, repeat: Infinity }}
+                className="absolute inset-y-0 w-12 pointer-events-none"
+                style={{ background: 'linear-gradient(90deg, transparent, hsl(0 0% 100% / 0.5), transparent)' }}
+                animate={{ x: ['-100%', '400%'] }}
+                transition={{ duration: 0.9, repeat: Infinity, ease: 'linear' }}
               />
             )}
-            <span className="relative z-10 inline-flex items-center gap-2" style={{ color: progress > 0.5 ? 'white' : undefined }}>
+            <span
+              className="relative z-10 inline-flex items-center justify-center gap-2 w-full"
+              style={{ color: progress > 0.5 ? 'white' : undefined }}
+            >
               {progress >= 1 ? (
                 <>✓ Unlocked!</>
               ) : progress > 0 ? (
                 <>
-                  <span className="inline-block h-2 w-2 animate-pulse rounded-full bg-current" />
+                  <motion.span
+                    className="inline-block h-2.5 w-2.5 rounded-full bg-current"
+                    animate={{ scale: [1, 1.4, 1], opacity: [0.7, 1, 0.7] }}
+                    transition={{ duration: 0.6, repeat: Infinity }}
+                  />
                   Keep holding… {Math.round(progress * 100)}%
                 </>
               ) : (
                 <>👆 Press &amp; hold to continue</>
               )}
             </span>
-          </button>
+          </motion.button>
+          {/* Tick marks under the bar */}
+          <div className="mt-2 flex justify-between px-1" aria-hidden>
+            {[0.25, 0.5, 0.75, 1].map(t => (
+              <span
+                key={t}
+                className={`h-1 w-6 rounded-full transition-colors ${progress >= t ? 'bg-primary' : 'bg-primary/15'}`}
+              />
+            ))}
+          </div>
           <p className="mt-2 text-xs text-muted-foreground">
-            Hold the button for {HOLD_DURATION_MS / 1000}s to confirm you're an adult
+            Hold for {HOLD_DURATION_MS / 1000}s to confirm you're an adult
           </p>
         </div>
 
