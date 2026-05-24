@@ -19,9 +19,11 @@ const item = {
 
 const StickerCollection = () => {
   const [progress, setProgress] = useState<StickerProgress>(loadStickerProgress);
+  const [playerProgress, setPlayerProgress] = useState<PlayerProgress>(loadProgress);
 
   useEffect(() => {
     setProgress(loadStickerProgress());
+    setPlayerProgress(loadProgress());
   }, []);
 
   const earned = STICKERS.filter(s => progress.earnedIds.includes(s.id));
