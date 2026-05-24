@@ -926,9 +926,26 @@ const PlaySession = () => {
                               <CheckCircle2 className="h-4 w-4" /> Submit Answer
                             </Button>
                           ) : (
-                            <span className="text-sm font-bold text-safe">✅ Answer submitted!</span>
+                            <motion.span
+                              initial={{ scale: 0.6, opacity: 0 }}
+                              animate={{ scale: 1, opacity: 1 }}
+                              transition={{ type: 'spring', bounce: 0.55 }}
+                              className="text-sm font-bold text-safe"
+                            >
+                              ✨ Nice thinking — answer locked in!
+                            </motion.span>
                           )}
                         </div>
+                        {customAnswerSubmitted && (
+                          <motion.p
+                            initial={{ opacity: 0, y: 4 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            transition={{ delay: 0.15 }}
+                            className="rounded-lg bg-primary/10 px-3 py-2 text-xs font-medium text-primary"
+                          >
+                            👇 Now tap <span className="font-black">Reveal Guidance</span> to compare your idea.
+                          </motion.p>
+                        )}
                       </motion.div>
                     )}
                   </>
