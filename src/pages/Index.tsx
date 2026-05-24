@@ -4,7 +4,7 @@ import { motion } from 'framer-motion';
 import { BookOpen, Settings, Heart, Shield, Sparkles, Sticker, Zap, ChevronDown, ChevronRight } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import ThemeToggle from '@/components/ThemeToggle';
-import MissionProgress from '@/components/MissionProgress';
+// MissionProgress moved to /stickers (Profile tab)
 import { loadProgress, getCurrentLevel, type PlayerProgress } from '@/lib/progression';
 import sitchLogoV2 from '@/assets/sitch-logo-v2.png';
 
