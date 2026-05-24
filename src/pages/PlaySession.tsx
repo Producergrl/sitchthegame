@@ -184,25 +184,25 @@ const PlaySession = () => {
     setMissionXPEarned(0);
   }, [card, playerProgress, missionXPEarned, stickerProgress, streak]);
 
-  const handleNext = useCallback(() => {
+  const handleNext = () => {
     const isLast = index + 1 >= sessionCards.length;
-
-    // Advance UI FIRST so progression-state updates can never stomp on the index change.
+    // Award XP for the card we're leaving (uses current `card`)
+    if (selectedOption !== null) {
+      try { finishCurrentMission(); } catch (e) { console.error('finishCurrentMission failed', e); }
+    }
     if (isLast) {
       setSessionDone(true);
       setShowConfetti(true);
-    } else {
-      setIndex(i => i + 1);
-      setShowGuidance(false);
-      setSelectedOption(null);
-      setCustomAnswer('');
-      setCustomAnswerSubmitted(false);
-      setShowLevelUp(false);
+      return;
     }
-
-    // Then award mission XP for the card we just left
-    if (selectedOption !== null) finishCurrentMission();
-  }, [index, sessionCards.length, selectedOption, finishCurrentMission]);
+    setIndex(i => i + 1);
+    setShowGuidance(false);
+    setSelectedOption(null);
+    setCustomAnswer('');
+    setCustomAnswerSubmitted(false);
+    setShowLevelUp(false);
+    requestAnimationFrame(() => window.scrollTo({ top: 0, behavior: 'smooth' }));
+  };
 
   const handleSelectOption = (label: string) => {
     if (selectedOption !== null) return;
@@ -926,9 +926,26 @@ const PlaySession = () => {
                               <CheckCircle2 className="h-4 w-4" /> Submit Answer
                             </Button>
                           ) : (
-                            <span className="text-sm font-bold text-safe">✅ Answer submitted!</span>
+                            <motion.span
+                              initial={{ scale: 0.6, opacity: 0 }}
+                              animate={{ scale: 1, opacity: 1 }}
+                              transition={{ type: 'spring', bounce: 0.55 }}
+                              className="text-sm font-bold text-safe"
+                            >
+                              ✨ Nice thinking — answer locked in!
+                            </motion.span>
                           )}
                         </div>
+                        {customAnswerSubmitted && (
+                          <motion.p
+                            initial={{ opacity: 0, y: 4 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            transition={{ delay: 0.15 }}
+                            className="rounded-lg bg-primary/10 px-3 py-2 text-xs font-medium text-primary"
+                          >
+                            👇 Now tap <span className="font-black">Reveal Guidance</span> to compare your idea.
+                          </motion.p>
+                        )}
                       </motion.div>
                     )}
                   </>
@@ -1019,35 +1036,56 @@ const PlaySession = () => {
               )}
             </AnimatePresence>
 
-            {/* Actions */}
-            <div className="flex items-center gap-2">
-              <Button
-                variant="ghost"
-                size="icon"
-                onClick={toggleDiscussed}
-                aria-label={discussed.has(card.id) ? 'Discussed' : 'Mark as discussed'}
-                className={`h-11 w-11 ${discussed.has(card.id) ? 'text-safe' : 'text-muted-foreground'}`}
-              >
-                <CheckCircle2 className="h-5 w-5" />
-              </Button>
-              <Button
-                variant="ghost"
-                size="icon"
-                onClick={toggleFlagged}
-                aria-label={flagged.has(card.id) ? 'Flagged' : 'Flag for review'}
-                className={`h-11 w-11 ${flagged.has(card.id) ? 'text-destructive' : 'text-muted-foreground'}`}
-              >
-                <Flag className="h-5 w-5" />
-              </Button>
-              <div className="flex-1" />
-              <Button onClick={handleNext} size="lg" className="gap-1.5 font-bold px-6">
-                {index + 1 >= sessionCards.length ? '🎉 Finish' : 'Next Card'} <ChevronRight className="h-4 w-4" />
-              </Button>
-            </div>
+            {/* Spacer so sticky bar never covers content */}
+            <div className="h-24" aria-hidden />
           </motion.div>
         </AnimatePresence>
       </div>
+
+      {/* Sticky bottom action bar — always reachable */}
+      <div
+        className="sticky bottom-0 left-0 right-0 z-40 border-t border-border bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/80"
+        style={{ paddingBottom: 'env(safe-area-inset-bottom, 0px)' }}
+      >
+        <div className="mx-auto flex max-w-2xl items-center gap-2 px-4 py-3">
+          <Button
+            variant="ghost"
+            size="icon"
+            onClick={toggleDiscussed}
+            aria-label={discussed.has(card.id) ? 'Discussed' : 'Mark as discussed'}
+            className={`h-11 w-11 ${discussed.has(card.id) ? 'text-safe' : 'text-muted-foreground'}`}
+          >
+            <CheckCircle2 className="h-5 w-5" />
+          </Button>
+          <Button
+            variant="ghost"
+            size="icon"
+            onClick={toggleFlagged}
+            aria-label={flagged.has(card.id) ? 'Flagged' : 'Flag for review'}
+            className={`h-11 w-11 ${flagged.has(card.id) ? 'text-destructive' : 'text-muted-foreground'}`}
+          >
+            <Flag className="h-5 w-5" />
+          </Button>
+          <div className="flex-1 text-center">
+            {!selectedOption && (
+              <span className="text-[11px] font-bold uppercase tracking-wider text-muted-foreground">
+                Pick an answer ↑
+              </span>
+            )}
+          </div>
+          <Button
+            onClick={handleNext}
+            size="lg"
+            disabled={!selectedOption || (selectedOption === NONE_LABEL && !customAnswerSubmitted)}
+            className="gap-1.5 font-bold px-6 min-h-[48px] disabled:opacity-50"
+            aria-label={index + 1 >= sessionCards.length ? 'Finish session' : 'Go to next card'}
+          >
+            {index + 1 >= sessionCards.length ? '🎉 Finish' : 'Next Card'} <ChevronRight className="h-4 w-4" />
+          </Button>
+        </div>
+      </div>
       <div className="text-center py-2">
+
         <Link to="/legal" className="text-[10px] text-muted-foreground/50 hover:text-muted-foreground transition-colors">
           Terms & Privacy
         </Link>

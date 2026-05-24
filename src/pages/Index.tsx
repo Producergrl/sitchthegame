@@ -4,7 +4,7 @@ import { motion } from 'framer-motion';
 import { BookOpen, Settings, Heart, Shield, Sparkles, Sticker, Zap, ChevronDown, ChevronRight } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import ThemeToggle from '@/components/ThemeToggle';
-import MissionProgress from '@/components/MissionProgress';
+// MissionProgress moved to /stickers (Profile tab)
 import { loadProgress, getCurrentLevel, type PlayerProgress } from '@/lib/progression';
 import sitchLogoV2 from '@/assets/sitch-logo-v2.png';
 
@@ -129,7 +129,7 @@ const Index = () => {
             className="mt-5 max-w-md text-center text-sm sm:text-base font-bold leading-snug text-[#FEF3D0]"
             style={{ textShadow: '0 2px 8px hsl(10 70% 12% / 0.55)' }}
           >
-            A family safety game. Real-world scenarios — your child picks what they'd do, then you talk it through together.
+            Real-life safety scenarios. Your child chooses — then you talk it through, together.
           </motion.p>
 
           {/* CTA pair — styled as an extension of the logo plate */}
@@ -270,17 +270,9 @@ const Index = () => {
 
       {/* ═══════════ BELOW THE FOLD ═══════════ */}
       <div className="mx-auto max-w-lg px-4 py-10 space-y-5">
-        {/* Mission Progress */}
-        <motion.div
-          initial={{ opacity: 0, y: 30 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, margin: '-50px' }}
-          transition={{ duration: 0.5 }}
-        >
-          <MissionProgress progress={progress} />
-        </motion.div>
+        {/* Mission Progress (Safety Scout) lives in the Profile tab now */}
 
-        {/* Nav cards moved into the hero */}
+
 
         {/* Safety badge */}
         <motion.div

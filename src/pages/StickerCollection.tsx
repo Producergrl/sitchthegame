@@ -5,6 +5,8 @@ import { ArrowLeft, Lock } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import ThemeToggle from '@/components/ThemeToggle';
 import { STICKERS, loadStickerProgress, type StickerProgress } from '@/lib/stickers';
+import MissionProgress from '@/components/MissionProgress';
+import { loadProgress, type PlayerProgress } from '@/lib/progression';
 
 const container = {
   hidden: { opacity: 0 },
@@ -17,9 +19,11 @@ const item = {
 
 const StickerCollection = () => {
   const [progress, setProgress] = useState<StickerProgress>(loadStickerProgress);
+  const [playerProgress, setPlayerProgress] = useState<PlayerProgress>(loadProgress);
 
   useEffect(() => {
     setProgress(loadStickerProgress());
+    setPlayerProgress(loadProgress());
   }, []);
 
   const earned = STICKERS.filter(s => progress.earnedIds.includes(s.id));
@@ -37,7 +41,7 @@ const StickerCollection = () => {
               </Button>
             </Link>
             <div>
-              <h1 className="text-2xl font-black">Sticker Collection</h1>
+              <h1 className="text-2xl font-black">Profile</h1>
               <p className="text-sm text-white/70">{earned.length} / {STICKERS.length} collected</p>
             </div>
           </div>
@@ -46,7 +50,15 @@ const StickerCollection = () => {
       </div>
 
       <div className="mx-auto max-w-2xl px-4 py-6 space-y-8">
-        {/* Progress bar */}
+        {/* Safety Scout — player progress */}
+        <section>
+          <h2 className="mb-3 text-lg font-black text-foreground flex items-center gap-2">
+            🛡️ Safety Scout
+          </h2>
+          <MissionProgress progress={playerProgress} />
+        </section>
+
+        {/* Sticker progress bar */}
         <div>
           <div className="flex justify-between text-xs font-bold text-muted-foreground mb-1.5">
             <span>{earned.length} earned</span>
