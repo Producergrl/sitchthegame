@@ -129,7 +129,7 @@ const Index = () => {
             className="mt-5 max-w-md text-center text-sm sm:text-base font-bold leading-snug text-[#FEF3D0]"
             style={{ textShadow: '0 2px 8px hsl(10 70% 12% / 0.55)' }}
           >
-            A family safety game. Real-world scenarios — your child picks what they'd do, then you talk it through together.
+            Real-life safety scenarios. Your child chooses — then you talk it through, together.
           </motion.p>
 
           {/* CTA pair — styled as an extension of the logo plate */}
