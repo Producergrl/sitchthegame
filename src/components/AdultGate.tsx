@@ -19,6 +19,10 @@ const AdultGate = ({ children, title = 'Adults Only', description = 'This sectio
 
   const startHold = useCallback(() => {
     startRef.current = Date.now();
+    // Subtle haptic on supported devices
+    if (typeof navigator !== 'undefined' && 'vibrate' in navigator) {
+      try { (navigator as any).vibrate?.(15); } catch { /* noop */ }
+    }
     intervalRef.current = setInterval(() => {
       const elapsed = Date.now() - startRef.current;
       const pct = Math.min(elapsed / HOLD_DURATION_MS, 1);
@@ -26,6 +30,9 @@ const AdultGate = ({ children, title = 'Adults Only', description = 'This sectio
       if (pct >= 1) {
         clearInterval(intervalRef.current!);
         intervalRef.current = null;
+        if (typeof navigator !== 'undefined' && 'vibrate' in navigator) {
+          try { (navigator as any).vibrate?.([20, 40, 60]); } catch { /* noop */ }
+        }
         setUnlocked(true);
       }
     }, 30);
