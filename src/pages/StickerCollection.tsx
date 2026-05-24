@@ -50,7 +50,15 @@ const StickerCollection = () => {
       </div>
 
       <div className="mx-auto max-w-2xl px-4 py-6 space-y-8">
-        {/* Progress bar */}
+        {/* Safety Scout — player progress */}
+        <section>
+          <h2 className="mb-3 text-lg font-black text-foreground flex items-center gap-2">
+            🛡️ Safety Scout
+          </h2>
+          <MissionProgress progress={playerProgress} />
+        </section>
+
+        {/* Sticker progress bar */}
         <div>
           <div className="flex justify-between text-xs font-bold text-muted-foreground mb-1.5">
             <span>{earned.length} earned</span>
