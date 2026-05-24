@@ -5,6 +5,8 @@ import { ArrowLeft, Lock } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import ThemeToggle from '@/components/ThemeToggle';
 import { STICKERS, loadStickerProgress, type StickerProgress } from '@/lib/stickers';
+import MissionProgress from '@/components/MissionProgress';
+import { loadProgress, type PlayerProgress } from '@/lib/progression';
 
 const container = {
   hidden: { opacity: 0 },
