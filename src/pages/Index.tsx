@@ -270,17 +270,9 @@ const Index = () => {
 
       {/* ═══════════ BELOW THE FOLD ═══════════ */}
       <div className="mx-auto max-w-lg px-4 py-10 space-y-5">
-        {/* Mission Progress */}
-        <motion.div
-          initial={{ opacity: 0, y: 30 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, margin: '-50px' }}
-          transition={{ duration: 0.5 }}
-        >
-          <MissionProgress progress={progress} />
-        </motion.div>
+        {/* Mission Progress (Safety Scout) lives in the Profile tab now */}
 
-        {/* Nav cards moved into the hero */}
+
 
         {/* Safety badge */}
         <motion.div
