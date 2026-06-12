@@ -1,37 +1,100 @@
-import { useState, type FormEvent } from 'react';
+import { useEffect, useState, type FormEvent } from 'react';
 import { motion } from 'framer-motion';
 import { Shield, Lock, Loader2, ShoppingBag } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { safeGetItem, safeSetItem } from '@/lib/safeStorage';
+import { safeGetItem, safeSetItem, safeRemoveItem } from '@/lib/safeStorage';
 import { supabase } from '@/integrations/supabase/client';
 
-const STORAGE_KEY = 'sitch_unlocked';
+const LICENSE_KEY = 'sitch_license_key';
+const SESSION_TOKEN_KEY = 'sitch_session_token'; // { key, verifiedAt }
+const SESSION_TTL_MS = 24 * 60 * 60 * 1000; // 24h soft cache
 
 interface UnlockGateProps {
   children: React.ReactNode;
 }
 
+type Status = 'checking' | 'locked' | 'unlocked';
+
 const UnlockGate = ({ children }: UnlockGateProps) => {
-  const [unlocked, setUnlocked] = useState(() => safeGetItem(STORAGE_KEY) === 'true');
+  const [status, setStatus] = useState<Status>('checking');
   const [code, setCode] = useState('');
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
 
-  if (unlocked) return <>{children}</>;
+  // On mount, re-verify any stored license key against the server.
+  // The localStorage flag alone is no longer trusted — a valid key is required.
+  useEffect(() => {
+    let cancelled = false;
+    (async () => {
+      const storedKey = safeGetItem(LICENSE_KEY);
+      if (!storedKey) {
+        // Legacy: clear any stale unlock flag from older builds.
+        safeRemoveItem('sitch_unlocked');
+        if (!cancelled) setStatus('locked');
+        return;
+      }
 
-  const unlock = () => {
-    safeSetItem(STORAGE_KEY, 'true');
-    setUnlocked(true);
-  };
+      // Soft cache to avoid hitting the function on every reload.
+      try {
+        const raw = safeGetItem(SESSION_TOKEN_KEY);
+        if (raw) {
+          const parsed = JSON.parse(raw) as { key: string; verifiedAt: number };
+          if (parsed.key === storedKey && Date.now() - parsed.verifiedAt < SESSION_TTL_MS) {
+            if (!cancelled) setStatus('unlocked');
+            return;
+          }
+        }
+      } catch { /* ignore parse errors */ }
+
+      try {
+        const { data, error: fnError } = await supabase.functions.invoke('verify-license', {
+          body: { license_key: storedKey },
+        });
+        if (cancelled) return;
+        if (!fnError && data?.valid) {
+          safeSetItem(SESSION_TOKEN_KEY, JSON.stringify({ key: storedKey, verifiedAt: Date.now() }));
+          setStatus('unlocked');
+        } else {
+          safeRemoveItem(LICENSE_KEY);
+          safeRemoveItem(SESSION_TOKEN_KEY);
+          safeRemoveItem('sitch_unlocked');
+          setStatus('locked');
+        }
+      } catch {
+        // Network failure: honour a recently-cached session so users aren't locked
+        // out offline, otherwise require re-entry.
+        try {
+          const raw = safeGetItem(SESSION_TOKEN_KEY);
+          if (raw) {
+            const parsed = JSON.parse(raw) as { key: string; verifiedAt: number };
+            if (parsed.key === storedKey && Date.now() - parsed.verifiedAt < SESSION_TTL_MS) {
+              if (!cancelled) setStatus('unlocked');
+              return;
+            }
+          }
+        } catch { /* ignore */ }
+        if (!cancelled) setStatus('locked');
+      }
+    })();
+    return () => { cancelled = true; };
+  }, []);
+
+  if (status === 'checking') {
+    return (
+      <div className="flex min-h-screen items-center justify-center" style={{ background: 'linear-gradient(180deg, #FEF3D0 0%, #FFF8E7 100%)' }}>
+        <Loader2 className="h-8 w-8 animate-spin text-[#1E3A5F]" />
+      </div>
+    );
+  }
+
+  if (status === 'unlocked') return <>{children}</>;
 
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
     const trimmed = code.trim();
     if (!trimmed) return;
 
-    // All codes (including beta tester bypass codes) are validated server-side
-    // in the verify-license edge function. No bypass logic exists in the client bundle.
     setLoading(true);
     setError('');
 
@@ -43,9 +106,9 @@ const UnlockGate = ({ children }: UnlockGateProps) => {
       if (fnError) throw fnError;
 
       if (data?.valid) {
-        // Persist the license so backend calls can re-authenticate server-side
-        safeSetItem('sitch_license_key', trimmed);
-        unlock();
+        safeSetItem(LICENSE_KEY, trimmed);
+        safeSetItem(SESSION_TOKEN_KEY, JSON.stringify({ key: trimmed, verifiedAt: Date.now() }));
+        setStatus('unlocked');
       } else {
         setError(data?.error || "That code doesn't look right. Please check your Gumroad receipt and try again.");
       }
@@ -121,7 +184,6 @@ const UnlockGate = ({ children }: UnlockGateProps) => {
           target="_blank"
           rel="noopener noreferrer"
           onClick={(e) => {
-            // Force open in top-level window to avoid iframe X-Frame-Options blocks
             e.preventDefault();
             window.open('https://sitchthegame.gumroad.com/l/sitch', '_blank', 'noopener,noreferrer');
             try { window.top!.location.href = 'https://sitchthegame.gumroad.com/l/sitch'; } catch { /* cross-origin top — ignore */ }
