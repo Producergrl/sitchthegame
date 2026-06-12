@@ -294,13 +294,6 @@ const Index = () => {
           </p>
         </motion.div>
 
-        {/* Admin */}
-        <div className="text-center pb-8">
-          <Link to="/admin" className="inline-flex items-center gap-1.5 text-xs text-muted-foreground hover:text-[#1E3A5F] transition-colors">
-            <Settings className="h-3.5 w-3.5" />
-            Manage Cards
-          </Link>
-        </div>
       </div>
     </div>
   );
