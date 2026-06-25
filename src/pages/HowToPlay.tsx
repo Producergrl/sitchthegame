@@ -3,6 +3,7 @@ import { motion } from 'framer-motion';
 import { ArrowLeft, MessageCircle, HelpCircle, Theater, Sparkles } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
+import SEO from '@/components/SEO';
 
 const playModes = [
   {
@@ -34,11 +35,16 @@ const steps = [
 
 const HowToPlay = () => (
   <div className="min-h-screen bg-background text-foreground">
+    <SEO
+      title="How to Play Sitch — Family Safety Card Game"
+      description="A simple beginner guide to Sitch: pick an age band, choose a topic deck, and play one of three modes — Discussion, Quiz, or Roleplay."
+      path="/how-to-play"
+    />
     {/* Header */}
     <div className="sticky top-0 z-30 bg-background/80 backdrop-blur-md border-b border-border/40">
       <div className="max-w-3xl mx-auto flex items-center gap-3 px-4 py-3">
-        <Link to="/">
-          <Button variant="ghost" size="icon" className="rounded-full">
+        <Link to="/" aria-label="Back to home">
+          <Button variant="ghost" size="icon" aria-label="Back to home" className="rounded-full">
             <ArrowLeft className="w-5 h-5" />
           </Button>
         </Link>
@@ -46,7 +52,7 @@ const HowToPlay = () => (
       </div>
     </div>
 
-    <div className="max-w-3xl mx-auto px-4 py-8 space-y-10">
+    <main className="max-w-3xl mx-auto px-4 py-8 space-y-10">
       {/* Intro */}
       <motion.section
         initial={{ opacity: 0, y: 16 }}
@@ -120,7 +126,7 @@ const HowToPlay = () => (
           </Button>
         </Link>
       </motion.div>
-    </div>
+    </main>
   </div>
 );
 
