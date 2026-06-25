@@ -166,7 +166,7 @@ const SessionSetup = () => {
             Start Session ({selectedDecks.length} deck{selectedDecks.length !== 1 ? 's' : ''})
           </Button>
         </motion.div>
-      </div>
+      </main>
     </div>
   );
 };
