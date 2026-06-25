@@ -5,6 +5,7 @@ import { ArrowLeft, Play } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { decks, COMPILATION_DECK_ID } from '@/data/seedData';
 import type { AgeBand, PlayStyle } from '@/types/game';
+import SEO from '@/components/SEO';
 
 const ageBands: { value: AgeBand; label: string }[] = [
   { value: '4-6', label: '4–6 years' },
@@ -55,10 +56,15 @@ const SessionSetup = () => {
 
   return (
     <div className="min-h-screen" style={{ background: 'linear-gradient(180deg, #FEF3D0 0%, #FFF8E7 100%)' }} data-age-theme={ageBand}>
+      <SEO
+        title="Start a Custom Session — Sitch"
+        description="Pick your age band, play mode, and mission packs to start a custom Sitch family safety session."
+        path="/session/setup"
+      />
       <div className="hero-gradient px-4 py-6 text-primary-foreground">
         <div className="mx-auto flex max-w-2xl items-center gap-3">
-          <Link to="/">
-            <Button variant="ghost" size="icon" className="text-primary-foreground hover:bg-white/10 active:animate-btn-press">
+          <Link to="/" aria-label="Back to home">
+            <Button variant="ghost" size="icon" aria-label="Back to home" className="text-primary-foreground hover:bg-white/10 active:animate-btn-press">
               <ArrowLeft className="h-5 w-5" />
             </Button>
           </Link>
@@ -66,7 +72,7 @@ const SessionSetup = () => {
         </div>
       </div>
 
-      <div className="mx-auto max-w-2xl px-4 py-8 space-y-8">
+      <main className="mx-auto max-w-2xl px-4 py-8 space-y-8">
         {/* Age Band */}
         <motion.section initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }}>
           <h2 className="mb-3 text-lg font-bold">Age Group</h2>
