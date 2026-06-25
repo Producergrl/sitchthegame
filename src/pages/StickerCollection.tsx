@@ -4,6 +4,7 @@ import { motion } from 'framer-motion';
 import { ArrowLeft, Lock } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import ThemeToggle from '@/components/ThemeToggle';
+import SEO from '@/components/SEO';
 import { STICKERS, loadStickerProgress, type StickerProgress } from '@/lib/stickers';
 import MissionProgress from '@/components/MissionProgress';
 import { loadProgress, type PlayerProgress } from '@/lib/progression';
@@ -31,12 +32,17 @@ const StickerCollection = () => {
 
   return (
     <div className="min-h-screen bg-background">
+      <SEO
+        title="Profile & Stickers — Sitch"
+        description="Track your Sitch progress: Safety Scout level, XP, and earned mission stickers."
+        path="/stickers"
+      />
       {/* Header */}
       <div className="hero-gradient px-4 py-6 text-primary-foreground">
         <div className="mx-auto flex max-w-2xl items-center justify-between">
           <div className="flex items-center gap-3">
-            <Link to="/">
-              <Button variant="ghost" size="icon" className="text-primary-foreground hover:bg-white/10 active:animate-btn-press">
+            <Link to="/" aria-label="Back to home">
+              <Button variant="ghost" size="icon" aria-label="Back to home" className="text-primary-foreground hover:bg-white/10 active:animate-btn-press">
                 <ArrowLeft className="h-5 w-5" />
               </Button>
             </Link>
@@ -49,7 +55,7 @@ const StickerCollection = () => {
         </div>
       </div>
 
-      <div className="mx-auto max-w-2xl px-4 py-6 space-y-8">
+      <main className="mx-auto max-w-2xl px-4 py-6 space-y-8">
         {/* Safety Scout — player progress */}
         <section>
           <h2 className="mb-3 text-lg font-black text-foreground flex items-center gap-2">
@@ -146,7 +152,7 @@ const StickerCollection = () => {
             </Link>
           </div>
         )}
-      </div>
+      </main>
     </div>
   );
 };

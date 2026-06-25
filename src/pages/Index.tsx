@@ -4,6 +4,7 @@ import { motion } from 'framer-motion';
 import { BookOpen, Shield, Sparkles, Zap, ChevronDown } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import ThemeToggle from '@/components/ThemeToggle';
+import SEO from '@/components/SEO';
 // MissionProgress moved to /stickers (Profile tab)
 import { loadProgress, getCurrentLevel, type PlayerProgress } from '@/lib/progression';
 import sitchLogoV2 from '@/assets/sitch-logo-v2.png';
@@ -57,6 +58,23 @@ const Index = () => {
 
   return (
     <div className="min-h-screen overflow-x-hidden" style={{ background: 'linear-gradient(180deg, #8B1A0E 0%, #B8261A 22%, #D63A22 45%, #E87A4A 70%, #FEF3D0 100%)' }}>
+      <SEO
+        title="Sitch — Family Edition: A Child-Safety Card Game"
+        description="A premium child-safety card game of choice and consequence. Real-life scenarios kids choose — and parents talk through, together."
+        path="/"
+        jsonLd={{
+          '@context': 'https://schema.org',
+          '@type': 'Product',
+          name: 'Sitch — Family Edition',
+          description: 'Child-safety card game for families. Real-life scenarios, age-banded decks, and adult-led discussion.',
+          brand: { '@type': 'Brand', name: 'Sitch' },
+          category: 'Educational Card Game',
+          url: 'https://sitchthegame.com/',
+          image: 'https://sitchthegame.com/og-image.png',
+        }}
+      />
+      <h1 className="sr-only">Sitch — Family Edition: A Child-Safety Card Game</h1>
+      <main>
       {/* ═══════════ FULL-SCREEN HERO ═══════════ */}
       <div className="relative flex min-h-[100dvh] flex-col items-center justify-center overflow-hidden">
         {/* Deep cinematic background layers — molten red */}
@@ -295,6 +313,7 @@ const Index = () => {
         </motion.div>
 
       </div>
+      </main>
     </div>
   );
 };

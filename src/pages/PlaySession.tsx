@@ -23,6 +23,7 @@ import {
 } from '@/lib/stickers';
 import { saveWowResponse, getSessionResponses } from '@/lib/wowReview';
 import AdultGate from '@/components/AdultGate';
+import SEO from '@/components/SEO';
 
 const ageBands: { value: AgeBand; label: string }[] = [
   { value: '4-6', label: '4–6 years' },
@@ -341,17 +342,22 @@ const PlaySession = () => {
   if (!isPlaying) {
     return (
       <div className="min-h-screen bg-background" data-age-theme={setupAgeBand}>
+        <SEO
+          title="Play a Session — Sitch"
+          description="Pick an age, mode, and deck to start a Sitch family safety session."
+          path="/play"
+        />
         <div className="hero-gradient px-4 py-6 text-primary-foreground">
           <div className="mx-auto flex max-w-2xl items-center justify-between">
             <div className="flex items-center gap-3">
               {setupStep === 1 ? (
-                <Link to="/">
-                  <Button variant="ghost" size="icon" className="text-primary-foreground hover:bg-white/10 active:animate-btn-press">
+                <Link to="/" aria-label="Back to home">
+                  <Button variant="ghost" size="icon" aria-label="Back to home" className="text-primary-foreground hover:bg-white/10 active:animate-btn-press">
                     <ArrowLeft className="h-5 w-5" />
                   </Button>
                 </Link>
               ) : (
-                <Button variant="ghost" size="icon" onClick={() => setSetupStep(s => s - 1)} className="text-primary-foreground hover:bg-white/10 active:animate-btn-press">
+                <Button variant="ghost" size="icon" aria-label="Back to previous step" onClick={() => setSetupStep(s => s - 1)} className="text-primary-foreground hover:bg-white/10 active:animate-btn-press">
                   <ArrowLeft className="h-5 w-5" />
                 </Button>
               )}
@@ -695,7 +701,7 @@ const PlaySession = () => {
         <div className="mx-auto flex max-w-2xl items-center justify-between gap-1">
           <div className="flex items-center gap-1.5 min-w-0">
             <Link to="/play" aria-label="Back to session setup">
-              <Button variant="ghost" size="icon" className="h-10 w-10 shrink-0 text-primary-foreground hover:bg-white/10 active:animate-btn-press">
+              <Button variant="ghost" size="icon" aria-label="Back to session setup" className="h-10 w-10 shrink-0 text-primary-foreground hover:bg-white/10 active:animate-btn-press">
                 <ArrowLeft className="h-5 w-5" />
               </Button>
             </Link>

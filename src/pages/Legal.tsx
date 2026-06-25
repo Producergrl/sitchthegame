@@ -1,11 +1,17 @@
 import { Link } from 'react-router-dom';
 import { ArrowLeft } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import SEO from '@/components/SEO';
 
 const Legal = () => (
-  <div className="min-h-screen bg-background text-foreground p-6 max-w-2xl mx-auto">
-    <Button variant="ghost" size="sm" asChild className="mb-6">
-      <Link to="/"><ArrowLeft className="h-4 w-4 mr-1" /> Back</Link>
+  <main className="min-h-screen bg-background text-foreground p-6 max-w-2xl mx-auto">
+    <SEO
+      title="Legal — Terms, IP & Privacy | Sitch"
+      description="Sitch terms of use, intellectual property rights, and privacy policy. No personal data sold; account-less play under adult supervision."
+      path="/legal"
+    />
+    <Button variant="ghost" size="sm" asChild className="mb-6" aria-label="Back to home">
+      <Link to="/" aria-label="Back to home"><ArrowLeft className="h-4 w-4 mr-1" aria-hidden="true" /> Back</Link>
     </Button>
 
     <h1 className="text-2xl font-bold mb-8">Terms of Use, Intellectual Property & Privacy Policy</h1>
@@ -68,7 +74,7 @@ const Legal = () => (
       <p className="font-semibold text-foreground">© 2026 Sitch™. All rights reserved.</p>
       <p>Unauthorized reproduction or distribution prohibited.</p>
     </footer>
-  </div>
+  </main>
 );
 
 export default Legal;

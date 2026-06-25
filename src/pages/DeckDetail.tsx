@@ -4,6 +4,7 @@ import { ArrowLeft, Play } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { getDeckBySlug, getCardsByDeck } from '@/data/seedData';
 import ThemeToggle from '@/components/ThemeToggle';
+import SEO from '@/components/SEO';
 
 const DeckDetail = () => {
   const { deckId } = useParams();
@@ -20,11 +21,16 @@ const DeckDetail = () => {
 
   return (
     <div className="min-h-screen bg-background">
+      <SEO
+        title={`${deck.name} — Sitch Mission Pack`}
+        description={`${deck.description} Ages ${deck.age_band} · ${deckCards.length} cards.`}
+        path={`/decks/${deck.slug}`}
+      />
       <div className="hero-gradient px-4 py-6 text-primary-foreground">
         <div className="mx-auto flex max-w-2xl items-center justify-between">
           <div className="flex items-center gap-3">
-            <Link to="/decks">
-              <Button variant="ghost" size="icon" className="text-primary-foreground hover:bg-white/10 active:animate-btn-press">
+            <Link to="/decks" aria-label="Back to all decks">
+              <Button variant="ghost" size="icon" aria-label="Back to all decks" className="text-primary-foreground hover:bg-white/10 active:animate-btn-press">
                 <ArrowLeft className="h-5 w-5" />
               </Button>
             </Link>
@@ -37,8 +43,8 @@ const DeckDetail = () => {
         </div>
       </div>
 
-      <div className="mx-auto max-w-2xl px-4 py-8">
-        <p className="mb-6 text-muted-foreground">{deck.description}</p>
+      <main className="mx-auto max-w-2xl px-4 py-8">
+        <p className="mb-6 text-foreground/80">{deck.description}</p>
 
         <Link to={`/play?decks=${deck.slug}&mode=discussion&age=${deck.age_band}`}>
           <Button className="mb-8 w-full gap-2 text-lg font-bold cta-glow bg-secondary text-secondary-foreground hover:bg-secondary/90 active:animate-btn-press transition-all duration-200 hover:scale-[1.02]" size="lg">
@@ -68,7 +74,7 @@ const DeckDetail = () => {
             </motion.div>
           ))}
         </div>
-      </div>
+      </main>
     </div>
   );
 };

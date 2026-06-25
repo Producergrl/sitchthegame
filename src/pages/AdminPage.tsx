@@ -8,8 +8,8 @@ const AdminContent = () => (
   <div className="min-h-screen bg-background">
     <div className="bg-primary px-4 py-6 text-primary-foreground">
       <div className="mx-auto flex max-w-4xl items-center gap-3">
-        <Link to="/">
-          <Button variant="ghost" size="icon" className="text-primary-foreground hover:bg-primary-foreground/10">
+        <Link to="/" aria-label="Back to home">
+          <Button variant="ghost" size="icon" aria-label="Back to home" className="text-primary-foreground hover:bg-primary-foreground/10">
             <ArrowLeft className="h-5 w-5" />
           </Button>
         </Link>

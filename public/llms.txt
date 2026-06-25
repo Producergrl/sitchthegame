@@ -1,0 +1,15 @@
+# Sitch — Family Edition
+
+> A premium child-safety card game of choice and consequence. Families play together to practice real-world safety scenarios — kids choose, adults talk it through.
+
+Sitch is an educational card game for parents, guardians, teachers, and children ages 4–teens. Each card presents a realistic situation (online strangers, body autonomy, peer pressure, emergencies). Players pick a response and discuss the consequences with a trusted adult. The game is offline-friendly, requires no accounts, and includes adult-gated safety resources.
+
+## Pages
+
+- [Home](/): Overview of the game, quick-play entry, and brand introduction.
+- [How to Play](/how-to-play): Step-by-step beginner guide to the three play modes (Discussion, Quiz, Roleplay).
+- [Browse Mission Packs](/decks): All available decks grouped by age band and topic.
+- [Custom Game Setup](/session/setup): Pick age band, play mode, and decks before starting a session.
+- [Safety Resources](/resources): Adult-gated hub of safety education topics, warning signs, and conversation guidance.
+- [Profile & Stickers](/stickers): Player level, XP, mission progress, and unlocked stickers.
+- [Legal](/legal): Terms, privacy, and account-less data policy.
