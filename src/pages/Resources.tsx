@@ -2,6 +2,7 @@ import { Link } from 'react-router-dom';
 import { ArrowLeft, Shield, Phone } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import AdultGate from '@/components/AdultGate';
+import SEO from '@/components/SEO';
 
 const resources = [
   {
@@ -36,12 +37,28 @@ const resources = [
   },
 ];
 
+const faqJsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: resources.map((r) => ({
+    '@type': 'Question',
+    name: r.title,
+    acceptedAnswer: { '@type': 'Answer', text: r.content },
+  })),
+};
+
 const ResourcesContent = () => (
   <div className="min-h-screen bg-background">
+    <SEO
+      title="Help & Safety Resources — Sitch"
+      description="Adult-only safety education: body autonomy, online safety, building a safety network, warning signs, and emergency preparedness for families."
+      path="/resources"
+      jsonLd={faqJsonLd}
+    />
     <div className="bg-primary px-4 py-6 text-primary-foreground">
       <div className="mx-auto flex max-w-3xl items-center gap-3">
-        <Link to="/">
-          <Button variant="ghost" size="icon" className="text-primary-foreground hover:bg-primary-foreground/10">
+        <Link to="/" aria-label="Back to home">
+          <Button variant="ghost" size="icon" aria-label="Back to home" className="text-primary-foreground hover:bg-primary-foreground/10">
             <ArrowLeft className="h-5 w-5" />
           </Button>
         </Link>
@@ -49,7 +66,7 @@ const ResourcesContent = () => (
       </div>
     </div>
 
-    <div className="mx-auto max-w-3xl px-4 py-8">
+    <main className="mx-auto max-w-3xl px-4 py-8">
       <div className="mb-8 rounded-2xl border border-caution/30 bg-caution/5 p-5">
         <div className="flex items-start gap-3">
           <Shield className="mt-0.5 h-6 w-6 shrink-0 text-caution" />
@@ -68,10 +85,10 @@ const ResourcesContent = () => (
         {resources.map((r, i) => (
           <div key={i} className="rounded-2xl border bg-card p-5">
             <div className="flex items-start gap-3">
-              <span className="text-2xl">{r.icon}</span>
+              <span className="text-2xl" aria-hidden="true">{r.icon}</span>
               <div>
-                <h3 className="font-bold text-card-foreground">{r.title}</h3>
-                <p className="mt-1 text-sm text-muted-foreground">{r.content}</p>
+                <h2 className="font-bold text-card-foreground">{r.title}</h2>
+                <p className="mt-1 text-sm text-foreground/80">{r.content}</p>
               </div>
             </div>
           </div>
@@ -79,14 +96,14 @@ const ResourcesContent = () => (
       </div>
 
       <div className="mt-8 rounded-2xl border border-help/30 bg-help/5 p-6 text-center">
-        <Phone className="mx-auto mb-2 h-8 w-8 text-help" />
+        <Phone className="mx-auto mb-2 h-8 w-8 text-help" aria-hidden="true" />
         <p className="font-bold text-foreground">Need Help?</p>
-        <p className="mt-1 text-sm text-muted-foreground">
+        <p className="mt-1 text-sm text-foreground/80">
           Contact your local child protection services or emergency number.
           Administrators can customize this section with local resources.
         </p>
       </div>
-    </div>
+    </main>
   </div>
 );
 
