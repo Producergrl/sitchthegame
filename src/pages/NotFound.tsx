@@ -17,7 +17,7 @@ const NotFound = () => {
           Back to Home
         </Link>
       </div>
-    </div>
+    </main>
   );
 };
 
