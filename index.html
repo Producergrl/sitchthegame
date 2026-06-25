@@ -15,11 +15,12 @@
     <!-- Favicon -->
     <link rel="icon" href="/favicon.png" type="image/png" />
 
-    <!-- Open Graph -->
+    <!-- Open Graph (fallback for non-JS crawlers; per-route values set via react-helmet-async) -->
+    <meta property="og:site_name" content="Sitch" />
     <meta property="og:title" content="Sitch — Family Edition: Are You Smart Under Pressure" />
     <meta property="og:description" content="A premium child-safety card game of choice and consequence. Play with a trusted adult to build real-world safety skills." />
     <meta property="og:type" content="website" />
-    <meta property="og:url" content="https://sitchthegame.com" />
+    <meta property="og:url" content="https://sitchthegame.com/" />
     <meta property="og:image" content="https://sitchthegame.com/og-image.png" />
     <meta property="og:image:width" content="1200" />
     <meta property="og:image:height" content="630" />
@@ -28,6 +29,26 @@
     <meta name="twitter:title" content="Sitch — Family Edition: Are You Smart Under Pressure" />
     <meta name="twitter:description" content="A premium child-safety card game of choice and consequence. Play with a trusted adult." />
     <meta name="twitter:image" content="https://sitchthegame.com/og-image.png" />
+
+    <!-- Sitewide structured data -->
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "Organization",
+        "name": "Sitch",
+        "url": "https://sitchthegame.com/",
+        "logo": "https://sitchthegame.com/favicon.png",
+        "description": "Creator of Sitch — a child-safety card game families play together."
+      }
+    </script>
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "WebSite",
+        "name": "Sitch — Family Edition",
+        "url": "https://sitchthegame.com/"
+      }
+    </script>
   </head>
 
   <body>
