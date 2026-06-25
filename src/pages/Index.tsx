@@ -5,6 +5,7 @@ import { BookOpen, Shield, Sparkles, Zap, ChevronDown } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import ThemeToggle from '@/components/ThemeToggle';
 import SEO from '@/components/SEO';
+import ShareInviteButton from '@/components/ShareInviteButton';
 // MissionProgress moved to /stickers (Profile tab)
 import { loadProgress, getCurrentLevel, type PlayerProgress } from '@/lib/progression';
 import sitchLogoV2 from '@/assets/sitch-logo-v2.png';
@@ -208,6 +209,11 @@ const Index = () => {
               New here? How to Play →
             </Link>
           </motion.div>
+
+          {/* Invite a friend */}
+          <div className="mt-3">
+            <ShareInviteButton />
+          </div>
 
           {/* ── Nav trio: all logo-blue, Safety Hub enlarged ── */}
           <motion.div
