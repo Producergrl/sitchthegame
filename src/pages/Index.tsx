@@ -211,10 +211,6 @@ const Index = () => {
             </Link>
           </motion.div>
 
-          {/* Invite a friend */}
-          <div className="mt-3">
-            <ShareInviteButton />
-          </div>
 
           {/* ── Nav trio: all logo-blue, Safety Hub enlarged ── */}
           <motion.div
