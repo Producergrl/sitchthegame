@@ -694,7 +694,7 @@ const PlaySession = () => {
 
   // ── Active play ──
   return (
-    <div className="min-h-screen bg-background overflow-x-hidden" data-age-theme={activeAge}>
+    <main className="min-h-screen bg-background overflow-x-hidden" data-age-theme={activeAge}>
       <Confetti active={showConfetti} />
       {/* Header */}
       <div className="hero-gradient px-3 py-3 sm:px-4 sm:py-4 text-primary-foreground">
@@ -1092,11 +1092,11 @@ const PlaySession = () => {
       </div>
       <div className="text-center py-2">
 
-        <Link to="/legal" className="text-[10px] text-muted-foreground/50 hover:text-muted-foreground transition-colors">
+        <Link to="/legal" className="text-xs text-muted-foreground hover:text-foreground transition-colors">
           Terms & Privacy
         </Link>
       </div>
-    </div>
+    </main>
   );
 };
 

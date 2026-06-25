@@ -3,7 +3,7 @@ import { Shield } from "lucide-react";
 
 const NotFound = () => {
   return (
-    <div className="flex min-h-screen items-center justify-center bg-background p-6">
+    <main className="flex min-h-screen items-center justify-center bg-background p-6">
       <div className="mx-auto max-w-sm text-center">
         <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-muted">
           <Shield className="h-8 w-8 text-muted-foreground" />
@@ -17,7 +17,7 @@ const NotFound = () => {
           Back to Home
         </Link>
       </div>
-    </div>
+    </main>
   );
 };
 
