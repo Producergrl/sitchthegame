@@ -1,4 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Excluded by design:
+  - /play           — gameplay route, requires query params and is gated by an unlock code
+  - /admin          — internal admin tool, not for public indexing
+  - /not-found      — 404 fallback
+-->
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
     <loc>https://sitchthegame.com/</loc>
@@ -35,4 +41,19 @@
     <changefreq>yearly</changefreq>
     <priority>0.3</priority>
   </url>
+
+  <!-- Deck detail pages (/decks/:deckId) -->
+  <url><loc>https://sitchthegame.com/decks/body-boundaries-4-6</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://sitchthegame.com/decks/trusted-adults-4-6</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://sitchthegame.com/decks/secrets-4-6</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://sitchthegame.com/decks/body-boundaries</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://sitchthegame.com/decks/trusted-adults</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://sitchthegame.com/decks/peer-pressure-7-9</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://sitchthegame.com/decks/digital-safety-7-9</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://sitchthegame.com/decks/online-safety</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://sitchthegame.com/decks/bullying</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://sitchthegame.com/decks/emergencies</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://sitchthegame.com/decks/grooming-awareness-10plus</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://sitchthegame.com/decks/street-smarts-10plus</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://sitchthegame.com/decks/real-world-judgment-teens</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
 </urlset>
