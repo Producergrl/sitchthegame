@@ -156,7 +156,7 @@ const Index = () => {
             initial={{ opacity: 0, y: 16 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 1.4, duration: 0.6 }}
-            className="mt-6 flex flex-col items-stretch gap-3 sm:flex-row sm:items-center"
+            className="mt-6 flex flex-col items-stretch gap-3 sm:flex-row sm:flex-wrap sm:items-center sm:justify-center"
           >
             <Link to="/play?decks=__compilation__&age=7-9&mode=quiz" className="flex flex-col items-center">
               <Button
@@ -190,6 +190,7 @@ const Index = () => {
               </Button>
               <span className="mt-1.5 text-[10px] font-bold uppercase tracking-wider text-[#FEF3D0]/85">Pick age, mode & decks</span>
             </Link>
+            <ShareInviteButton />
           </motion.div>
 
           {/* New-user helper link */}
