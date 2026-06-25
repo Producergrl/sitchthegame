@@ -8,7 +8,7 @@ import SEO from '@/components/SEO';
 import ShareInviteButton from '@/components/ShareInviteButton';
 // MissionProgress moved to /stickers (Profile tab)
 import { loadProgress, getCurrentLevel, type PlayerProgress } from '@/lib/progression';
-import sitchLogoV2 from '@/assets/sitch-logo-v2.png';
+import sitchThumbnail from '@/assets/sitch-family-edition.png.asset.json';
 
 /* ── floating particle field ── */
 const Particle = ({ delay, size, x, y, dur }: { delay: number; size: number; x: number; y: number; dur: number }) => (
@@ -128,15 +128,14 @@ const Index = () => {
           transition={{ duration: 0.9, ease: [0.22, 1, 0.36, 1], delay: 0.2 }}
           className="relative z-10 flex flex-col items-center px-4"
         >
-          {/* Logo bleeds into the orange hero — edges feathered with a radial mask */}
+          {/* Updated Sitch Family Edition tile — premium framed presentation */}
           <img
-            src={sitchLogoV2}
+            src={sitchThumbnail.url}
             alt="Sitch — Family Edition · Are You Smart Under Pressure? A Game of Choice & Consequence"
-            className="mx-auto w-[min(640px,94vw)] mix-blend-multiply"
+            className="mx-auto w-[min(440px,82vw)] rounded-3xl"
             style={{
-              WebkitMaskImage: 'radial-gradient(ellipse 75% 75% at 50% 50%, #000 55%, transparent 95%)',
-              maskImage: 'radial-gradient(ellipse 75% 75% at 50% 50%, #000 55%, transparent 95%)',
-              filter: 'drop-shadow(0 18px 40px hsl(15 75% 22% / 0.35))',
+              border: '2px solid #FDB913',
+              boxShadow: '0 20px 50px hsl(15 75% 15% / 0.55), 0 0 0 1px hsl(45 95% 70% / 0.25), inset 0 1px 0 hsl(45 95% 75% / 0.4)',
             }}
           />
 
