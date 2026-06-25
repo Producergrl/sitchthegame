@@ -48,7 +48,6 @@ const ShareInviteButton = () => {
           border: '1.5px solid #FFFFFF',
           boxShadow: '0 5px 0 #B8861A, 0 10px 20px hsl(15 70% 20% / 0.25), inset 0 1px 0 hsl(45 95% 90% / 0.5)',
         }}
-        aria-label="Share Sitch with a friend"
       >
         {copied ? (
           <Check className="h-5 w-5 transition-transform" />
