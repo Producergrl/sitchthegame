@@ -31,6 +31,7 @@ describe("No Read-Aloud / TTS regression", () => {
       "-g '!src/integrations/supabase/types.ts'",
       "-g '!supabase/migrations/*'",
       "-g '!src/test/noTtsRegression.test.ts'",
+      "-g '!.github/workflows/no-tts-regression.yml'",
       ...patterns.map((p) => `-e '${p}'`),
       ".",
     ].join(" ");
