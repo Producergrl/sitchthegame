@@ -1,68 +1,70 @@
 // Pushes product details from the website to the Gumroad product listing.
-// Auth: requires header `x-sync-token` matching the GUMROAD_SYNC_TOKEN secret.
+//
+// Design notes:
+// - The product fields below are the SINGLE SOURCE OF TRUTH for Gumroad.
+//   Keep them in sync with `src/config/gumroad.ts` (the site's SEO/meta uses that one).
+// - The function takes no body. It is idempotent: every call pushes the same canonical
+//   values to the seller's single product, so it's safe to expose publicly.
+// - Triggered automatically on every site build via a Vite plugin, and manually via
+//   the "Sync to Gumroad" admin button.
 import { corsHeaders } from 'npm:@supabase/supabase-js@2/cors';
-import { z } from 'npm:zod@3';
 
-const BodySchema = z.object({
-  name: z.string().min(1).max(255),
-  description: z.string().max(10000),
-  priceCents: z.number().int().min(0).max(10_000_00),
-  currency: z.string().min(3).max(8).optional(),
-  imageUrl: z.string().url().optional(),
-});
+const PRODUCT = {
+  name: 'Sitch — Family Edition',
+  description: [
+    'A premium child-safety card game of choice and consequence.',
+    '',
+    'Real-life scenarios kids choose — and parents talk through, together.',
+    '',
+    "What's inside:",
+    '• Age-banded decks (4–6, 7–9, 10+, Teens)',
+    '• Discussion, Quiz, and Roleplay modes',
+    '• A Safety Hub with parent resources',
+    '• Earnable stickers and a progression system',
+    '',
+    'Play at https://sitchthegame.com',
+  ].join('\n'),
+  priceCents: 1999,
+  currency: 'usd',
+  imageUrl: 'https://sitchthegame.com/og-image.png',
+} as const;
+
+// Lightweight in-memory throttle so the function can't be hammered.
+let lastCallAt = 0;
+const MIN_INTERVAL_MS = 5_000;
 
 Deno.serve(async (req) => {
   if (req.method === 'OPTIONS') return new Response('ok', { headers: corsHeaders });
-  if (req.method !== 'POST') {
-    return new Response(JSON.stringify({ error: 'Method not allowed' }), {
-      status: 405,
-      headers: { ...corsHeaders, 'Content-Type': 'application/json' },
-    });
-  }
 
-  const token = Deno.env.get('GUMROAD_SYNC_TOKEN');
   const access = Deno.env.get('GUMROAD_ACCESS_TOKEN');
   const productId = Deno.env.get('GUMROAD_PRODUCT_ID');
 
-  if (!token || !access || !productId) {
+  if (!access || !productId) {
     return new Response(
-      JSON.stringify({ error: 'Server is missing Gumroad configuration.' }),
+      JSON.stringify({ error: 'Server is missing GUMROAD_ACCESS_TOKEN or GUMROAD_PRODUCT_ID.' }),
       { status: 500, headers: { ...corsHeaders, 'Content-Type': 'application/json' } },
     );
   }
 
-  if (req.headers.get('x-sync-token') !== token) {
-    return new Response(JSON.stringify({ error: 'Unauthorized' }), {
-      status: 401,
-      headers: { ...corsHeaders, 'Content-Type': 'application/json' },
-    });
-  }
-
-  let raw: unknown;
-  try { raw = await req.json(); } catch {
-    return new Response(JSON.stringify({ error: 'Invalid JSON' }), {
-      status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' },
-    });
-  }
-  const parsed = BodySchema.safeParse(raw);
-  if (!parsed.success) {
+  const now = Date.now();
+  if (now - lastCallAt < MIN_INTERVAL_MS) {
     return new Response(
-      JSON.stringify({ error: parsed.error.flatten().fieldErrors }),
-      { status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' } },
+      JSON.stringify({ ok: true, skipped: true, reason: 'throttled' }),
+      { status: 200, headers: { ...corsHeaders, 'Content-Type': 'application/json' } },
     );
   }
-  const { name, description, priceCents, currency, imageUrl } = parsed.data;
+  lastCallAt = now;
 
   // Gumroad PUT /v2/products/:id — form-encoded, access_token in body.
   const form = new URLSearchParams();
   form.set('access_token', access);
-  form.set('name', name);
-  form.set('description', description);
-  form.set('price', String(priceCents));
-  if (currency) form.set('currency', currency);
-  if (imageUrl) form.set('preview_url', imageUrl);
+  form.set('name', PRODUCT.name);
+  form.set('description', PRODUCT.description);
+  form.set('price', String(PRODUCT.priceCents));
+  form.set('currency', PRODUCT.currency);
+  form.set('preview_url', PRODUCT.imageUrl);
 
-  const gumroadRes = await fetch(
+  const res = await fetch(
     `https://api.gumroad.com/v2/products/${encodeURIComponent(productId)}`,
     {
       method: 'PUT',
@@ -71,23 +73,20 @@ Deno.serve(async (req) => {
     },
   );
 
-  const bodyText = await gumroadRes.text();
+  const bodyText = await res.text();
   let bodyJson: unknown = null;
   try { bodyJson = JSON.parse(bodyText); } catch { /* keep text */ }
 
-  if (!gumroadRes.ok) {
+  if (!res.ok) {
+    console.error('Gumroad update failed', res.status, bodyText);
     return new Response(
-      JSON.stringify({
-        error: 'Gumroad update failed',
-        status: gumroadRes.status,
-        details: bodyJson ?? bodyText,
-      }),
+      JSON.stringify({ ok: false, status: res.status, details: bodyJson ?? bodyText }),
       { status: 502, headers: { ...corsHeaders, 'Content-Type': 'application/json' } },
     );
   }
 
   return new Response(
-    JSON.stringify({ ok: true, gumroad: bodyJson ?? bodyText }),
+    JSON.stringify({ ok: true, pushed: PRODUCT, gumroad: bodyJson ?? bodyText }),
     { status: 200, headers: { ...corsHeaders, 'Content-Type': 'application/json' } },
   );
 });
