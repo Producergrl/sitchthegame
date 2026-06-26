@@ -81,13 +81,13 @@ Deno.serve(async (req) => {
   if (!gumroadOk) {
     console.error('Gumroad update failed', res.status, bodyText);
     return new Response(
-      JSON.stringify({ ok: false, status: res.status, details: bodyJson ?? bodyText }),
+      JSON.stringify({ ok: false, status: res.status, error: 'Gumroad update failed' }),
       { status: 502, headers: { ...corsHeaders, 'Content-Type': 'application/json' } },
     );
   }
 
   return new Response(
-    JSON.stringify({ ok: true, pushed: PRODUCT, gumroad: bodyJson ?? bodyText }),
+    JSON.stringify({ ok: true, pushed: PRODUCT }),
     { status: 200, headers: { ...corsHeaders, 'Content-Type': 'application/json' } },
   );
 });
