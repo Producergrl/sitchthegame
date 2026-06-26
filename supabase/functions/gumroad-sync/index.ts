@@ -77,7 +77,8 @@ Deno.serve(async (req) => {
   let bodyJson: unknown = null;
   try { bodyJson = JSON.parse(bodyText); } catch { /* keep text */ }
 
-  if (!res.ok) {
+  const gumroadOk = res.ok && (bodyJson as any)?.success !== false;
+  if (!gumroadOk) {
     console.error('Gumroad update failed', res.status, bodyText);
     return new Response(
       JSON.stringify({ ok: false, status: res.status, details: bodyJson ?? bodyText }),
