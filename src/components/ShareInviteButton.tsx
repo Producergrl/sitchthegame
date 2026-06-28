@@ -9,8 +9,17 @@ const SHARE_TEXT = `Play Sitch with me! It's a family safety card game for kids 
 const ShareInviteButton = () => {
   const [copied, setCopied] = useState(false);
 
+  const openMailto = () => {
+    const subject = encodeURIComponent('Play Sitch with me!');
+    const body = encodeURIComponent(
+      `Hey!\n\nI'm playing Sitch — a family safety card game for kids and adults. Want to play with me?\n\n${SITE_URL}\n`,
+    );
+    window.location.href = `mailto:?subject=${subject}&body=${body}`;
+  };
+
   const handleShare = async () => {
-    if (navigator.share) {
+    // On mobile / supported browsers, open the native share sheet (email, SMS, WhatsApp, etc.)
+    if (typeof navigator !== 'undefined' && typeof navigator.share === 'function') {
       try {
         await navigator.share({
           title: 'Sitch — Family Edition',
@@ -19,16 +28,21 @@ const ShareInviteButton = () => {
         });
         return;
       } catch {
-        // User cancelled or share failed — fall back to copy
+        // User cancelled or share failed — fall through to email
       }
     }
 
+    // Desktop fallback: open the user's email client with the message pre-filled
+    // so they can just type an address and hit send.
+    openMailto();
+
+    // Also copy as a quiet backup in case no mail client is configured.
     try {
       await navigator.clipboard.writeText(SHARE_TEXT);
       setCopied(true);
       setTimeout(() => setCopied(false), 2000);
     } catch {
-      // Clipboard not available — do nothing silently
+      // Clipboard not available — ignore
     }
   };
 
