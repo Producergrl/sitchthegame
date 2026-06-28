@@ -17,6 +17,18 @@ interface UnlockGateProps {
 type Status = 'checking' | 'locked' | 'unlocked';
 
 const UnlockGate = ({ children }: UnlockGateProps) => {
+  // Close the free backdoor: anyone landing on the raw lovable.app host gets
+  // bounced to the gated play.sitchthegame.com domain so the paywall can't be
+  // skipped by sharing the preview URL.
+  if (typeof window !== 'undefined') {
+    const host = window.location.hostname;
+    if (host === 'sitchthegame.lovable.app') {
+      window.location.replace(
+        `https://play.sitchthegame.com${window.location.pathname}${window.location.search}${window.location.hash}`,
+      );
+    }
+  }
+
   const [status, setStatus] = useState<Status>('checking');
   const [code, setCode] = useState('');
   const [error, setError] = useState('');
