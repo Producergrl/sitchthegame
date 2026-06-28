@@ -141,10 +141,13 @@ const UnlockGate = ({ children }: UnlockGateProps) => {
           <Input
             type="text"
             placeholder="ENTER UNLOCK CODE"
-
             value={code}
             onChange={(e) => { setCode(e.target.value); setError(''); }}
-            className="text-center text-lg font-bold tracking-widest uppercase"
+            className="text-center text-lg font-bold tracking-widest uppercase border-2 border-[#1E3A5F]"
+            style={{
+              background: '#111111',
+              color: '#FEF3D0',
+            }}
             autoFocus
             disabled={loading}
           />
