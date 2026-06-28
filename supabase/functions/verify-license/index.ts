@@ -6,7 +6,7 @@ const corsHeaders = {
 };
 
 const GUMROAD_VERIFY_URL = "https://api.gumroad.com/v2/licenses/verify";
-const PRODUCT_ID = "mUZK2cfq7Yxo5xNEIQzS7g==";
+const PRODUCT_ID = "0XRADwX0UZf2AIFOqQYDRA==";
 
 async function hashLicense(key: string): Promise<string> {
   const data = new TextEncoder().encode(key);
