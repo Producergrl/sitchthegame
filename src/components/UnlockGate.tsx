@@ -143,7 +143,7 @@ const UnlockGate = ({ children }: UnlockGateProps) => {
             placeholder="ENTER UNLOCK CODE"
             value={code}
             onChange={(e) => { setCode(e.target.value); setError(''); }}
-            className="text-center text-lg font-bold tracking-widest uppercase border-2 border-[#1E3A5F]"
+            className="text-center text-lg font-bold tracking-widest uppercase border-2 border-[#1E3A5F] placeholder:text-[#FEF3D0]/70"
             style={{
               background: '#111111',
               color: '#FEF3D0',
