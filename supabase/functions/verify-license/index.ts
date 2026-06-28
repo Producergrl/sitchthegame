@@ -100,31 +100,42 @@ Deno.serve(async (req) => {
       );
     }
 
-    const formData = new URLSearchParams();
-    formData.append("product_id", PRODUCT_ID);
-    formData.append("license_key", trimmed);
-    formData.append("increment_uses_count", "false");
+    // Try the configured product ID first, then any fallbacks. This handles
+    // the case where the seller's Gumroad product ID was rotated/changed.
+    const envProductId = Deno.env.get("GUMROAD_PRODUCT_ID");
+    const candidates = Array.from(
+      new Set([envProductId, ...FALLBACK_PRODUCT_IDS].filter(Boolean) as string[])
+    );
 
-    const response = await fetch(GUMROAD_VERIFY_URL, {
-      method: "POST",
-      headers: { "Content-Type": "application/x-www-form-urlencoded" },
-      body: formData.toString(),
-    });
+    let lastGumroadMessage = "Invalid license key";
+    for (const productId of candidates) {
+      const formData = new URLSearchParams();
+      formData.append("product_id", productId);
+      formData.append("license_key", trimmed);
+      formData.append("increment_uses_count", "false");
 
-    const data = await response.json();
+      const response = await fetch(GUMROAD_VERIFY_URL, {
+        method: "POST",
+        headers: { "Content-Type": "application/x-www-form-urlencoded" },
+        body: formData.toString(),
+      });
+      const data = await response.json().catch(() => ({}));
+      console.log("Gumroad verify attempt", { productId, success: data?.success, message: data?.message });
 
-    if (data.success === true) {
-      await cacheValidLicense(trimmed);
-      return new Response(
-        JSON.stringify({ valid: true }),
-        { status: 200, headers: { ...corsHeaders, "Content-Type": "application/json" } }
-      );
+      if (data?.success === true) {
+        await cacheValidLicense(trimmed);
+        return new Response(
+          JSON.stringify({ valid: true }),
+          { status: 200, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+        );
+      }
+      if (data?.message) lastGumroadMessage = data.message;
     }
 
     // Slow down enumeration on failed attempts.
     await new Promise((r) => setTimeout(r, 400));
     return new Response(
-      JSON.stringify({ valid: false, error: "Invalid license key" }),
+      JSON.stringify({ valid: false, error: lastGumroadMessage }),
       { status: 200, headers: { ...corsHeaders, "Content-Type": "application/json" } }
     );
   } catch (err) {
