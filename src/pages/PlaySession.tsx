@@ -1075,18 +1075,18 @@ const PlaySession = () => {
           <div className="flex-1 text-center">
             {!selectedOption && (
               <span className="text-[11px] font-bold uppercase tracking-wider text-muted-foreground">
-                Pick an answer ↑
+                Pick an answer ↑ or skip →
               </span>
             )}
           </div>
           <Button
             onClick={handleNext}
             size="lg"
-            disabled={!selectedOption || (selectedOption === NONE_LABEL && !customAnswerSubmitted)}
+            disabled={selectedOption === NONE_LABEL && !customAnswerSubmitted}
             className="gap-1.5 font-bold px-6 min-h-[48px] disabled:opacity-50"
-            aria-label={index + 1 >= sessionCards.length ? 'Finish session' : 'Go to next card'}
+            aria-label={index + 1 >= sessionCards.length ? 'Finish session' : (selectedOption ? 'Go to next card' : 'Skip card')}
           >
-            {index + 1 >= sessionCards.length ? '🎉 Finish' : 'Next Card'} <ChevronRight className="h-4 w-4" />
+            {index + 1 >= sessionCards.length ? '🎉 Finish' : (selectedOption ? 'Next Card' : 'Skip')} <ChevronRight className="h-4 w-4" />
           </Button>
         </div>
       </div>
