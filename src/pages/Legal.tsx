@@ -67,7 +67,7 @@ const Legal = () => (
 
     <section className="space-y-4 text-sm text-muted-foreground mb-10">
       <h2 className="text-lg font-semibold text-foreground">Contact</h2>
-      <p>For legal inquiries, licensing requests, or copyright concerns, please contact the rights holder through the official website associated with the game.</p>
+      <p>For legal inquiries, licensing requests, or copyright concerns, please contact <a href="mailto:admin@kdcandfilms.com" className="text-foreground underline underline-offset-2 hover:text-primary">admin@kdcandfilms.com</a>.</p>
     </section>
 
     <footer className="border-t border-border pt-6 pb-10 text-center text-xs text-muted-foreground space-y-1">
