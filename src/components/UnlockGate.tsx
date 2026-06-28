@@ -110,7 +110,7 @@ const UnlockGate = ({ children }: UnlockGateProps) => {
         safeSetItem(SESSION_TOKEN_KEY, JSON.stringify({ key: trimmed, verifiedAt: Date.now() }));
         setStatus('unlocked');
       } else {
-        setError(data?.error || "That code doesn't look right. Please check your Gumroad receipt and try again.");
+        setError(data?.error || "That license key doesn't look right. Please check your Gumroad receipt and try again.");
       }
     } catch {
       setError("Couldn't verify your code right now. Please try again in a moment.");
@@ -134,13 +134,14 @@ const UnlockGate = ({ children }: UnlockGateProps) => {
           <Shield className="h-8 w-8 text-[#1E3A5F]" />
         </div>
 
-        <h1 className="text-xl font-black text-[#1E3A5F]">Welcome to Sitch</h1>
-        <p className="mt-2 text-sm text-[#2D5F8A]">Please enter your unlock code to play</p>
+        <h1 className="text-xl font-black text-[#1E3A5F]">Welcome to Sitch: Family Edition</h1>
+        <p className="mt-2 text-sm text-[#2D5F8A]">Please enter your license key to play</p>
 
         <form onSubmit={handleSubmit} className="mt-6 space-y-3">
           <Input
             type="text"
-            placeholder="Enter unlock code"
+            placeholder="ENTER UNLOCK CODE"
+
             value={code}
             onChange={(e) => { setCode(e.target.value); setError(''); }}
             className="text-center text-lg font-bold tracking-widest uppercase"
@@ -196,7 +197,7 @@ const UnlockGate = ({ children }: UnlockGateProps) => {
         </a>
 
         <p className="mt-3 text-xs text-[#2D5F8A]/80">
-          You'll receive an unlock code instantly with your Gumroad receipt.
+          Your unique license key is on your Gumroad receipt.
         </p>
       </motion.div>
     </div>

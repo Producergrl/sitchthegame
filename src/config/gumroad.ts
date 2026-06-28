@@ -17,7 +17,7 @@ export const gumroadProduct = {
     '• A Safety Hub with parent resources',
     '• Earnable stickers and a progression system',
     '',
-    'Play at https://sitchthegame.com',
+    'Play at https://play.sitchthegame.com',
   ].join('\n'),
   // Price in CENTS. e.g. 1999 = $19.99
   priceCents: 1999,
