@@ -316,10 +316,6 @@ const Index = () => {
           </p>
         </motion.div>
 
-        {/* Gumroad sync runs automatically on every publish via the build hook.
-            The in-app manual trigger was removed so no client can call the
-            sync endpoint. */}
-
       </div>
       </main>
 
