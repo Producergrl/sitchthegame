@@ -124,6 +124,10 @@ const UnlockGate = ({ children }: UnlockGateProps) => {
 
         <h1 className="text-xl font-black text-[#1E3A5F]">Welcome to Sitch: Family Edition</h1>
         <p className="mt-2 text-sm text-[#2D5F8A]">Please enter your license key to play</p>
+        <p className="mt-1 text-[11px] text-[#2D5F8A]/70">
+          A fun family card game to hone your instincts and learn together — not professional advice.
+        </p>
+
 
         <form onSubmit={handleSubmit} className="mt-6 space-y-3">
           <Input
@@ -180,6 +184,7 @@ const UnlockGate = ({ children }: UnlockGateProps) => {
             window.open('https://sitchthegame.gumroad.com/l/sitch', '_blank', 'noopener,noreferrer');
             try { window.top!.location.href = 'https://sitchthegame.gumroad.com/l/sitch'; } catch { /* cross-origin top — ignore */ }
           }}
+
           className="mt-4 flex w-full items-center justify-center gap-2 rounded-xl border-2 border-[#1E3A5F] bg-white py-4 px-4 font-bold uppercase tracking-wide text-[#1E3A5F] transition-transform hover:scale-[1.02] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#1E3A5F] focus-visible:ring-offset-2"
           aria-label="Buy Sitch on Gumroad to get an unlock code"
         >
@@ -190,9 +195,31 @@ const UnlockGate = ({ children }: UnlockGateProps) => {
         <p className="mt-3 text-xs text-[#2D5F8A]/80">
           Your unique license key is on your Gumroad receipt.
         </p>
+
+        <p className="mt-4 text-[11px] leading-relaxed text-[#2D5F8A]/80">
+          Buyer must be 18+. All sales final — no refunds on digital purchases.
+          We store your license key and progress in your browser only.
+        </p>
+
+        <p className="mt-3 text-[11px] leading-relaxed text-[#2D5F8A]/80">
+          By unlocking, you agree to our{' '}
+          <a href="/legal" target="_blank" rel="noopener noreferrer" className="font-bold underline underline-offset-2 hover:text-[#1E3A5F]">
+            Terms &amp; Privacy
+          </a>
+          . Need help? Email{' '}
+          <a href="mailto:admin@kdcandfilms.com" className="font-bold underline underline-offset-2 hover:text-[#1E3A5F]">
+            admin@kdcandfilms.com
+          </a>
+          .
+        </p>
+
+        <p className="mt-4 text-[10px] text-[#2D5F8A]/60">
+          © 2026 Sitch™. All rights reserved.
+        </p>
       </motion.div>
     </div>
   );
 };
+
 
 export default UnlockGate;

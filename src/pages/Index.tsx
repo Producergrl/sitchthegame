@@ -327,11 +327,14 @@ const Index = () => {
             <Link to="/legal" className="hover:text-[#1E3A5F] underline-offset-2 hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#FDB913] rounded px-1 py-1">Terms & Privacy</Link>
             <Link to="/resources" className="hover:text-[#1E3A5F] underline-offset-2 hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#FDB913] rounded px-1 py-1">Safety Hub</Link>
             <Link to="/how-to-play" className="hover:text-[#1E3A5F] underline-offset-2 hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#FDB913] rounded px-1 py-1">How to Play</Link>
+            <a href="mailto:admin@kdcandfilms.com" className="hover:text-[#1E3A5F] underline-offset-2 hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#FDB913] rounded px-1 py-1">Contact</a>
           </div>
           <p className="text-[10px] text-[#1E3A5F]/60 leading-relaxed">
-            Sitch is an educational conversation game for children and trusted adults.
-            Not a substitute for professional advice. Adult supervision recommended.
+            A fun family card game to hone your instincts and learn together.
+            Not therapy or professional advice. Adult supervision recommended for younger children.
+            All sales final — no refunds on digital purchases.
           </p>
+
         </div>
       </footer>
     </div>
