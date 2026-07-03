@@ -6,7 +6,7 @@ import { Button } from '@/components/ui/button';
 import ThemeToggle from '@/components/ThemeToggle';
 import SEO from '@/components/SEO';
 import ShareInviteButton from '@/components/ShareInviteButton';
-import AdultGate from '@/components/AdultGate';
+
 
 // MissionProgress moved to /stickers (Profile tab)
 import { loadProgress, getCurrentLevel, type PlayerProgress } from '@/lib/progression';
