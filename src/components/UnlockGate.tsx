@@ -195,9 +195,31 @@ const UnlockGate = ({ children }: UnlockGateProps) => {
         <p className="mt-3 text-xs text-[#2D5F8A]/80">
           Your unique license key is on your Gumroad receipt.
         </p>
+
+        <p className="mt-4 text-[11px] leading-relaxed text-[#2D5F8A]/80">
+          Buyer must be 18+. All sales final — no refunds on digital purchases.
+          We store your license key and progress in your browser only.
+        </p>
+
+        <p className="mt-3 text-[11px] leading-relaxed text-[#2D5F8A]/80">
+          By unlocking, you agree to our{' '}
+          <a href="/legal" target="_blank" rel="noopener noreferrer" className="font-bold underline underline-offset-2 hover:text-[#1E3A5F]">
+            Terms &amp; Privacy
+          </a>
+          . Need help? Email{' '}
+          <a href="mailto:admin@kdcandfilms.com" className="font-bold underline underline-offset-2 hover:text-[#1E3A5F]">
+            admin@kdcandfilms.com
+          </a>
+          .
+        </p>
+
+        <p className="mt-4 text-[10px] text-[#2D5F8A]/60">
+          © 2026 Sitch™. All rights reserved.
+        </p>
       </motion.div>
     </div>
   );
 };
+
 
 export default UnlockGate;
