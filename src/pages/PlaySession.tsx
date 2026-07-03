@@ -1090,12 +1090,20 @@ const PlaySession = () => {
           </Button>
         </div>
       </div>
-      <div className="text-center py-2">
-
-        <Link to="/legal" className="text-xs text-muted-foreground hover:text-foreground transition-colors">
-          Terms & Privacy
-        </Link>
-      </div>
+      <footer className="border-t border-[#1E3A5F]/10 bg-[#FEF3D0] py-6 mt-6">
+        <div className="mx-auto max-w-lg px-4 text-center space-y-3">
+          <p className="text-xs font-black text-[#1E3A5F]">© 2026 Sitch™. All rights reserved.</p>
+          <div className="flex flex-wrap items-center justify-center gap-4 text-xs font-bold text-[#1E3A5F]/80">
+            <Link to="/legal" className="hover:text-[#1E3A5F] underline-offset-2 hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#FDB913] rounded px-1 py-1">Terms &amp; Privacy</Link>
+            <Link to="/resources" className="hover:text-[#1E3A5F] underline-offset-2 hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#FDB913] rounded px-1 py-1">Safety Hub</Link>
+            <Link to="/how-to-play" className="hover:text-[#1E3A5F] underline-offset-2 hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#FDB913] rounded px-1 py-1">How to Play</Link>
+            <a href="mailto:admin@kdcandfilms.com" className="hover:text-[#1E3A5F] underline-offset-2 hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#FDB913] rounded px-1 py-1">Contact</a>
+          </div>
+          <p className="text-[10px] text-[#1E3A5F]/60 leading-relaxed">
+            A fun family card game to hone your instincts and learn together. Not therapy or professional advice.
+          </p>
+        </div>
+      </footer>
     </main>
   );
 };
