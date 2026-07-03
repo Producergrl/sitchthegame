@@ -1,11 +1,11 @@
 /**
- * Single source of truth for Sitch product details.
- * Edit these values to update both the website and the Gumroad listing
- * (the sync runs automatically on every build/publish).
+ * Public Gumroad link details used by the website only.
+ * Gumroad product copy, pricing, images, and files are edited manually in Gumroad.
+ * Do not auto-sync this app to Gumroad.
  */
 export const gumroadProduct = {
   name: 'Sitch — Family Edition',
-  // Plain-text description shown on the Gumroad product page.
+  // Website-only fallback text. This is NOT pushed to Gumroad.
   description: [
     'A premium child-safety card game of choice and consequence.',
     '',
@@ -19,10 +19,10 @@ export const gumroadProduct = {
     '',
     'Play at https://play.sitchthegame.com',
   ].join('\n'),
-  // Price in CENTS. e.g. 1999 = $19.99
+  // Price in CENTS. e.g. 699 = $6.99
   priceCents: 699,
   currency: 'usd',
-  // Public cover image used by the website and pushed to Gumroad.
+  // Public cover image used by the website.
   imageUrl: 'https://sitchthegame.com/og-image.png',
 } as const;
 
