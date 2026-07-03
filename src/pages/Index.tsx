@@ -7,7 +7,7 @@ import ThemeToggle from '@/components/ThemeToggle';
 import SEO from '@/components/SEO';
 import ShareInviteButton from '@/components/ShareInviteButton';
 import AdultGate from '@/components/AdultGate';
-import SyncToGumroadButton from '@/components/SyncToGumroadButton';
+
 // MissionProgress moved to /stickers (Profile tab)
 import { loadProgress, getCurrentLevel, type PlayerProgress } from '@/lib/progression';
 import sitchThumbnail from '@/assets/sitch-family-edition.png.asset.json';
