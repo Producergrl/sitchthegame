@@ -1,13 +1,32 @@
 // Pushes product details from the website to the Gumroad product listing.
 //
-// Design notes:
-// - The product fields below are the SINGLE SOURCE OF TRUTH for Gumroad.
-//   Keep them in sync with `src/config/gumroad.ts` (the site's SEO/meta uses that one).
-// - The function takes no body. It is idempotent: every call pushes the same canonical
-//   values to the seller's single product, so it's safe to expose publicly.
-// - Triggered automatically on every site build via a Vite plugin, and manually via
-//   the "Sync to Gumroad" admin button.
-import { corsHeaders } from 'npm:@supabase/supabase-js@2/cors';
+// Security:
+// - CORS is restricted to the Sitch production domains only. Browsers on any
+//   other origin get no CORS headers and their preflight will fail.
+// - Every request MUST include `x-sync-token` matching the GUMROAD_SYNC_TOKEN
+//   secret. Server-to-server callers (the build hook) send the same header.
+// - Body is ignored; the function always pushes the canonical PRODUCT below.
+import { corsHeaders as baseCorsHeaders } from 'npm:@supabase/supabase-js@2/cors';
+
+const ALLOWED_ORIGINS = new Set([
+  'https://sitchthegame.com',
+  'https://www.sitchthegame.com',
+  'https://play.sitchthegame.com',
+]);
+
+function corsFor(req: Request): Record<string, string> {
+  const origin = req.headers.get('origin') ?? '';
+  // Server-to-server calls (no Origin header) don't need CORS headers.
+  if (!origin) return {};
+  if (!ALLOWED_ORIGINS.has(origin)) return {};
+  return {
+    ...baseCorsHeaders,
+    'Access-Control-Allow-Origin': origin,
+    'Access-Control-Allow-Headers':
+      'authorization, x-client-info, apikey, content-type, x-sync-token',
+    'Vary': 'Origin',
+  };
+}
 
 const PRODUCT = {
   name: 'Sitch — Family Edition',
@@ -34,15 +53,29 @@ let lastCallAt = 0;
 const MIN_INTERVAL_MS = 5_000;
 
 Deno.serve(async (req) => {
-  if (req.method === 'OPTIONS') return new Response('ok', { headers: corsHeaders });
+  const cors = corsFor(req);
+
+  if (req.method === 'OPTIONS') {
+    return new Response('ok', { headers: cors });
+  }
 
   const access = Deno.env.get('GUMROAD_ACCESS_TOKEN');
   const productId = Deno.env.get('GUMROAD_PRODUCT_ID');
+  const expectedToken = Deno.env.get('GUMROAD_SYNC_TOKEN');
+
+  // Admin token gate.
+  const provided = req.headers.get('x-sync-token') ?? '';
+  if (!expectedToken || provided !== expectedToken) {
+    return new Response(
+      JSON.stringify({ error: 'Unauthorized' }),
+      { status: 401, headers: { ...cors, 'Content-Type': 'application/json' } },
+    );
+  }
 
   if (!access || !productId) {
     return new Response(
       JSON.stringify({ error: 'Server is missing GUMROAD_ACCESS_TOKEN or GUMROAD_PRODUCT_ID.' }),
-      { status: 500, headers: { ...corsHeaders, 'Content-Type': 'application/json' } },
+      { status: 500, headers: { ...cors, 'Content-Type': 'application/json' } },
     );
   }
 
@@ -50,12 +83,11 @@ Deno.serve(async (req) => {
   if (now - lastCallAt < MIN_INTERVAL_MS) {
     return new Response(
       JSON.stringify({ ok: true, skipped: true, reason: 'throttled' }),
-      { status: 200, headers: { ...corsHeaders, 'Content-Type': 'application/json' } },
+      { status: 200, headers: { ...cors, 'Content-Type': 'application/json' } },
     );
   }
   lastCallAt = now;
 
-  // Gumroad PUT /v2/products/:id — form-encoded, access_token in body.
   const form = new URLSearchParams();
   form.set('access_token', access);
   form.set('name', PRODUCT.name);
@@ -82,12 +114,12 @@ Deno.serve(async (req) => {
     console.error('Gumroad update failed', res.status, bodyText);
     return new Response(
       JSON.stringify({ ok: false, status: res.status, error: 'Gumroad update failed' }),
-      { status: 502, headers: { ...corsHeaders, 'Content-Type': 'application/json' } },
+      { status: 502, headers: { ...cors, 'Content-Type': 'application/json' } },
     );
   }
 
   return new Response(
     JSON.stringify({ ok: true, pushed: PRODUCT }),
-    { status: 200, headers: { ...corsHeaders, 'Content-Type': 'application/json' } },
+    { status: 200, headers: { ...cors, 'Content-Type': 'application/json' } },
   );
 });
