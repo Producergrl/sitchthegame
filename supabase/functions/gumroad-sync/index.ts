@@ -24,7 +24,7 @@ const PRODUCT = {
     '',
     'Play at https://sitchthegame.com',
   ].join('\n'),
-  priceCents: 1999,
+  priceCents: 699,
   currency: 'usd',
   imageUrl: 'https://sitchthegame.com/og-image.png',
 } as const;
