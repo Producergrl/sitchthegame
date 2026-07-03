@@ -124,6 +124,10 @@ const UnlockGate = ({ children }: UnlockGateProps) => {
 
         <h1 className="text-xl font-black text-[#1E3A5F]">Welcome to Sitch: Family Edition</h1>
         <p className="mt-2 text-sm text-[#2D5F8A]">Please enter your license key to play</p>
+        <p className="mt-1 text-[11px] text-[#2D5F8A]/70">
+          A fun family card game to hone your instincts and learn together — not professional advice.
+        </p>
+
 
         <form onSubmit={handleSubmit} className="mt-6 space-y-3">
           <Input
