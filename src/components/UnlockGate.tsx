@@ -33,53 +33,38 @@ const UnlockGate = ({ children }: UnlockGateProps) => {
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
 
-  // On mount, re-verify any stored license key against the server.
-  // The localStorage flag alone is no longer trusted — a valid key is required.
+  // On mount, ALWAYS re-verify the stored license key against the server.
+  // There is no offline fallback: a forged localStorage entry combined with a
+  // blocked network request must NOT unlock the app.
   useEffect(() => {
     let cancelled = false;
     (async () => {
+      // Legacy cleanup: older builds trusted these flags on their own.
+      safeRemoveItem('sitch_unlocked');
+      safeRemoveItem(SESSION_TOKEN_KEY);
+
       const storedKey = safeGetItem(LICENSE_KEY);
       if (!storedKey) {
-        // Legacy: clear any stale unlock flag from older builds.
-        safeRemoveItem('sitch_unlocked');
         if (!cancelled) setStatus('locked');
         return;
       }
 
-      // Always re-verify with the server on load. The cached session token is
-      // only used as an offline fallback if the network request fails — it is
-      // NOT trusted on its own, so a stale/forged localStorage entry can't
-      // bypass the paywall.
       try {
         const { data, error: fnError } = await supabase.functions.invoke('verify-license', {
           body: { license_key: storedKey },
         });
         if (cancelled) return;
         if (!fnError && data?.valid) {
-          safeSetItem(SESSION_TOKEN_KEY, JSON.stringify({ key: storedKey, verifiedAt: Date.now() }));
           setStatus('unlocked');
         } else {
           safeRemoveItem(LICENSE_KEY);
-          safeRemoveItem(SESSION_TOKEN_KEY);
-          safeRemoveItem('sitch_unlocked');
           setStatus('locked');
         }
       } catch {
-        // Network failure ONLY: honour a recently-cached session so paying
-        // users aren't locked out offline. Any other failure path locks.
-        try {
-          const raw = safeGetItem(SESSION_TOKEN_KEY);
-          if (raw) {
-            const parsed = JSON.parse(raw) as { key: string; verifiedAt: number };
-            if (parsed.key === storedKey && Date.now() - parsed.verifiedAt < SESSION_TTL_MS) {
-              if (!cancelled) setStatus('unlocked');
-              return;
-            }
-          }
-        } catch { /* ignore */ }
+        // Network failure: do NOT unlock. Force the user back to the code entry
+        // screen; a genuine buyer can re-enter their key when back online.
         if (!cancelled) setStatus('locked');
       }
-
     })();
     return () => { cancelled = true; };
   }, []);
