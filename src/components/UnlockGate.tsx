@@ -47,18 +47,10 @@ const UnlockGate = ({ children }: UnlockGateProps) => {
         return;
       }
 
-      // Soft cache to avoid hitting the function on every reload.
-      try {
-        const raw = safeGetItem(SESSION_TOKEN_KEY);
-        if (raw) {
-          const parsed = JSON.parse(raw) as { key: string; verifiedAt: number };
-          if (parsed.key === storedKey && Date.now() - parsed.verifiedAt < SESSION_TTL_MS) {
-            if (!cancelled) setStatus('unlocked');
-            return;
-          }
-        }
-      } catch { /* ignore parse errors */ }
-
+      // Always re-verify with the server on load. The cached session token is
+      // only used as an offline fallback if the network request fails — it is
+      // NOT trusted on its own, so a stale/forged localStorage entry can't
+      // bypass the paywall.
       try {
         const { data, error: fnError } = await supabase.functions.invoke('verify-license', {
           body: { license_key: storedKey },
@@ -74,8 +66,8 @@ const UnlockGate = ({ children }: UnlockGateProps) => {
           setStatus('locked');
         }
       } catch {
-        // Network failure: honour a recently-cached session so users aren't locked
-        // out offline, otherwise require re-entry.
+        // Network failure ONLY: honour a recently-cached session so paying
+        // users aren't locked out offline. Any other failure path locks.
         try {
           const raw = safeGetItem(SESSION_TOKEN_KEY);
           if (raw) {
@@ -88,6 +80,7 @@ const UnlockGate = ({ children }: UnlockGateProps) => {
         } catch { /* ignore */ }
         if (!cancelled) setStatus('locked');
       }
+
     })();
     return () => { cancelled = true; };
   }, []);
