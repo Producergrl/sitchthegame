@@ -1,4 +1,1 @@
 project_id = "gmzptuwtnfevrfebmzti"
-
-[functions.gumroad-sync]
-verify_jwt = false
