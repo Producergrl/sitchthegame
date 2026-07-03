@@ -96,7 +96,6 @@ const UnlockGate = ({ children }: UnlockGateProps) => {
 
       if (data?.valid) {
         safeSetItem(LICENSE_KEY, trimmed);
-        safeSetItem(SESSION_TOKEN_KEY, JSON.stringify({ key: trimmed, verifiedAt: Date.now() }));
         setStatus('unlocked');
       } else {
         setError(data?.error || 'Invalid code — please check your Gumroad receipt and try again.');
