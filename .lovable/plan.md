@@ -14,6 +14,6 @@ Publishing the site must never overwrite the live Gumroad product summary, price
 ## What is not allowed
 - No build-time Gumroad product updates.
 - No publish-time Gumroad product updates.
-- No admin "Sync to Gumroad" button.
+- No admin button that edits Gumroad product details.
 - No edge function that edits Gumroad product details.
 - No app config file that stores Gumroad product copy or price as a source of truth.
