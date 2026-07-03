@@ -7,8 +7,7 @@ import { safeGetItem, safeSetItem, safeRemoveItem } from '@/lib/safeStorage';
 import { supabase } from '@/integrations/supabase/client';
 
 const LICENSE_KEY = 'sitch_license_key';
-const SESSION_TOKEN_KEY = 'sitch_session_token'; // { key, verifiedAt }
-const SESSION_TTL_MS = 24 * 60 * 60 * 1000; // 24h soft cache
+const SESSION_TOKEN_KEY = 'sitch_session_token'; // legacy — cleared on load
 
 interface UnlockGateProps {
   children: React.ReactNode;
