@@ -20,7 +20,7 @@ export const gumroadProduct = {
     'Play at https://play.sitchthegame.com',
   ].join('\n'),
   // Price in CENTS. e.g. 1999 = $19.99
-  priceCents: 1999,
+  priceCents: 699,
   currency: 'usd',
   // Public cover image used by the website and pushed to Gumroad.
   imageUrl: 'https://sitchthegame.com/og-image.png',
