@@ -316,15 +316,10 @@ const Index = () => {
           </p>
         </motion.div>
 
-        {/* Adult-only: manual Gumroad sync trigger (also runs automatically on every publish/build) */}
-        <AdultGate title="Sync to Gumroad" description="Push the current product name, description, price, and cover image to your Gumroad listing.">
-          <div className="rounded-2xl border border-[#1E3A5F]/15 bg-white/60 p-4 text-center space-y-2">
-            <p className="text-xs text-[#1E3A5F]/70">
-              Runs automatically on every publish. Use the button to push updates manually.
-            </p>
-            <SyncToGumroadButton />
-          </div>
-        </AdultGate>
+        {/* Gumroad sync runs automatically on every publish via the build hook.
+            The in-app manual trigger was removed so no client can call the
+            sync endpoint. */}
+
       </div>
       </main>
 
