@@ -180,6 +180,7 @@ const UnlockGate = ({ children }: UnlockGateProps) => {
             window.open('https://sitchthegame.gumroad.com/l/sitch', '_blank', 'noopener,noreferrer');
             try { window.top!.location.href = 'https://sitchthegame.gumroad.com/l/sitch'; } catch { /* cross-origin top — ignore */ }
           }}
+
           className="mt-4 flex w-full items-center justify-center gap-2 rounded-xl border-2 border-[#1E3A5F] bg-white py-4 px-4 font-bold uppercase tracking-wide text-[#1E3A5F] transition-transform hover:scale-[1.02] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#1E3A5F] focus-visible:ring-offset-2"
           aria-label="Buy Sitch on Gumroad to get an unlock code"
         >
