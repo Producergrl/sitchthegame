@@ -64,7 +64,14 @@ const HowToPlay = () => (
         <p className="text-muted-foreground max-w-md mx-auto">
           Read a scenario, decide what you'd do, and learn together. Play solo or with family and friends.
         </p>
+        <div className="mx-auto max-w-md rounded-2xl border border-border bg-card p-4 text-left text-sm text-muted-foreground">
+          <p className="font-semibold text-foreground mb-1">A note for grown-ups</p>
+          <p>
+            Sitch is a <strong>fun family card game</strong> to help your family hone their instincts and learn together — not therapy, not professional advice. Some decks touch on real-world topics like body boundaries, online strangers, and peer pressure. We recommend adults play alongside younger children (ages 4–6 and 7–9). Designed for fun — play with care.
+          </p>
+        </div>
       </motion.section>
+
 
       {/* Steps */}
       <motion.section
