@@ -12,8 +12,16 @@ const gumroadSyncPlugin = () => {
     name: "gumroad-sync-on-build",
     apply: "build" as const,
     async closeBundle() {
+      const token = process.env.GUMROAD_SYNC_TOKEN;
+      if (!token) {
+        console.warn("[gumroad-sync] skipped: GUMROAD_SYNC_TOKEN not set in build env");
+        return;
+      }
       try {
-        const res = await fetch(FN_URL, { method: "POST" });
+        const res = await fetch(FN_URL, {
+          method: "POST",
+          headers: { "x-sync-token": token },
+        });
         const body = await res.text();
         if (res.ok) {
           console.log("[gumroad-sync] OK", body.slice(0, 200));
@@ -24,6 +32,7 @@ const gumroadSyncPlugin = () => {
         console.warn("[gumroad-sync] skipped:", (err as Error).message);
       }
     },
+
   };
 };
 
