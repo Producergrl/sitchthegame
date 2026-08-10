@@ -152,17 +152,17 @@ const Index = () => {
             Real-life safety scenarios. Your child chooses — then you talk it through, together.
           </motion.p>
 
-          {/* CTA pair — styled as an extension of the logo plate */}
+          {/* Primary CTA — one clear action */}
           <motion.div
             initial={{ opacity: 0, y: 16 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 1.4, duration: 0.6 }}
-            className="mt-6 flex flex-col items-stretch gap-3 sm:flex-row sm:flex-wrap sm:items-center sm:justify-center"
+            className="mt-6 flex flex-col items-center gap-2"
           >
-            <Link to="/play?decks=__compilation__&age=7-9&mode=quiz" className="flex flex-col items-center">
+            <Link to="/play?decks=__compilation__&age=7-9&mode=quiz" className="flex w-full flex-col items-center sm:w-auto">
               <Button
                 size="lg"
-                className="group w-full gap-2.5 text-base font-black tracking-[0.08em] uppercase active:animate-btn-press transition-all duration-300 hover:scale-[1.04] px-9 py-6 rounded-xl border-0 sm:w-auto"
+                className="group w-full gap-2.5 text-base font-black tracking-[0.08em] uppercase active:animate-btn-press transition-all duration-300 hover:scale-[1.04] px-10 py-7 rounded-xl border-0 sm:w-auto"
                 style={{
                   background: 'linear-gradient(180deg, #E63329 0%, #B81E16 100%)',
                   boxShadow: '0 6px 0 #7A1108, 0 12px 24px hsl(15 70% 20% / 0.35), inset 0 1px 0 hsl(45 95% 75% / 0.4)',
@@ -171,106 +171,46 @@ const Index = () => {
                 }}
               >
                 <Zap className="h-5 w-5 transition-transform group-hover:rotate-12 group-hover:scale-110" />
-                Quick Play
+                Play Now
               </Button>
               <span className="mt-1.5 text-[10px] font-bold uppercase tracking-wider text-[#FEF3D0]/85">10 random missions · ages 7–9</span>
             </Link>
-            <Link to="/session/setup" className="flex flex-col items-center">
-              <Button
-                size="lg"
-                className="w-full gap-2.5 text-base font-black tracking-[0.08em] uppercase active:animate-btn-press transition-all duration-300 hover:scale-[1.04] px-9 py-6 rounded-xl sm:w-auto"
-                style={{
-                  background: 'linear-gradient(180deg, #FEF3D0 0%, #FAD89A 100%)',
-                  color: '#B81E16',
-                  border: '1.5px solid #FDB913',
-                  boxShadow: '0 6px 0 #B8861A, 0 12px 24px hsl(15 70% 20% / 0.25), inset 0 1px 0 hsl(0 0% 100% / 0.6)',
-                }}
-              >
-                <Sparkles className="h-5 w-5" />
-                Custom Game
-              </Button>
-              <span className="mt-1.5 text-[10px] font-bold uppercase tracking-wider text-[#FEF3D0]/85">Pick age, mode & decks</span>
-            </Link>
-            <ShareInviteButton />
-          </motion.div>
 
-          {/* New-user helper link */}
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ delay: 1.55, duration: 0.5 }}
-            className="mt-3"
-          >
             <Link
-              to="/how-to-play"
-              className="inline-flex items-center gap-1.5 rounded-full px-3 py-1.5 text-xs font-bold uppercase tracking-wider text-[#FEF3D0] underline-offset-4 hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#FDB913] min-h-[44px]"
+              to="/session/setup"
+              className="inline-flex min-h-[44px] items-center gap-1.5 rounded-full px-3 py-1.5 text-xs font-bold uppercase tracking-wider text-[#FEF3D0] underline-offset-4 hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#FDB913]"
               style={{ textShadow: '0 2px 8px hsl(10 70% 12% / 0.55)' }}
-              aria-label="New here? Read the How to Play guide"
             >
-              <BookOpen className="h-3.5 w-3.5" />
-              New here? How to Play →
+              <Sparkles className="h-3.5 w-3.5" />
+              Custom game: pick age, mode &amp; decks
             </Link>
           </motion.div>
 
-
-          {/* ── Nav trio: all logo-blue, Safety Hub enlarged ── */}
+          {/* Secondary row — everything else, quiet and compact */}
           <motion.div
             initial={{ opacity: 0, y: 12 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 1.7, duration: 0.55 }}
-            className="mt-6 grid w-full max-w-md grid-cols-3 gap-2.5"
+            className="mt-5 flex w-full max-w-md flex-wrap items-center justify-center gap-x-3 gap-y-1 text-[11px] font-bold uppercase tracking-wider"
           >
-            {navItems.map((item) => {
-              const isSafety = item.title === 'Safety Hub';
-              return (
-                <Link key={item.title} to={item.to}>
-                  <motion.div
-                    whileHover={{ y: -3 }}
-                    whileTap={{ scale: 0.97 }}
-                    className={`flex h-full flex-col items-center justify-center gap-1 rounded-xl px-2 py-3 text-center ${isSafety ? 'scale-[1.1]' : ''}`}
-                    style={
-                      isSafety
-                        ? {
-                            background: 'linear-gradient(180deg, #2D5F8A 0%, #1E3A5F 100%)',
-                            border: '1.5px solid #FDB913',
-                            boxShadow: '0 5px 0 #0F1F33, 0 10px 22px hsl(215 70% 10% / 0.45), inset 0 1px 0 hsl(215 60% 60% / 0.4)',
-                            color: '#FFFFFF',
-                          }
-                        : {
-                            background: 'linear-gradient(180deg, #2D5F8A 0%, #1E3A5F 100%)',
-                            border: '1px solid hsl(215 60% 55% / 0.5)',
-                            boxShadow: '0 3px 0 #0F1F33, 0 6px 14px hsl(215 70% 10% / 0.35), inset 0 1px 0 hsl(215 60% 55% / 0.35)',
-                            color: '#FEF3D0',
-                          }
-                    }
-                  >
-                    <span className="text-xl leading-none">{item.emoji}</span>
-                    <span className="text-[0.7rem] font-black uppercase tracking-wider leading-tight text-white">
-                      {item.title}
-                    </span>
-                  </motion.div>
-                </Link>
-              );
-            })}
+            {[
+              { label: 'How to Play', to: '/how-to-play' },
+              { label: 'Mission Packs', to: '/decks' },
+              { label: `Profile · ${level.icon} ${progress.totalXP} XP`, to: '/stickers' },
+              { label: 'Safety Hub', to: '/resources' },
+            ].map(link => (
+              <Link
+                key={link.to}
+                to={link.to}
+                className="inline-flex min-h-[44px] items-center rounded-full px-2.5 text-[#FEF3D0]/90 underline-offset-4 hover:text-[#FEF3D0] hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#FDB913]"
+                style={{ textShadow: '0 2px 8px hsl(10 70% 12% / 0.55)' }}
+              >
+                {link.label}
+              </Link>
+            ))}
+            <span className="inline-flex items-center"><ShareInviteButton /></span>
           </motion.div>
 
-          {/* Slim level chip */}
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ delay: 1.9, duration: 0.5 }}
-            className="mt-4 flex items-center gap-2 rounded-full px-3.5 py-1.5"
-            style={{
-              background: 'hsl(10 70% 12% / 0.35)',
-              border: '1px solid hsl(45 95% 70% / 0.4)',
-              backdropFilter: 'blur(8px)',
-            }}
-          >
-            <span className="text-sm">{level.icon}</span>
-            <span className="text-xs font-bold uppercase tracking-wider text-[#FEF3D0]">{level.title}</span>
-            <span className="h-3 w-px bg-[#FEF3D0]/30" />
-            <span className="text-xs font-bold text-[#FEF3D0]">{progress.totalXP} XP</span>
-          </motion.div>
         </motion.div>
 
         {/* ── Scroll indicator ── */}
