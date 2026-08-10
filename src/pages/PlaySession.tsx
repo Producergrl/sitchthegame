@@ -800,7 +800,9 @@ const PlaySession = () => {
                 <ArrowLeft className="h-5 w-5" />
               </Button>
             </Link>
-            <span className="text-xs sm:text-sm font-bold opacity-80 truncate">{deck?.icon} Mission {index + 1}</span>
+            <span className="text-xs sm:text-sm font-bold opacity-80 truncate">
+              {playerProfile.emoji} {playerProfile.name}
+            </span>
           </div>
           <div className="flex items-center gap-1 sm:gap-2 shrink-0">
             <ThemeToggle className="text-primary-foreground hover:bg-white/10" />
