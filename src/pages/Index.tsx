@@ -310,10 +310,14 @@ const Index = () => {
           }}
         >
           <Shield className="mx-auto mb-2 h-6 w-6 text-[#1E3A5F]" />
-          <p className="text-sm font-bold text-[#1E3A5F]">Designed for Safety</p>
+          <p className="text-sm font-black text-[#1E3A5F]">
+            <span aria-hidden="true">★★★★★</span> Safe, family fun for all ages
+          </p>
+          <p className="mt-1 text-sm font-bold text-[#1E3A5F]">Designed for Safety</p>
           <p className="mt-1 text-xs text-muted-foreground leading-relaxed">
             No public profiles · No messaging · No social sharing · Play with a trusted adult
           </p>
+
         </motion.div>
 
       </div>
