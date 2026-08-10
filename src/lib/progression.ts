@@ -4,6 +4,7 @@
  */
 
 import { safeGetItem, safeSetItem, safeRemoveItem } from './safeStorage';
+import { profileKey } from './profiles';
 
 export interface Badge {
   id: string;
@@ -72,11 +73,11 @@ export function loadProgress(): PlayerProgress {
 }
 
 export function saveProgress(p: PlayerProgress) {
-  safeSetItem(STORAGE_KEY, JSON.stringify(p));
+  safeSetItem(STORAGE_KEY(), JSON.stringify(p));
 }
 
 export function resetProgress() {
-  safeRemoveItem(STORAGE_KEY);
+  safeRemoveItem(STORAGE_KEY());
 }
 
 export function getCurrentLevel(xp: number): PlayerLevel {
