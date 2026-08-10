@@ -56,12 +56,13 @@ export const XP_MISSION_COMPLETE = 5;
 
 // ── Helpers ──
 
-const STORAGE_KEY = 'wwyd-progression';
+const BASE_STORAGE_KEY = 'wwyd-progression';
+const STORAGE_KEY = () => profileKey(BASE_STORAGE_KEY);
 
 const DEFAULT_PROGRESS: PlayerProgress = { totalXP: 0, missionsCompleted: 0, badgesEarned: [], completedCardIds: [] };
 
 export function loadProgress(): PlayerProgress {
-  const raw = safeGetItem(STORAGE_KEY);
+  const raw = safeGetItem(STORAGE_KEY());
   if (raw) {
     try {
       return JSON.parse(raw);
