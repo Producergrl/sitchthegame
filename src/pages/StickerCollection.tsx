@@ -7,6 +7,7 @@ import ThemeToggle from '@/components/ThemeToggle';
 import SEO from '@/components/SEO';
 import { STICKERS, loadStickerProgress, type StickerProgress } from '@/lib/stickers';
 import MissionProgress from '@/components/MissionProgress';
+import ProfileSwitcher from '@/components/ProfileSwitcher';
 import { loadProgress, type PlayerProgress } from '@/lib/progression';
 
 const container = {
@@ -56,6 +57,14 @@ const StickerCollection = () => {
       </div>
 
       <main className="mx-auto max-w-2xl px-4 py-6 space-y-8">
+        {/* Multi-child profiles */}
+        <ProfileSwitcher
+          onChange={() => {
+            setProgress(loadStickerProgress());
+            setPlayerProgress(loadProgress());
+          }}
+        />
+
         {/* Safety Scout — player progress */}
         <section>
           <h2 className="mb-3 text-lg font-black text-foreground flex items-center gap-2">

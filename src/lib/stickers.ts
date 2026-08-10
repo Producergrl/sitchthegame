@@ -4,6 +4,7 @@
  */
 
 import { safeGetItem, safeSetItem, safeRemoveItem } from './safeStorage';
+import { profileKey } from './profiles';
 
 export interface Sticker {
   id: string;
@@ -38,7 +39,7 @@ export const STICKERS: Sticker[] = [
 
 // ── Persistence ──
 
-const STORAGE_KEY = 'wwyd-stickers';
+const STORAGE_KEY = () => profileKey('wwyd-stickers');
 
 export interface StickerProgress {
   earnedIds: string[];
@@ -48,7 +49,7 @@ export interface StickerProgress {
 const DEFAULT_STICKER_PROGRESS: StickerProgress = { earnedIds: [], bestStreak: 0 };
 
 export function loadStickerProgress(): StickerProgress {
-  const raw = safeGetItem(STORAGE_KEY);
+  const raw = safeGetItem(STORAGE_KEY());
   if (raw) {
     try {
       return JSON.parse(raw);
@@ -58,11 +59,11 @@ export function loadStickerProgress(): StickerProgress {
 }
 
 export function saveStickerProgress(p: StickerProgress) {
-  safeSetItem(STORAGE_KEY, JSON.stringify(p));
+  safeSetItem(STORAGE_KEY(), JSON.stringify(p));
 }
 
 export function resetStickerProgress() {
-  safeRemoveItem(STORAGE_KEY);
+  safeRemoveItem(STORAGE_KEY());
 }
 
 export function checkNewStickers(

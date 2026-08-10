@@ -22,6 +22,9 @@ import {
   type StickerProgress, type Sticker as StickerDef,
 } from '@/lib/stickers';
 import { saveWowResponse, getSessionResponses } from '@/lib/wowReview';
+import { saveSession, loadSession, clearSession } from '@/lib/sessionResume';
+import { getActiveProfile } from '@/lib/profiles';
+import SessionRecap, { type RecapEntry } from '@/components/SessionRecap';
 import AdultGate from '@/components/AdultGate';
 import SEO from '@/components/SEO';
 
@@ -113,6 +116,67 @@ const PlaySession = () => {
   const [newStickersThisSession, setNewStickersThisSession] = useState<StickerDef[]>([]);
   const [showConfetti, setShowConfetti] = useState(false);
 
+  // Recap log — one entry per answered mission (used by the parent recap)
+  const [recapLog, setRecapLog] = useState<RecapEntry[]>([]);
+
+  // Resume state
+  const playerProfile = useMemo(() => getActiveProfile(), []);
+  const [savedSession] = useState(() => loadSession());
+  const [resumeDismissed, setResumeDismissed] = useState(false);
+  const canResume =
+    isPlaying &&
+    !sessionDone &&
+    !resumeDismissed &&
+    index === 0 &&
+    !!savedSession &&
+    savedSession.sessionKey === sessionKey &&
+    savedSession.index > 0;
+
+  const handleResume = () => {
+    if (!savedSession) return;
+    setIndex(Math.min(savedSession.index, sessionCards.length - 1));
+    setScore(savedSession.score);
+    setDemerits(savedSession.demerits);
+    setBonusPoints(savedSession.bonusPoints);
+    setStreak(savedSession.streak);
+    setBestStreak(savedSession.bestStreak);
+    setSessionXP(savedSession.sessionXP);
+    setDiscussed(new Set(savedSession.discussed));
+    setFlagged(new Set(savedSession.flagged));
+    setResumeDismissed(true);
+    toast({ title: '▶️ Session resumed', description: `Picking up at card ${savedSession.index + 1}.` });
+  };
+
+  const handleStartOver = () => {
+    clearSession();
+    setResumeDismissed(true);
+  };
+
+  // Persist progress after every card so a closed tab can be resumed
+  useEffect(() => {
+    if (!isPlaying || sessionCards.length === 0) return;
+    if (sessionDone) {
+      clearSession();
+      return;
+    }
+    saveSession({
+      sessionKey,
+      cardIds: sessionCards.map(c => c.id),
+      index,
+      score,
+      demerits,
+      bonusPoints,
+      streak,
+      bestStreak,
+      sessionXP,
+      discussed: Array.from(discussed),
+      flagged: Array.from(flagged),
+      savedAt: Date.now(),
+      label: `${sessionCards.length} missions`,
+    });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [index, sessionDone, isPlaying, sessionKey, sessionCards.length]);
+
   // Speech-to-text state
   const [isListening, setIsListening] = useState(false);
   const [speechSupported] = useState(() =>
@@ -187,6 +251,28 @@ const PlaySession = () => {
 
   const handleNext = () => {
     const isLast = index + 1 >= sessionCards.length;
+    // Record this card for the parent recap
+    if (card) {
+      const chosenOpt = card.options.find(o => o.label === selectedOption);
+      const outcome: RecapEntry['outcome'] =
+        selectedOption === null ? 'skipped'
+          : selectedOption === NONE_LABEL ? 'own-idea'
+          : card.correct_option === selectedOption ? 'safe'
+          : 'risky';
+      const entry: RecapEntry = {
+        title: card.title,
+        scenario: card.scenario,
+        deckName: deck?.name ?? 'Sitch',
+        chosen:
+          outcome === 'own-idea' ? (customAnswer.trim() || 'Their own idea')
+            : outcome === 'skipped' ? 'No answer given'
+            : chosenOpt?.text ?? selectedOption ?? '',
+        outcome,
+        practicePhrase: card.practice_phrase,
+        prompts: card.reflection_prompts ?? [],
+      };
+      setRecapLog(prev => [...prev.filter(e => e.title !== entry.title), entry]);
+    }
     // Award XP for the card we're leaving (uses current `card`)
     if (selectedOption !== null) {
       try { finishCurrentMission(); } catch (e) { console.error('finishCurrentMission failed', e); }
@@ -649,6 +735,15 @@ const PlaySession = () => {
             </AdultGate>
           )}
 
+          {/* Parent recap — print or email what was discussed */}
+          <SessionRecap
+            playerName={playerProfile.name}
+            ageBand={activeAge}
+            mode={activeMode}
+            entries={recapLog}
+          />
+
+
           <div className="space-y-2 rounded-2xl border bg-card p-4 text-left">
             <p className="text-sm font-bold text-card-foreground">Session Summary</p>
             <p className="text-sm text-muted-foreground">✅ Discussed: {discussed.size} missions</p>
@@ -705,7 +800,9 @@ const PlaySession = () => {
                 <ArrowLeft className="h-5 w-5" />
               </Button>
             </Link>
-            <span className="text-xs sm:text-sm font-bold opacity-80 truncate">{deck?.icon} Mission {index + 1}</span>
+            <span className="text-xs sm:text-sm font-bold opacity-80 truncate">
+              {playerProfile.emoji} {playerProfile.name}
+            </span>
           </div>
           <div className="flex items-center gap-1 sm:gap-2 shrink-0">
             <ThemeToggle className="text-primary-foreground hover:bg-white/10" />
@@ -725,6 +822,14 @@ const PlaySession = () => {
         </div>
         {/* Progress bar */}
         <div className="mx-auto mt-3 max-w-2xl">
+          <div className="mb-1.5 flex items-center justify-between text-xs font-black uppercase tracking-wider">
+            <span>Card {index + 1} of {sessionCards.length}</span>
+            <span className="opacity-80">
+              {sessionCards.length - (index + 1) === 0
+                ? 'Last one!'
+                : `${sessionCards.length - (index + 1)} to go`}
+            </span>
+          </div>
           <div className="h-3 rounded-full bg-primary-foreground/20 overflow-hidden">
             <motion.div
               className="h-3 rounded-full bg-primary-foreground"
@@ -732,6 +837,7 @@ const PlaySession = () => {
               animate={{ width: `${((index + 1) / sessionCards.length) * 100}%` }}
             />
           </div>
+
           {activeMode === 'quiz' && (
             <div className="mt-2 flex justify-center">
               <span className="rounded-full bg-primary-foreground/20 px-3 py-1 text-sm font-black text-primary-foreground">
@@ -754,6 +860,22 @@ const PlaySession = () => {
           )}
         </div>
       </div>
+
+      {/* Resume prompt */}
+      {canResume && savedSession && (
+        <div className="mx-auto max-w-2xl px-4 pt-4">
+          <div className="rounded-2xl border-2 border-primary bg-primary/10 p-4 space-y-3">
+            <p className="text-sm font-black text-primary">▶️ Pick up where you left off?</p>
+            <p className="text-xs text-muted-foreground">
+              {playerProfile.name} stopped at card {savedSession.index + 1} of {savedSession.cardIds.length}.
+            </p>
+            <div className="flex flex-col gap-2 sm:flex-row">
+              <Button className="flex-1 font-bold" onClick={handleResume}>Resume session</Button>
+              <Button variant="outline" className="flex-1 font-bold" onClick={handleStartOver}>Start over</Button>
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* Card */}
       <div className="mx-auto max-w-2xl px-4 py-6">

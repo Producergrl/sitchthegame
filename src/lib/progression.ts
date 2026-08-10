@@ -4,6 +4,7 @@
  */
 
 import { safeGetItem, safeSetItem, safeRemoveItem } from './safeStorage';
+import { profileKey } from './profiles';
 
 export interface Badge {
   id: string;
@@ -56,12 +57,13 @@ export const XP_MISSION_COMPLETE = 5;
 
 // ── Helpers ──
 
-const STORAGE_KEY = 'wwyd-progression';
+const BASE_STORAGE_KEY = 'wwyd-progression';
+const STORAGE_KEY = () => profileKey(BASE_STORAGE_KEY);
 
 const DEFAULT_PROGRESS: PlayerProgress = { totalXP: 0, missionsCompleted: 0, badgesEarned: [], completedCardIds: [] };
 
 export function loadProgress(): PlayerProgress {
-  const raw = safeGetItem(STORAGE_KEY);
+  const raw = safeGetItem(STORAGE_KEY());
   if (raw) {
     try {
       return JSON.parse(raw);
@@ -71,11 +73,11 @@ export function loadProgress(): PlayerProgress {
 }
 
 export function saveProgress(p: PlayerProgress) {
-  safeSetItem(STORAGE_KEY, JSON.stringify(p));
+  safeSetItem(STORAGE_KEY(), JSON.stringify(p));
 }
 
 export function resetProgress() {
-  safeRemoveItem(STORAGE_KEY);
+  safeRemoveItem(STORAGE_KEY());
 }
 
 export function getCurrentLevel(xp: number): PlayerLevel {
