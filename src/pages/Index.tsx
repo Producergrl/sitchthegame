@@ -336,7 +336,7 @@ const Index = () => {
           <p className="text-[10px] text-[#1E3A5F]/60 leading-relaxed">
             A fun family card game to hone your instincts and learn together.
             Not therapy or professional advice. Adult supervision recommended for younger children.
-            All sales final — no refunds on digital purchases.
+            All sales final. No refunds on digital purchases.
           </p>
 
         </div>
