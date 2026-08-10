@@ -861,6 +861,22 @@ const PlaySession = () => {
         </div>
       </div>
 
+      {/* Resume prompt */}
+      {canResume && savedSession && (
+        <div className="mx-auto max-w-2xl px-4 pt-4">
+          <div className="rounded-2xl border-2 border-primary bg-primary/10 p-4 space-y-3">
+            <p className="text-sm font-black text-primary">▶️ Pick up where you left off?</p>
+            <p className="text-xs text-muted-foreground">
+              {playerProfile.name} stopped at card {savedSession.index + 1} of {savedSession.cardIds.length}.
+            </p>
+            <div className="flex flex-col gap-2 sm:flex-row">
+              <Button className="flex-1 font-bold" onClick={handleResume}>Resume session</Button>
+              <Button variant="outline" className="flex-1 font-bold" onClick={handleStartOver}>Start over</Button>
+            </div>
+          </div>
+        </div>
+      )}
+
       {/* Card */}
       <div className="mx-auto max-w-2xl px-4 py-6">
         <AnimatePresence mode="wait">
