@@ -310,10 +310,14 @@ const Index = () => {
           }}
         >
           <Shield className="mx-auto mb-2 h-6 w-6 text-[#1E3A5F]" />
-          <p className="text-sm font-bold text-[#1E3A5F]">Designed for Safety</p>
+          <p className="text-sm font-black text-[#1E3A5F]">
+            <span aria-hidden="true">★★★★★</span> Safe, family fun for all ages
+          </p>
+          <p className="mt-1 text-sm font-bold text-[#1E3A5F]">Designed for Safety</p>
           <p className="mt-1 text-xs text-muted-foreground leading-relaxed">
             No public profiles · No messaging · No social sharing · Play with a trusted adult
           </p>
+
         </motion.div>
 
       </div>
@@ -332,7 +336,7 @@ const Index = () => {
           <p className="text-[10px] text-[#1E3A5F]/60 leading-relaxed">
             A fun family card game to hone your instincts and learn together.
             Not therapy or professional advice. Adult supervision recommended for younger children.
-            All sales final — no refunds on digital purchases.
+            All sales final. No refunds on digital purchases.
           </p>
 
         </div>
