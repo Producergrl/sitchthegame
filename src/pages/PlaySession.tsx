@@ -822,6 +822,14 @@ const PlaySession = () => {
         </div>
         {/* Progress bar */}
         <div className="mx-auto mt-3 max-w-2xl">
+          <div className="mb-1.5 flex items-center justify-between text-xs font-black uppercase tracking-wider">
+            <span>Card {index + 1} of {sessionCards.length}</span>
+            <span className="opacity-80">
+              {sessionCards.length - (index + 1) === 0
+                ? 'Last one!'
+                : `${sessionCards.length - (index + 1)} to go`}
+            </span>
+          </div>
           <div className="h-3 rounded-full bg-primary-foreground/20 overflow-hidden">
             <motion.div
               className="h-3 rounded-full bg-primary-foreground"
@@ -829,6 +837,7 @@ const PlaySession = () => {
               animate={{ width: `${((index + 1) / sessionCards.length) * 100}%` }}
             />
           </div>
+
           {activeMode === 'quiz' && (
             <div className="mt-2 flex justify-center">
               <span className="rounded-full bg-primary-foreground/20 px-3 py-1 text-sm font-black text-primary-foreground">
