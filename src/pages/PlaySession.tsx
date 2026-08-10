@@ -251,6 +251,28 @@ const PlaySession = () => {
 
   const handleNext = () => {
     const isLast = index + 1 >= sessionCards.length;
+    // Record this card for the parent recap
+    if (card) {
+      const chosenOpt = card.options.find(o => o.label === selectedOption);
+      const outcome: RecapEntry['outcome'] =
+        selectedOption === null ? 'skipped'
+          : selectedOption === NONE_LABEL ? 'own-idea'
+          : card.correct_option === selectedOption ? 'safe'
+          : 'risky';
+      const entry: RecapEntry = {
+        title: card.title,
+        scenario: card.scenario,
+        deckName: deck?.name ?? 'Sitch',
+        chosen:
+          outcome === 'own-idea' ? (customAnswer.trim() || 'Their own idea')
+            : outcome === 'skipped' ? 'No answer given'
+            : chosenOpt?.text ?? selectedOption ?? '',
+        outcome,
+        practicePhrase: card.practice_phrase,
+        prompts: card.reflection_prompts ?? [],
+      };
+      setRecapLog(prev => [...prev.filter(e => e.title !== entry.title), entry]);
+    }
     // Award XP for the card we're leaving (uses current `card`)
     if (selectedOption !== null) {
       try { finishCurrentMission(); } catch (e) { console.error('finishCurrentMission failed', e); }
