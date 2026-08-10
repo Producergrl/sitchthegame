@@ -116,6 +116,67 @@ const PlaySession = () => {
   const [newStickersThisSession, setNewStickersThisSession] = useState<StickerDef[]>([]);
   const [showConfetti, setShowConfetti] = useState(false);
 
+  // Recap log — one entry per answered mission (used by the parent recap)
+  const [recapLog, setRecapLog] = useState<RecapEntry[]>([]);
+
+  // Resume state
+  const playerProfile = useMemo(() => getActiveProfile(), []);
+  const [savedSession] = useState(() => loadSession());
+  const [resumeDismissed, setResumeDismissed] = useState(false);
+  const canResume =
+    isPlaying &&
+    !sessionDone &&
+    !resumeDismissed &&
+    index === 0 &&
+    !!savedSession &&
+    savedSession.sessionKey === sessionKey &&
+    savedSession.index > 0;
+
+  const handleResume = () => {
+    if (!savedSession) return;
+    setIndex(Math.min(savedSession.index, sessionCards.length - 1));
+    setScore(savedSession.score);
+    setDemerits(savedSession.demerits);
+    setBonusPoints(savedSession.bonusPoints);
+    setStreak(savedSession.streak);
+    setBestStreak(savedSession.bestStreak);
+    setSessionXP(savedSession.sessionXP);
+    setDiscussed(new Set(savedSession.discussed));
+    setFlagged(new Set(savedSession.flagged));
+    setResumeDismissed(true);
+    toast({ title: '▶️ Session resumed', description: `Picking up at card ${savedSession.index + 1}.` });
+  };
+
+  const handleStartOver = () => {
+    clearSession();
+    setResumeDismissed(true);
+  };
+
+  // Persist progress after every card so a closed tab can be resumed
+  useEffect(() => {
+    if (!isPlaying || sessionCards.length === 0) return;
+    if (sessionDone) {
+      clearSession();
+      return;
+    }
+    saveSession({
+      sessionKey,
+      cardIds: sessionCards.map(c => c.id),
+      index,
+      score,
+      demerits,
+      bonusPoints,
+      streak,
+      bestStreak,
+      sessionXP,
+      discussed: Array.from(discussed),
+      flagged: Array.from(flagged),
+      savedAt: Date.now(),
+      label: `${sessionCards.length} missions`,
+    });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [index, sessionDone, isPlaying, sessionKey, sessionCards.length]);
+
   // Speech-to-text state
   const [isListening, setIsListening] = useState(false);
   const [speechSupported] = useState(() =>
