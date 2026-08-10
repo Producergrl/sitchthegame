@@ -7,6 +7,7 @@ import ThemeToggle from '@/components/ThemeToggle';
 import SEO from '@/components/SEO';
 import { STICKERS, loadStickerProgress, type StickerProgress } from '@/lib/stickers';
 import MissionProgress from '@/components/MissionProgress';
+import ProfileSwitcher from '@/components/ProfileSwitcher';
 import { loadProgress, type PlayerProgress } from '@/lib/progression';
 
 const container = {
