@@ -735,6 +735,15 @@ const PlaySession = () => {
             </AdultGate>
           )}
 
+          {/* Parent recap — print or email what was discussed */}
+          <SessionRecap
+            playerName={playerProfile.name}
+            ageBand={activeAge}
+            mode={activeMode}
+            entries={recapLog}
+          />
+
+
           <div className="space-y-2 rounded-2xl border bg-card p-4 text-left">
             <p className="text-sm font-bold text-card-foreground">Session Summary</p>
             <p className="text-sm text-muted-foreground">✅ Discussed: {discussed.size} missions</p>
