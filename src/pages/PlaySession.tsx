@@ -22,6 +22,9 @@ import {
   type StickerProgress, type Sticker as StickerDef,
 } from '@/lib/stickers';
 import { saveWowResponse, getSessionResponses } from '@/lib/wowReview';
+import { saveSession, loadSession, clearSession } from '@/lib/sessionResume';
+import { getActiveProfile } from '@/lib/profiles';
+import SessionRecap, { type RecapEntry } from '@/components/SessionRecap';
 import AdultGate from '@/components/AdultGate';
 import SEO from '@/components/SEO';
 
