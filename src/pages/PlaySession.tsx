@@ -71,13 +71,22 @@ const PlaySession = () => {
 
   // Build session cards ONCE per session — memoized so React never re-creates them mid-play.
   const sessionKey = `${activeDeckIds.join(',')}|${activeAge}|${isPlaying ? '1' : '0'}`;
+  // When a saved session is resumed we rebuild the EXACT same card list from its ids.
+  const [resumedCardIds, setResumedCardIds] = useState<string[] | null>(null);
   const sessionCards = useMemo<typeof allCards>(() => {
     if (!isPlaying) return [];
+    if (resumedCardIds && resumedCardIds.length > 0) {
+      const restored = resumedCardIds
+        .map(id => allCards.find(c => c.id === id))
+        .filter((c): c is typeof allCards[number] => !!c);
+      if (restored.length > 0) return restored;
+    }
     if (activeDeckIds.includes(COMPILATION_DECK_ID)) return getCompilationCards(10, activeAge);
     if (activeDeckIds.length === 0) return allCards.filter(c => c.status === 'published');
     return allCards.filter(c => activeDeckIds.includes(c.deck_id) && c.status === 'published');
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [sessionKey]);
+  }, [sessionKey, resumedCardIds]);
+
 
   const [index, setIndex] = useState(0);
   // Reset index ONLY when the session key actually changes (new session/deck/age)
