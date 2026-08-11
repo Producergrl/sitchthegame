@@ -6,15 +6,20 @@
  *  1. Responds with HTTP 200
  *  2. Serves the expected app (title + built JS bundle present)
  *  3. Serves the SAME deployment as the Lovable published URL
+ *  4. Has a valid SSL certificate that is not close to expiring
  *
  * Usage: node scripts/domain-health-check.mjs
  * Exit code 0 = healthy, 1 = problem found.
  */
 
+import tls from "node:tls";
+
 const CUSTOM_DOMAIN = process.env.SITCH_DOMAIN_URL || "https://play.sitchthegame.com";
 const LOVABLE_URL = process.env.SITCH_LOVABLE_URL || "https://sitchthegame.lovable.app";
 const EXPECTED_TITLE_FRAGMENT = "Sitch";
 const TIMEOUT_MS = 20000;
+// Warn loudly while there is still time to fix a renewal problem.
+const SSL_MIN_DAYS = Number(process.env.SITCH_SSL_MIN_DAYS || 14);
 
 async function fetchPage(url) {
   const controller = new AbortController();
@@ -37,11 +42,46 @@ async function fetchPage(url) {
   }
 }
 
+export function checkSsl(hostname, port = 443) {
+  return new Promise((resolve, reject) => {
+    const socket = tls.connect(
+      { host: hostname, port, servername: hostname, timeout: TIMEOUT_MS },
+      () => {
+        const cert = socket.getPeerCertificate();
+        const authorized = socket.authorized;
+        const authorizationError = socket.authorizationError;
+        socket.end();
+        if (!cert || !cert.valid_to) {
+          reject(new Error("No certificate returned"));
+          return;
+        }
+        const validTo = new Date(cert.valid_to);
+        const daysRemaining = Math.floor((validTo.getTime() - Date.now()) / 86400000);
+        resolve({
+          authorized,
+          authorizationError: authorizationError ? String(authorizationError) : null,
+          issuer: cert.issuer?.O ?? "unknown",
+          validTo: validTo.toISOString(),
+          daysRemaining,
+        });
+      },
+    );
+    socket.on("timeout", () => {
+      socket.destroy();
+      reject(new Error("TLS connection timed out"));
+    });
+    socket.on("error", reject);
+  });
+}
+
 export async function runDomainHealthCheck() {
   const problems = [];
-  const [domain, lovable] = await Promise.all([
+  const hostname = new URL(CUSTOM_DOMAIN).hostname;
+
+  const [domain, lovable, ssl] = await Promise.all([
     fetchPage(CUSTOM_DOMAIN),
     fetchPage(LOVABLE_URL).catch(() => null),
+    checkSsl(hostname).catch((err) => ({ error: err.message })),
   ]);
 
   if (domain.status !== 200) {
@@ -62,12 +102,28 @@ export async function runDomainHealthCheck() {
     );
   }
 
+  if (ssl.error) {
+    problems.push(`SSL check failed for ${hostname}: ${ssl.error}`);
+  } else {
+    if (!ssl.authorized) {
+      problems.push(`SSL certificate for ${hostname} is not trusted: ${ssl.authorizationError}`);
+    }
+    if (ssl.daysRemaining < 0) {
+      problems.push(`SSL certificate for ${hostname} EXPIRED on ${ssl.validTo}`);
+    } else if (ssl.daysRemaining < SSL_MIN_DAYS) {
+      problems.push(
+        `SSL certificate for ${hostname} expires in ${ssl.daysRemaining} day(s) on ${ssl.validTo} (threshold ${SSL_MIN_DAYS})`,
+      );
+    }
+  }
+
   return {
     ok: problems.length === 0,
     problems,
     status: domain.status,
     deploymentId: domain.deploymentId,
     lovableDeploymentId: lovable?.deploymentId ?? null,
+    ssl,
   };
 }
 
@@ -80,6 +136,13 @@ if (isDirectRun) {
       console.log(`HTTP status: ${result.status}`);
       console.log(`Deployment: ${result.deploymentId ?? "unknown"}`);
       console.log(`Lovable deployment: ${result.lovableDeploymentId ?? "unknown"}`);
+      if (result.ssl?.error) {
+        console.log(`SSL: could not check (${result.ssl.error})`);
+      } else {
+        console.log(
+          `SSL: ${result.ssl.issuer}, expires ${result.ssl.validTo} (${result.ssl.daysRemaining} days left)`,
+        );
+      }
       if (result.ok) {
         console.log("PASS: domain is healthy and serving the current deployment.");
         process.exit(0);

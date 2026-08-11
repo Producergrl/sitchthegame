@@ -18,9 +18,74 @@ jobs:
         with:
           node-version: "20"
 
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
       - name: Wait for deployment to propagate
         if: github.event_name == 'push'
         run: sleep 90
 
-      - name: Check play.sitchthegame.com
+      - name: HTTP, build and SSL expiry check
+        id: http
         run: node scripts/domain-health-check.mjs
+
+      - name: Install Playwright
+        run: |
+          pip install playwright
+          python -m playwright install --with-deps chromium
+
+      - name: Browser smoke test (home, session start, first card)
+        id: browser
+        env:
+          SITCH_SMOKE_LICENSE_KEY: ${{ secrets.SITCH_SMOKE_LICENSE_KEY }}
+        run: python scripts/smoke-browser.py
+
+      - name: Upload screenshots
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: smoke-screenshots
+          path: scripts/smoke-screenshots/
+          if-no-files-found: ignore
+
+      # ---- Failure alerts ----
+      - name: Alert via Slack
+        if: failure() && env.SLACK_WEBHOOK_URL != ''
+        env:
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+        run: |
+          curl -sS -X POST -H 'Content-type: application/json' \
+            --data "{\"text\":\":rotating_light: Sitch domain health check FAILED on play.sitchthegame.com. Run: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}\"}" \
+            "$SLACK_WEBHOOK_URL"
+
+      - name: Open a GitHub issue on failure
+        if: failure()
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const title = 'Domain health check failed: play.sitchthegame.com';
+            const runUrl = `${context.serverUrl}/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId}`;
+            const { data: existing } = await github.rest.issues.listForRepo({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              state: 'open',
+              labels: 'domain-health',
+            });
+            const body = `The automated smoke test failed.\n\nRun: ${runUrl}\n\nChecks covered: HTTP 200, correct build/deployment ID, SSL expiry, homepage load, session start, first card render.`;
+            if (existing.length) {
+              await github.rest.issues.createComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: existing[0].number,
+                body,
+              });
+            } else {
+              await github.rest.issues.create({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                title,
+                body,
+                labels: ['domain-health'],
+              });
+            }
