@@ -65,8 +65,8 @@ async def run() -> list[str]:
         gate_visible = await code_input.is_visible() if await code_input.count() else False
         if gate_visible:
             if not LICENSE_KEY:
-                print("Unlock gate shown and no SITCH_SMOKE_LICENSE_KEY set: "
-                      "verified the gate renders, skipping the in-game checks.")
+                print("SKIPPED in-game checks: unlock gate is shown and "
+                      "SITCH_SMOKE_LICENSE_KEY is not set. Gate itself rendered fine.")
                 await browser.close()
                 return problems
             await code_input.fill(LICENSE_KEY)
