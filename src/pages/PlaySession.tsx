@@ -143,7 +143,8 @@ const PlaySession = () => {
 
   const handleResume = () => {
     if (!savedSession) return;
-    setIndex(Math.min(savedSession.index, sessionCards.length - 1));
+    if (savedSession.cardIds.length > 0) setResumedCardIds(savedSession.cardIds);
+    setIndex(Math.max(0, Math.min(savedSession.index, savedSession.cardIds.length - 1)));
     setScore(savedSession.score);
     setDemerits(savedSession.demerits);
     setBonusPoints(savedSession.bonusPoints);
@@ -158,16 +159,21 @@ const PlaySession = () => {
 
   const handleStartOver = () => {
     clearSession();
+    setResumedCardIds(null);
     setResumeDismissed(true);
   };
 
-  // Persist progress after every card so a closed tab can be resumed
+  // Persist progress after every card so a closed tab can be resumed.
+  // Never overwrite a stored session while the resume prompt is still pending,
+  // otherwise a fresh mount at index 0 would wipe the saved progress.
   useEffect(() => {
     if (!isPlaying || sessionCards.length === 0) return;
     if (sessionDone) {
       clearSession();
       return;
     }
+    if (canResume) return;
+    if (index === 0 && !resumeDismissed && savedSession) return;
     saveSession({
       sessionKey,
       cardIds: sessionCards.map(c => c.id),
@@ -184,7 +190,8 @@ const PlaySession = () => {
       label: `${sessionCards.length} missions`,
     });
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [index, sessionDone, isPlaying, sessionKey, sessionCards.length]);
+  }, [index, sessionDone, isPlaying, sessionKey, sessionCards.length, canResume, resumeDismissed]);
+
 
   // Speech-to-text state
   const [isListening, setIsListening] = useState(false);
