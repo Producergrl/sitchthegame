@@ -49,15 +49,32 @@ jobs:
           path: scripts/smoke-screenshots/
           if-no-files-found: ignore
 
-      # ---- Failure alerts ----
-      - name: Alert via Slack
-        if: failure() && env.SLACK_WEBHOOK_URL != ''
+      # ---- Failure alerts (email) ----
+      # Optional: sends a direct email to admin@kdcandfilms.com when the check fails.
+      # Only runs if the MAIL_USERNAME / MAIL_PASSWORD repository secrets are set
+      # (a Gmail address plus a Google "App Password").
+      - name: Email alert on failure
+        if: failure() && env.MAIL_USERNAME != ''
         env:
-          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
-        run: |
-          curl -sS -X POST -H 'Content-type: application/json' \
-            --data "{\"text\":\":rotating_light: Sitch domain health check FAILED on play.sitchthegame.com. Run: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}\"}" \
-            "$SLACK_WEBHOOK_URL"
+          MAIL_USERNAME: ${{ secrets.MAIL_USERNAME }}
+        uses: dawidd6/action-send-mail@v3
+        with:
+          server_address: smtp.gmail.com
+          server_port: 465
+          secure: true
+          username: ${{ secrets.MAIL_USERNAME }}
+          password: ${{ secrets.MAIL_PASSWORD }}
+          subject: "Sitch alert: play.sitchthegame.com health check FAILED"
+          to: admin@kdcandfilms.com
+          from: Sitch Health Check
+          body: |
+            The automated check on play.sitchthegame.com failed.
+
+            Checks covered: HTTP 200, correct build, SSL expiry, homepage load, session start, first card render.
+
+            Details: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+
+
 
       - name: Open a GitHub issue on failure
         if: failure()
