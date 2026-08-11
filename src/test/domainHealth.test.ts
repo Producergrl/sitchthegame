@@ -1,5 +1,4 @@
 import { describe, it, expect } from "vitest";
-// @ts-expect-error - plain JS script, no types needed
 import { runDomainHealthCheck } from "../../scripts/domain-health-check.mjs";
 
 /**
