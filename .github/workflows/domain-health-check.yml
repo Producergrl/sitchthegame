@@ -1,0 +1,26 @@
+name: Domain health check
+
+on:
+  push:
+    branches: [main]
+  schedule:
+    # Every 6 hours
+    - cron: "0 */6 * * *"
+  workflow_dispatch:
+
+jobs:
+  domain-health:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+
+      - name: Wait for deployment to propagate
+        if: github.event_name == 'push'
+        run: sleep 90
+
+      - name: Check play.sitchthegame.com
+        run: node scripts/domain-health-check.mjs
