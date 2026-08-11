@@ -1,0 +1,68 @@
+name: Email alert self-test
+
+# Run this manually from the Actions tab ("Run workflow") to confirm that
+# failure alerts can actually reach admin@kdcandfilms.com.
+# It also runs weekly so a broken/expired app password gets noticed early.
+
+on:
+  workflow_dispatch:
+  schedule:
+    # Mondays at 08:00 UTC
+    - cron: "0 8 * * 1"
+
+jobs:
+  email-alert-test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Check alert secrets are configured
+        env:
+          MAIL_USERNAME: ${{ secrets.MAIL_USERNAME }}
+          MAIL_PASSWORD: ${{ secrets.MAIL_PASSWORD }}
+        run: |
+          missing=0
+          if [ -z "$MAIL_USERNAME" ]; then
+            echo "::error::MAIL_USERNAME repository secret is not set. Add the Gmail address that sends the alerts."
+            missing=1
+          fi
+          if [ -z "$MAIL_PASSWORD" ]; then
+            echo "::error::MAIL_PASSWORD repository secret is not set. Add a Google App Password for that Gmail account."
+            missing=1
+          fi
+          if [ "$missing" = "1" ]; then
+            echo "Email alerts CANNOT be delivered until both secrets are added in Settings > Secrets and variables > Actions."
+            exit 1
+          fi
+          echo "Both alert secrets are present."
+
+      - name: Verify the alert step exists in the health check workflow
+        run: |
+          f=.github/workflows/domain-health-check.yml
+          grep -q "admin@kdcandfilms.com" "$f" || { echo "::error::Alert recipient missing from $f"; exit 1; }
+          grep -q "dawidd6/action-send-mail" "$f" || { echo "::error::Email alert step missing from $f"; exit 1; }
+          grep -q "if: failure()" "$f" || { echo "::error::Alert step is not wired to run on failure"; exit 1; }
+          echo "Health check workflow is wired to email admin@kdcandfilms.com on failure."
+
+      - name: Send test email
+        uses: dawidd6/action-send-mail@v3
+        with:
+          server_address: smtp.gmail.com
+          server_port: 465
+          secure: true
+          username: ${{ secrets.MAIL_USERNAME }}
+          password: ${{ secrets.MAIL_PASSWORD }}
+          subject: "Sitch test: alert emails are working"
+          to: admin@kdcandfilms.com
+          from: Sitch Health Check
+          body: |
+            This is a test message. Nothing is wrong.
+
+            It confirms that if play.sitchthegame.com ever goes down or the game
+            fails to load, an alert will reach this inbox.
+
+            Triggered by: ${{ github.actor }}
+            Run: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+
+      - name: Confirm
+        run: echo "Test email sent to admin@kdcandfilms.com. Check the inbox (and spam folder)."
