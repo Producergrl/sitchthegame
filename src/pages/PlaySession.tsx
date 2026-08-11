@@ -71,13 +71,22 @@ const PlaySession = () => {
 
   // Build session cards ONCE per session — memoized so React never re-creates them mid-play.
   const sessionKey = `${activeDeckIds.join(',')}|${activeAge}|${isPlaying ? '1' : '0'}`;
+  // When a saved session is resumed we rebuild the EXACT same card list from its ids.
+  const [resumedCardIds, setResumedCardIds] = useState<string[] | null>(null);
   const sessionCards = useMemo<typeof allCards>(() => {
     if (!isPlaying) return [];
+    if (resumedCardIds && resumedCardIds.length > 0) {
+      const restored = resumedCardIds
+        .map(id => allCards.find(c => c.id === id))
+        .filter((c): c is typeof allCards[number] => !!c);
+      if (restored.length > 0) return restored;
+    }
     if (activeDeckIds.includes(COMPILATION_DECK_ID)) return getCompilationCards(10, activeAge);
     if (activeDeckIds.length === 0) return allCards.filter(c => c.status === 'published');
     return allCards.filter(c => activeDeckIds.includes(c.deck_id) && c.status === 'published');
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [sessionKey]);
+  }, [sessionKey, resumedCardIds]);
+
 
   const [index, setIndex] = useState(0);
   // Reset index ONLY when the session key actually changes (new session/deck/age)
@@ -134,7 +143,8 @@ const PlaySession = () => {
 
   const handleResume = () => {
     if (!savedSession) return;
-    setIndex(Math.min(savedSession.index, sessionCards.length - 1));
+    if (savedSession.cardIds.length > 0) setResumedCardIds(savedSession.cardIds);
+    setIndex(Math.max(0, Math.min(savedSession.index, savedSession.cardIds.length - 1)));
     setScore(savedSession.score);
     setDemerits(savedSession.demerits);
     setBonusPoints(savedSession.bonusPoints);
@@ -149,16 +159,21 @@ const PlaySession = () => {
 
   const handleStartOver = () => {
     clearSession();
+    setResumedCardIds(null);
     setResumeDismissed(true);
   };
 
-  // Persist progress after every card so a closed tab can be resumed
+  // Persist progress after every card so a closed tab can be resumed.
+  // Never overwrite a stored session while the resume prompt is still pending,
+  // otherwise a fresh mount at index 0 would wipe the saved progress.
   useEffect(() => {
     if (!isPlaying || sessionCards.length === 0) return;
     if (sessionDone) {
       clearSession();
       return;
     }
+    if (canResume) return;
+    if (index === 0 && !resumeDismissed && savedSession) return;
     saveSession({
       sessionKey,
       cardIds: sessionCards.map(c => c.id),
@@ -175,7 +190,8 @@ const PlaySession = () => {
       label: `${sessionCards.length} missions`,
     });
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [index, sessionDone, isPlaying, sessionKey, sessionCards.length]);
+  }, [index, sessionDone, isPlaying, sessionKey, sessionCards.length, canResume, resumeDismissed]);
+
 
   // Speech-to-text state
   const [isListening, setIsListening] = useState(false);
