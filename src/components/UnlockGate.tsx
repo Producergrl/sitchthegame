@@ -5,6 +5,9 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { safeGetItem, safeSetItem, safeRemoveItem } from '@/lib/safeStorage';
 import { supabase } from '@/integrations/supabase/client';
+import { gumroadCheckoutUrl } from '@/config/gumroad';
+import { trackCheckoutEvent } from '@/lib/checkoutAnalytics';
+
 
 const LICENSE_KEY = 'sitch_license_key';
 const SESSION_TOKEN_KEY = 'sitch_session_token'; // legacy — cleared on load
@@ -204,7 +207,7 @@ const UnlockGate = ({ children }: UnlockGateProps) => {
         </p>
 
         <p className="mt-4 text-[11px] leading-relaxed text-[#2D5F8A]/80">
-          Buyer must be 18+. All sales final — no refunds on digital purchases.
+          Buyer must be 18+. All sales final. No refunds on digital purchases.
           We store your license key and progress in your browser only.
         </p>
 
