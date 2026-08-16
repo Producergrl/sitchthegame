@@ -5,6 +5,9 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { safeGetItem, safeSetItem, safeRemoveItem } from '@/lib/safeStorage';
 import { supabase } from '@/integrations/supabase/client';
+import { gumroadCheckoutUrl } from '@/config/gumroad';
+import { trackCheckoutEvent } from '@/lib/checkoutAnalytics';
+
 
 const LICENSE_KEY = 'sitch_license_key';
 const SESSION_TOKEN_KEY = 'sitch_session_token'; // legacy — cleared on load
@@ -96,10 +99,13 @@ const UnlockGate = ({ children }: UnlockGateProps) => {
 
       if (data?.valid) {
         safeSetItem(LICENSE_KEY, trimmed);
+        trackCheckoutEvent('license_verified', 'unlock_gate');
         setStatus('unlocked');
       } else {
-        setError(data?.error || 'Invalid code — please check your Gumroad receipt and try again.');
+        trackCheckoutEvent('license_rejected', 'unlock_gate');
+        setError(data?.error || 'Invalid code. Please check your Gumroad receipt and try again.');
       }
+
     } catch {
       setError("Couldn't verify your code right now. Please try again in a moment.");
     } finally {
@@ -125,8 +131,9 @@ const UnlockGate = ({ children }: UnlockGateProps) => {
         <h1 className="text-xl font-black text-[#1E3A5F]">Welcome to Sitch: Family Edition</h1>
         <p className="mt-2 text-sm text-[#2D5F8A]">Please enter your license key to play</p>
         <p className="mt-1 text-[11px] text-[#2D5F8A]/70">
-          A fun family card game to hone your instincts and learn together — not professional advice.
+          A fun family card game to hone your instincts and learn together. Not professional advice.
         </p>
+
 
 
         <form onSubmit={handleSubmit} className="mt-6 space-y-3">
@@ -176,13 +183,15 @@ const UnlockGate = ({ children }: UnlockGateProps) => {
         </div>
 
         <a
-          href="https://sitchthegame.gumroad.com/l/sitch"
+          href={gumroadCheckoutUrl('unlock_gate')}
           target="_blank"
           rel="noopener noreferrer"
           onClick={(e) => {
             e.preventDefault();
-            window.open('https://sitchthegame.gumroad.com/l/sitch', '_blank', 'noopener,noreferrer');
-            try { window.top!.location.href = 'https://sitchthegame.gumroad.com/l/sitch'; } catch { /* cross-origin top — ignore */ }
+            const url = gumroadCheckoutUrl('unlock_gate');
+            trackCheckoutEvent('checkout_click', 'unlock_gate');
+            window.open(url, '_blank', 'noopener,noreferrer');
+            try { window.top!.location.href = url; } catch { /* cross-origin top, ignore */ }
           }}
 
           className="mt-4 flex w-full items-center justify-center gap-2 rounded-xl border-2 border-[#1E3A5F] bg-white py-4 px-4 font-bold uppercase tracking-wide text-[#1E3A5F] transition-transform hover:scale-[1.02] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#1E3A5F] focus-visible:ring-offset-2"
@@ -192,12 +201,13 @@ const UnlockGate = ({ children }: UnlockGateProps) => {
           Buy Sitch on Gumroad
         </a>
 
+
         <p className="mt-3 text-xs text-[#2D5F8A]/80">
           Your unique license key is on your Gumroad receipt.
         </p>
 
         <p className="mt-4 text-[11px] leading-relaxed text-[#2D5F8A]/80">
-          Buyer must be 18+. All sales final — no refunds on digital purchases.
+          Buyer must be 18+. All sales final. No refunds on digital purchases.
           We store your license key and progress in your browser only.
         </p>
 

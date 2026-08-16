@@ -1,1 +1,16 @@
-/* /index.html 200
+# Legacy paths kept alive so old links and search results do not 404
+/test-purchase        /            301
+/profile              /stickers    301
+/sticker-album        /stickers    301
+/stickers/album       /stickers    301
+/decks/index          /decks       301
+/cards                /decks       301
+/help                 /how-to-play 301
+/instructions         /how-to-play 301
+/safety               /resources   301
+/terms                /legal       301
+/privacy              /legal       301
+/buy                  https://sitchthegame.gumroad.com/l/Sitch 302
+
+# SPA fallback (must stay last)
+/*                    /index.html  200

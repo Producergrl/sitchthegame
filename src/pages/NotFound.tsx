@@ -1,9 +1,17 @@
 import { Link } from "react-router-dom";
 import { Shield } from "lucide-react";
+import SEO from "@/components/SEO";
 
 const NotFound = () => {
   return (
     <main className="flex min-h-screen items-center justify-center bg-background p-6">
+      <SEO
+        title="Page not found — Sitch"
+        description="This Sitch page does not exist. Head back to the home screen to keep playing."
+        path="/404"
+        noindex
+      />
+
       <div className="mx-auto max-w-sm text-center">
         <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-muted">
           <Shield className="h-8 w-8 text-muted-foreground" />

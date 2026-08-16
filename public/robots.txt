@@ -12,5 +12,8 @@ Allow: /
 
 User-agent: *
 Allow: /
+Disallow: /play
+Disallow: /admin
+Disallow: /session/setup
 
 Sitemap: https://play.sitchthegame.com/sitemap.xml
