@@ -13,4 +13,4 @@ Allow: /
 User-agent: *
 Allow: /
 
-Sitemap: https://sitchthegame.com/sitemap.xml
+Sitemap: https://play.sitchthegame.com/sitemap.xml

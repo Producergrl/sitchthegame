@@ -72,8 +72,8 @@ const Index = () => {
           description: 'Child-safety card game for families. Real-life scenarios, age-banded decks, and adult-led discussion.',
           brand: { '@type': 'Brand', name: 'Sitch' },
           category: 'Educational Card Game',
-          url: 'https://sitchthegame.com/',
-          image: 'https://sitchthegame.com/og-image.png',
+          url: 'https://play.sitchthegame.com/',
+          image: 'https://play.sitchthegame.com/og-image.png',
         }}
       />
       <h1 className="sr-only">Sitch — Family Edition: A Child-Safety Card Game</h1>
