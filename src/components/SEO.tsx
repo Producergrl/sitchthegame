@@ -6,12 +6,13 @@ interface SEOProps {
   path: string; // e.g. "/resources"
   image?: string;
   jsonLd?: object | object[];
+  noindex?: boolean;
 }
 
 const SITE_URL = 'https://play.sitchthegame.com';
 const DEFAULT_IMAGE = `${SITE_URL}/og-image.png`;
 
-const SEO = ({ title, description, path, image, jsonLd }: SEOProps) => {
+const SEO = ({ title, description, path, image, jsonLd, noindex }: SEOProps) => {
   const url = `${SITE_URL}${path}`;
   const img = image ?? DEFAULT_IMAGE;
   const blocks = jsonLd ? (Array.isArray(jsonLd) ? jsonLd : [jsonLd]) : [];
@@ -21,6 +22,8 @@ const SEO = ({ title, description, path, image, jsonLd }: SEOProps) => {
       <title>{title}</title>
       <meta name="description" content={description} />
       <link rel="canonical" href={url} />
+      {noindex && <meta name="robots" content="noindex, follow" />}
+
 
       <meta property="og:title" content={title} />
       <meta property="og:description" content={description} />
