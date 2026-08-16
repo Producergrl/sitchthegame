@@ -12,12 +12,12 @@ const BrowseDecks = () => {
     '@type': 'CollectionPage',
     name: 'Sitch Mission Packs',
     description: 'All Sitch card decks grouped by age band and topic.',
-    url: 'https://sitchthegame.com/decks',
+    url: 'https://play.sitchthegame.com/decks',
     hasPart: decks.map((d) => ({
       '@type': 'CreativeWork',
       name: d.name,
       description: d.description,
-      url: `https://sitchthegame.com/decks/${d.slug}`,
+      url: `https://play.sitchthegame.com/decks/${d.slug}`,
     })),
   };
 

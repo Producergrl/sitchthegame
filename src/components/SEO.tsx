@@ -8,7 +8,7 @@ interface SEOProps {
   jsonLd?: object | object[];
 }
 
-const SITE_URL = 'https://sitchthegame.com';
+const SITE_URL = 'https://play.sitchthegame.com';
 const DEFAULT_IMAGE = `${SITE_URL}/og-image.png`;
 
 const SEO = ({ title, description, path, image, jsonLd }: SEOProps) => {

@@ -7,53 +7,53 @@
 -->
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
-    <loc>https://sitchthegame.com/</loc>
+    <loc>https://play.sitchthegame.com/</loc>
     <changefreq>weekly</changefreq>
     <priority>1.0</priority>
   </url>
   <url>
-    <loc>https://sitchthegame.com/decks</loc>
+    <loc>https://play.sitchthegame.com/decks</loc>
     <changefreq>weekly</changefreq>
     <priority>0.9</priority>
   </url>
   <url>
-    <loc>https://sitchthegame.com/session/setup</loc>
+    <loc>https://play.sitchthegame.com/session/setup</loc>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://sitchthegame.com/how-to-play</loc>
+    <loc>https://play.sitchthegame.com/how-to-play</loc>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://sitchthegame.com/resources</loc>
+    <loc>https://play.sitchthegame.com/resources</loc>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://sitchthegame.com/stickers</loc>
+    <loc>https://play.sitchthegame.com/stickers</loc>
     <changefreq>monthly</changefreq>
     <priority>0.5</priority>
   </url>
   <url>
-    <loc>https://sitchthegame.com/legal</loc>
+    <loc>https://play.sitchthegame.com/legal</loc>
     <changefreq>yearly</changefreq>
     <priority>0.3</priority>
   </url>
 
   <!-- Deck detail pages (/decks/:deckId) -->
-  <url><loc>https://sitchthegame.com/decks/body-boundaries-4-6</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
-  <url><loc>https://sitchthegame.com/decks/trusted-adults-4-6</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
-  <url><loc>https://sitchthegame.com/decks/secrets-4-6</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
-  <url><loc>https://sitchthegame.com/decks/body-boundaries</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
-  <url><loc>https://sitchthegame.com/decks/trusted-adults</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
-  <url><loc>https://sitchthegame.com/decks/peer-pressure-7-9</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
-  <url><loc>https://sitchthegame.com/decks/digital-safety-7-9</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
-  <url><loc>https://sitchthegame.com/decks/online-safety</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
-  <url><loc>https://sitchthegame.com/decks/bullying</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
-  <url><loc>https://sitchthegame.com/decks/emergencies</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
-  <url><loc>https://sitchthegame.com/decks/grooming-awareness-10plus</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
-  <url><loc>https://sitchthegame.com/decks/street-smarts-10plus</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
-  <url><loc>https://sitchthegame.com/decks/real-world-judgment-teens</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://play.sitchthegame.com/decks/body-boundaries-4-6</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://play.sitchthegame.com/decks/trusted-adults-4-6</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://play.sitchthegame.com/decks/secrets-4-6</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://play.sitchthegame.com/decks/body-boundaries</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://play.sitchthegame.com/decks/trusted-adults</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://play.sitchthegame.com/decks/peer-pressure-7-9</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://play.sitchthegame.com/decks/digital-safety-7-9</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://play.sitchthegame.com/decks/online-safety</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://play.sitchthegame.com/decks/bullying</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://play.sitchthegame.com/decks/emergencies</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://play.sitchthegame.com/decks/grooming-awareness-10plus</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://play.sitchthegame.com/decks/street-smarts-10plus</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://play.sitchthegame.com/decks/real-world-judgment-teens</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
 </urlset>
