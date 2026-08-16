@@ -14,6 +14,27 @@ export type Database = {
   }
   public: {
     Tables: {
+      checkout_events: {
+        Row: {
+          created_at: string
+          event_type: string
+          id: string
+          source: string | null
+        }
+        Insert: {
+          created_at?: string
+          event_type: string
+          id?: string
+          source?: string | null
+        }
+        Update: {
+          created_at?: string
+          event_type?: string
+          id?: string
+          source?: string | null
+        }
+        Relationships: []
+      }
       tts_ip_hits: {
         Row: {
           hit_at: string
