@@ -16,7 +16,7 @@ const Legal = () => (
 
     <h1 className="text-2xl font-bold mb-2">Terms of Use, Privacy & Policies</h1>
     <p className="text-sm text-muted-foreground mb-2 italic">Sitch — Family Edition</p>
-    <p className="text-xs text-muted-foreground mb-10">Last updated: July 3, 2026</p>
+    <p className="text-xs text-muted-foreground mb-10">Last updated: September 12, 2026</p>
 
     {/* ------------------- ABOUT / DISCLAIMER ------------------- */}
     <section className="space-y-4 text-sm text-muted-foreground mb-10">
@@ -70,18 +70,19 @@ const Legal = () => (
       <p>Sitch respects your privacy. The game runs without user accounts, logins, or public profiles.</p>
       <p className="font-medium text-foreground">What we store on your device (in your browser only):</p>
       <ul className="list-disc list-inside space-y-1 pl-2">
-        <li>Your license key</li>
+        <li>Your license key and optional local player nicknames</li>
         <li>Your gameplay progress, XP, and Safety Scout level</li>
         <li>Earned stickers and milestones</li>
         <li>Session settings (age band, mode, chosen decks)</li>
         <li>Any free-text "custom answers" you type in during play</li>
       </ul>
-      <p>This information stays on your device and is not transmitted to us.</p>
+      <p>Gameplay progress, nicknames and custom answers stay on your device. Your license key is sent to our verification service and Gumroad to check purchase validity when the game opens.</p>
       <p className="font-medium text-foreground">What we store on our servers:</p>
       <ul className="list-disc list-inside space-y-1 pl-2">
-        <li>Your Gumroad license key, used only to confirm your purchase is valid each time the app opens.</li>
+        <li>A hash of your license key, with verification and expiry timestamps.</li>
+        <li>IP addresses and request timestamps used to limit repeated verification attempts.</li>
       </ul>
-      <p>We use Supabase as our backend provider to verify license keys, and Gumroad as our payment processor. Gumroad handles your purchase and payment information under its own privacy policy — we never see your card details.</p>
+      <p>We use Supabase as our backend provider to verify license keys, and Gumroad as our seller of record for purchases. Gumroad handles your purchase and payment information under its own privacy policy — we never see your card details.</p>
       <p>We do not use tracking cookies, advertising cookies, or third-party analytics. We do not sell or rent personal information to anyone.</p>
       <p>To request deletion of your license record, email <a href="mailto:admin@kdcandfilms.com" className="text-foreground underline underline-offset-2 hover:text-primary">admin@kdcandfilms.com</a>.</p>
     </section>
@@ -90,7 +91,7 @@ const Legal = () => (
     <section className="space-y-4 text-sm text-muted-foreground mb-10">
       <h2 className="text-lg font-semibold text-foreground">Children's Privacy (COPPA)</h2>
       <p>Sitch is designed to be played by children with a parent, guardian, or trusted adult. We do <strong>not</strong> knowingly collect personal information from children under 13.</p>
-      <p>The game does not ask children for their name, email, address, phone number, photo, or any other personal identifier. Gameplay progress stays on the device.</p>
+      <p>Players may choose a nickname for a local profile; please use a nickname rather than a full name. The game does not require a child’s email, address, phone number or photo. Profile nicknames and gameplay progress stay on the device.</p>
       <p>If you are a parent or guardian and believe a child has provided personal information to us, please contact <a href="mailto:admin@kdcandfilms.com" className="text-foreground underline underline-offset-2 hover:text-primary">admin@kdcandfilms.com</a> and we will delete it promptly.</p>
     </section>
 
