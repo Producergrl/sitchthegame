@@ -268,6 +268,7 @@ const Index = () => {
         <div className="mx-auto max-w-lg px-4 text-center space-y-4">
           <p className="text-sm font-black text-[#1E3A5F]">© 2026 Sitch™. All rights reserved.</p>
           <div className="flex flex-wrap items-center justify-center gap-4 text-xs font-bold text-[#1E3A5F]/80">
+            <Link to="/access-help" className="underline px-1 py-1">Access & phone setup</Link>
             <Link to="/legal" className="hover:text-[#1E3A5F] underline-offset-2 hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#FDB913] rounded px-1 py-1">Terms & Privacy</Link>
             <Link to="/resources" className="hover:text-[#1E3A5F] underline-offset-2 hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#FDB913] rounded px-1 py-1">Safety Hub</Link>
             <Link to="/how-to-play" className="hover:text-[#1E3A5F] underline-offset-2 hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#FDB913] rounded px-1 py-1">How to Play</Link>

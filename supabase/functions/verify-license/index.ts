@@ -1,3 +1,4 @@
+import { purchaseAllowsAccess } from "./purchase-status.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.49.1";
 
 const corsHeaders = {
@@ -119,10 +120,20 @@ Deno.serve(async (req) => {
         headers: { "Content-Type": "application/x-www-form-urlencoded" },
         body: formData.toString(),
       });
-      const data = await response.json().catch(() => ({}));
+      if (response.status === 429 || response.status >= 500) {
+        throw new Error("Gumroad verification temporarily unavailable");
+      }
+      const data = await response.json();
+      if (typeof data?.success !== "boolean") throw new Error("Unexpected verification response");
       console.log("Gumroad verify attempt", { productId, success: data?.success, message: data?.message });
 
-      if (data?.success === true) {
+      if (response.ok && data?.success === true) {
+        if (!purchaseAllowsAccess(data)) {
+          return new Response(
+            JSON.stringify({ valid: false, error: "This purchase is not active. Please contact Sitch support if you need help." }),
+            { status: 200, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+          );
+        }
         await cacheValidLicense(trimmed);
         return new Response(
           JSON.stringify({ valid: true }),

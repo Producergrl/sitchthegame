@@ -57,16 +57,23 @@ const UnlockGate = ({ children }: UnlockGateProps) => {
           body: { license_key: storedKey },
         });
         if (cancelled) return;
-        if (!fnError && data?.valid) {
+        if (!fnError && data?.valid === true) {
           setStatus('unlocked');
+        } else if (fnError || typeof data?.valid !== 'boolean') {
+          setCode(storedKey);
+          setError("We couldn't check your saved key. Check your connection and tap Unlock to retry.");
+          setStatus('locked');
         } else {
           safeRemoveItem(LICENSE_KEY);
           setStatus('locked');
         }
       } catch {
-        // Network failure: do NOT unlock. Force the user back to the code entry
-        // screen; a genuine buyer can re-enter their key when back online.
-        if (!cancelled) setStatus('locked');
+        // Preserve the key during outages, but never unlock without verification.
+        if (!cancelled) {
+          setCode(storedKey);
+          setError("We couldn't check your saved key. Check your connection and tap Unlock to retry.");
+          setStatus('locked');
+        }
       }
     })();
     return () => { cancelled = true; };
@@ -97,7 +104,7 @@ const UnlockGate = ({ children }: UnlockGateProps) => {
 
       if (fnError) throw fnError;
 
-      if (data?.valid) {
+      if (data?.valid === true) {
         safeSetItem(LICENSE_KEY, trimmed);
         trackCheckoutEvent('license_verified', 'unlock_gate');
         setStatus('unlocked');
@@ -139,6 +146,10 @@ const UnlockGate = ({ children }: UnlockGateProps) => {
         <form onSubmit={handleSubmit} className="mt-6 space-y-3">
           <Input
             type="text"
+            aria-label="Gumroad license key"
+            autoCapitalize="none"
+            autoCorrect="off"
+            spellCheck={false}
             placeholder="ENTER UNLOCK CODE"
             value={code}
             onChange={(e) => { setCode(e.target.value); setError(''); }}
@@ -166,6 +177,7 @@ const UnlockGate = ({ children }: UnlockGateProps) => {
 
         {error && (
           <motion.p
+            role="alert"
             initial={{ opacity: 0, y: -4 }}
             animate={{ opacity: 1, y: 0 }}
             className="mt-3 text-sm font-medium text-red-600"
@@ -173,6 +185,11 @@ const UnlockGate = ({ children }: UnlockGateProps) => {
             {error}
           </motion.p>
         )}
+
+        <p className="mt-4 text-sm text-[#2D5F8A]">
+          <a href="https://gumroad.com/license-key-lookup" target="_blank" rel="noopener noreferrer" className="font-bold underline">Find my license key</a>
+          {' · '}<a href="/access-help" className="underline">Returning players & phone setup</a>
+        </p>
 
         <div className="mt-6 flex items-center gap-3">
           <div className="h-px flex-1 bg-[#1E3A5F]/15" />
@@ -186,13 +203,7 @@ const UnlockGate = ({ children }: UnlockGateProps) => {
           href={gumroadCheckoutUrl('unlock_gate')}
           target="_blank"
           rel="noopener noreferrer"
-          onClick={(e) => {
-            e.preventDefault();
-            const url = gumroadCheckoutUrl('unlock_gate');
-            trackCheckoutEvent('checkout_click', 'unlock_gate');
-            window.open(url, '_blank', 'noopener,noreferrer');
-            try { window.top!.location.href = url; } catch { /* cross-origin top, ignore */ }
-          }}
+          onClick={() => trackCheckoutEvent('checkout_click', 'unlock_gate')}
 
           className="mt-4 flex w-full items-center justify-center gap-2 rounded-xl border-2 border-[#1E3A5F] bg-white py-4 px-4 font-bold uppercase tracking-wide text-[#1E3A5F] transition-transform hover:scale-[1.02] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#1E3A5F] focus-visible:ring-offset-2"
           aria-label="Buy Sitch on Gumroad to get an unlock code"
@@ -208,7 +219,7 @@ const UnlockGate = ({ children }: UnlockGateProps) => {
 
         <p className="mt-4 text-[11px] leading-relaxed text-[#2D5F8A]/80">
           Buyer must be 18+. All sales final. No refunds on digital purchases.
-          We store your license key and progress in your browser only.
+          Progress stays in this browser. Your key is sent securely to verify your purchase.
         </p>
 
         <p className="mt-3 text-[11px] leading-relaxed text-[#2D5F8A]/80">
