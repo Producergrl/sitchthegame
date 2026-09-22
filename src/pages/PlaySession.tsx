@@ -233,6 +233,18 @@ const PlaySession = () => {
   const NONE_LABEL = '✨';
 
   const card = sessionCards[index];
+
+  // Fresh random order of the written answers every time a card is shown.
+  // The wow-me choice is rendered separately and always stays in last position.
+  const displayOptions = useMemo(() => {
+    if (!card) return [];
+    const arr = [...card.options];
+    for (let i = arr.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [arr[i], arr[j]] = [arr[j], arr[i]];
+    }
+    return arr;
+  }, [card?.id]);
   const deck = card ? decks.find(d => d.id === card.deck_id) : null;
 
   const finishCurrentMission = useCallback(() => {
