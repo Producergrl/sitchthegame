@@ -1,4 +1,5 @@
-import { Card, Deck, AgeBand } from '@/types/game';
+import { Card, CardOption, Deck, AgeBand } from '@/types/game';
+import type { ScenarioData } from './scenarioTypes';
 import { scenarios_4_6 } from './scenarios-4-6';
 import { scenarios_7_9 } from './scenarios-7-9';
 import { scenarios_10plus } from './scenarios-10plus';
@@ -261,9 +262,10 @@ const shuffleFirstThree = (
   correctLabel: string,
   worstLabel: string,
   seed: number,
-): { shuffled: string[]; newCorrect: string; newWorst: string } => {
-  // Build index pairs for the first 3 options only (A=0, B=1, C=2)
-  const indices = [0, 1, 2];
+  qualities?: string[],
+): { shuffled: string[]; newCorrect: string; newWorst: string; shuffledQualities?: string[] } => {
+  // Shuffle every written option. The wow-me choice is appended at play time and always stays last.
+  const indices = options.map((_, i) => i);
   // Fisher-Yates with seeded pseudo-random
   let s = seed;
   const nextRand = () => {
@@ -279,12 +281,8 @@ const shuffleFirstThree = (
   const correctIdx = labelToIdx[correctLabel];
   const worstIdx = labelToIdx[worstLabel];
 
-  const shuffled = [...options];
-  // Apply permutation to first 3
-  const original = options.slice(0, 3);
-  indices.forEach((srcIdx, destIdx) => {
-    shuffled[destIdx] = original[srcIdx];
-  });
+  const shuffled = indices.map(srcIdx => options[srcIdx]);
+  const shuffledQualities = qualities ? indices.map(srcIdx => qualities[srcIdx]) : undefined;
 
   // Map old indices to new positions
   const oldToNew: Record<number, number> = {};
@@ -292,39 +290,46 @@ const shuffleFirstThree = (
     oldToNew[srcIdx] = destIdx;
   });
 
-  const newCorrect = correctIdx < 3 ? LABELS[oldToNew[correctIdx]] : correctLabel;
-  const newWorst = worstIdx < 3 ? LABELS[oldToNew[worstIdx]] : worstLabel;
+  const newCorrect = oldToNew[correctIdx] !== undefined ? LABELS[oldToNew[correctIdx]] : correctLabel;
+  const newWorst = oldToNew[worstIdx] !== undefined ? LABELS[oldToNew[worstIdx]] : worstLabel;
 
-  return { shuffled, newCorrect, newWorst };
+  return { shuffled, newCorrect, newWorst, shuffledQualities };
 };
 
-const buildCards = (age: AgeBand, deckFn: (scenario: string) => string, scenarios: { scenario: string; options: string[]; correct_option: string; worst_option: string; practice_phrase?: string }[]): Card[] =>
+const buildCards = (age: AgeBand, deckFn: (scenario: string) => string, scenarios: ScenarioData[]): Card[] =>
   scenarios.map((data, idx) => {
     const scenario = normalize(data.scenario);
     const id = `${age === 'teens' ? 'TEENS' : age === '10+' ? '10PLUS' : age}-${String(idx + 1).padStart(3, '0')}`;
 
-    // Shuffle options A-C deterministically per card
+    // Shuffle the written options deterministically per card (play-time shuffle happens again on screen)
     const seed = id.split('').reduce((acc, ch) => acc * 31 + ch.charCodeAt(0), 0);
-    const { shuffled, newCorrect, newWorst } = shuffleFirstThree(
+    const { shuffled, newCorrect, newWorst, shuffledQualities } = shuffleFirstThree(
       data.options,
       data.correct_option,
       data.worst_option,
       seed,
+      data.option_labels,
     );
+
+    const prompts = data.talk_about ? [data.talk_about] : reflectionPromptsFor(age, scenario);
 
     return {
       id,
       deck_id: deckFn(scenario),
       title: makeTitle(scenario),
       scenario,
-      options: shuffled.map((text, i) => ({ label: LABELS[i], text })),
+      options: shuffled.map((text, i) => ({
+        label: LABELS[i],
+        text,
+        quality: shuffledQualities?.[i] as CardOption['quality'],
+      })),
       correct_option: newCorrect,
       worst_option: newWorst,
       guidance_text: guidanceFor(scenario),
-      why_text: whyFor(scenario),
+      why_text: data.why || whyFor(scenario),
       practice_phrase: data.practice_phrase || practicePhraseFor(scenario, age),
-      help_prompt: reflectionPromptsFor(age, scenario).join(' '),
-      reflection_prompts: reflectionPromptsFor(age, scenario),
+      help_prompt: prompts.join(' '),
+      reflection_prompts: prompts,
       difficulty: difficultyFor(scenario),
       age_band: age,
       tags: tagsFor(scenario),

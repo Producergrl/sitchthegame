@@ -233,6 +233,18 @@ const PlaySession = () => {
   const NONE_LABEL = '✨';
 
   const card = sessionCards[index];
+
+  // Fresh random order of the written answers every time a card is shown.
+  // The wow-me choice is rendered separately and always stays in last position.
+  const displayOptions = useMemo(() => {
+    if (!card) return [];
+    const arr = [...card.options];
+    for (let i = arr.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [arr[i], arr[j]] = [arr[j], arr[i]];
+    }
+    return arr;
+  }, [card?.id]);
   const deck = card ? decks.find(d => d.id === card.deck_id) : null;
 
   const finishCurrentMission = useCallback(() => {
@@ -932,7 +944,7 @@ const PlaySession = () => {
 
             {/* Options */}
             <div className="space-y-2">
-              {card.options.map(opt => {
+              {displayOptions.map((opt, optIdx) => {
                 const isSelected = selectedOption === opt.label;
                 const hasSelected = selectedOption !== null && selectedOption !== NONE_LABEL;
                 const isQuiz = activeMode === 'quiz';
@@ -968,7 +980,7 @@ const PlaySession = () => {
                       revealCorrect ? 'bg-safe/20 text-safe' :
                       'bg-muted text-muted-foreground'
                     }`}>
-                      {selectedCorrect ? '✓' : selectedWrong ? '✗' : opt.label}
+                      {selectedCorrect ? '✓' : selectedWrong ? '✗' : ['A', 'B', 'C', 'D'][optIdx]}
                     </span>
                     <span className="font-semibold text-card-foreground">{opt.text}</span>
                     {selectedCorrect && (
@@ -1151,6 +1163,26 @@ const PlaySession = () => {
                     <p className="text-sm text-card-foreground">{card.guidance_text}</p>
                     <p className="text-sm text-card-foreground opacity-80">💡 {card.why_text}</p>
                   </div>
+                  {/* Parent view: how each answer rates. Hidden until the child has answered. */}
+                  {displayOptions.some(o => o.quality) && (
+                    <div className="rounded-2xl border border-border bg-muted/40 p-5">
+                      <p className="mb-2 text-sm font-bold text-card-foreground">👀 For the grown-up</p>
+                      <ul className="space-y-1.5">
+                        {displayOptions.map(o => (
+                          <li key={o.label} className="text-xs text-muted-foreground">
+                            <span className={`mr-1.5 font-bold ${
+                              o.quality === 'best' ? 'text-safe' :
+                              o.quality === 'partly_right' ? 'text-accent-foreground' :
+                              'text-destructive'
+                            }`}>
+                              {o.quality === 'best' ? 'Best' : o.quality === 'partly_right' ? 'Partly right' : 'Tempting mistake'}:
+                            </span>
+                            {o.text}
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
+                  )}
                   <div className="rounded-2xl border border-accent/50 bg-accent/10 p-5">
                     <p className="mb-1 text-sm font-bold text-accent-foreground">🗣️ Practice Phrase</p>
                     <p className="text-sm italic text-card-foreground">{card.practice_phrase}</p>

@@ -5,6 +5,8 @@ export type CardStatus = 'draft' | 'published';
 export interface CardOption {
   label: string;
   text: string;
+  /** Hidden coaching label, never shown to players during play. */
+  quality?: 'best' | 'partly_right' | 'tempting_mistake';
 }
 
 export interface Card {
