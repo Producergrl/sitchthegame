@@ -1,4 +1,5 @@
-import { Card, Deck, AgeBand } from '@/types/game';
+import { Card, CardOption, Deck, AgeBand } from '@/types/game';
+import type { ScenarioData } from './scenarioTypes';
 import { scenarios_4_6 } from './scenarios-4-6';
 import { scenarios_7_9 } from './scenarios-7-9';
 import { scenarios_10plus } from './scenarios-10plus';
