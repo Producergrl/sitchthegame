@@ -1163,6 +1163,26 @@ const PlaySession = () => {
                     <p className="text-sm text-card-foreground">{card.guidance_text}</p>
                     <p className="text-sm text-card-foreground opacity-80">💡 {card.why_text}</p>
                   </div>
+                  {/* Parent view: how each answer rates. Hidden until the child has answered. */}
+                  {displayOptions.some(o => o.quality) && (
+                    <div className="rounded-2xl border border-border bg-muted/40 p-5">
+                      <p className="mb-2 text-sm font-bold text-card-foreground">👀 For the grown-up</p>
+                      <ul className="space-y-1.5">
+                        {displayOptions.map(o => (
+                          <li key={o.label} className="text-xs text-muted-foreground">
+                            <span className={`mr-1.5 font-bold ${
+                              o.quality === 'best' ? 'text-safe' :
+                              o.quality === 'partly_right' ? 'text-accent-foreground' :
+                              'text-destructive'
+                            }`}>
+                              {o.quality === 'best' ? 'Best' : o.quality === 'partly_right' ? 'Partly right' : 'Tempting mistake'}:
+                            </span>
+                            {o.text}
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
+                  )}
                   <div className="rounded-2xl border border-accent/50 bg-accent/10 p-5">
                     <p className="mb-1 text-sm font-bold text-accent-foreground">🗣️ Practice Phrase</p>
                     <p className="text-sm italic text-card-foreground">{card.practice_phrase}</p>
