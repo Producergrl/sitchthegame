@@ -261,9 +261,10 @@ const shuffleFirstThree = (
   correctLabel: string,
   worstLabel: string,
   seed: number,
-): { shuffled: string[]; newCorrect: string; newWorst: string } => {
-  // Build index pairs for the first 3 options only (A=0, B=1, C=2)
-  const indices = [0, 1, 2];
+  qualities?: string[],
+): { shuffled: string[]; newCorrect: string; newWorst: string; shuffledQualities?: string[] } => {
+  // Shuffle every written option. The wow-me choice is appended at play time and always stays last.
+  const indices = options.map((_, i) => i);
   // Fisher-Yates with seeded pseudo-random
   let s = seed;
   const nextRand = () => {
@@ -279,12 +280,8 @@ const shuffleFirstThree = (
   const correctIdx = labelToIdx[correctLabel];
   const worstIdx = labelToIdx[worstLabel];
 
-  const shuffled = [...options];
-  // Apply permutation to first 3
-  const original = options.slice(0, 3);
-  indices.forEach((srcIdx, destIdx) => {
-    shuffled[destIdx] = original[srcIdx];
-  });
+  const shuffled = indices.map(srcIdx => options[srcIdx]);
+  const shuffledQualities = qualities ? indices.map(srcIdx => qualities[srcIdx]) : undefined;
 
   // Map old indices to new positions
   const oldToNew: Record<number, number> = {};
@@ -292,10 +289,10 @@ const shuffleFirstThree = (
     oldToNew[srcIdx] = destIdx;
   });
 
-  const newCorrect = correctIdx < 3 ? LABELS[oldToNew[correctIdx]] : correctLabel;
-  const newWorst = worstIdx < 3 ? LABELS[oldToNew[worstIdx]] : worstLabel;
+  const newCorrect = oldToNew[correctIdx] !== undefined ? LABELS[oldToNew[correctIdx]] : correctLabel;
+  const newWorst = oldToNew[worstIdx] !== undefined ? LABELS[oldToNew[worstIdx]] : worstLabel;
 
-  return { shuffled, newCorrect, newWorst };
+  return { shuffled, newCorrect, newWorst, shuffledQualities };
 };
 
 const buildCards = (age: AgeBand, deckFn: (scenario: string) => string, scenarios: { scenario: string; options: string[]; correct_option: string; worst_option: string; practice_phrase?: string }[]): Card[] =>
