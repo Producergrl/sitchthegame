@@ -944,7 +944,7 @@ const PlaySession = () => {
 
             {/* Options */}
             <div className="space-y-2">
-              {card.options.map(opt => {
+              {displayOptions.map((opt, optIdx) => {
                 const isSelected = selectedOption === opt.label;
                 const hasSelected = selectedOption !== null && selectedOption !== NONE_LABEL;
                 const isQuiz = activeMode === 'quiz';
@@ -980,7 +980,7 @@ const PlaySession = () => {
                       revealCorrect ? 'bg-safe/20 text-safe' :
                       'bg-muted text-muted-foreground'
                     }`}>
-                      {selectedCorrect ? '✓' : selectedWrong ? '✗' : opt.label}
+                      {selectedCorrect ? '✓' : selectedWrong ? '✗' : ['A', 'B', 'C', 'D'][optIdx]}
                     </span>
                     <span className="font-semibold text-card-foreground">{opt.text}</span>
                     {selectedCorrect && (
