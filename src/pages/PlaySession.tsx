@@ -1210,6 +1210,11 @@ const PlaySession = () => {
                       </li>
                     </ul>
                   </div>
+                  {/* Gentle coaching for the grown-up, collapsed by default */}
+                  <ParentCoaching
+                    ageBand={card.age_band}
+                    showReframe={!!selectedOption && selectedOption !== NONE_LABEL && card.correct_option !== selectedOption}
+                  />
                 </motion.div>
               )}
             </AnimatePresence>
