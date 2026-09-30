@@ -134,23 +134,34 @@ const Index = () => {
           <img
             src={sitchThumbnail.url}
             alt="Sitch — Family Edition · Are You Smart Under Pressure? A Game of Choice & Consequence"
-            className="mx-auto w-[min(440px,82vw)] rounded-3xl"
+            className="mx-auto w-[min(300px,62vw)] max-h-[38dvh] object-contain rounded-3xl"
             style={{
               border: '2px solid #FDB913',
               boxShadow: '0 20px 50px hsl(15 75% 15% / 0.55), 0 0 0 1px hsl(45 95% 70% / 0.25), inset 0 1px 0 hsl(45 95% 75% / 0.4)',
             }}
           />
 
-          {/* One-line value prop */}
-          <motion.p
+          {/* Value prop: what it is, who it's for */}
+          <motion.div
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 1.1, duration: 0.6 }}
-            className="mt-5 max-w-md text-center text-sm sm:text-base font-bold leading-snug text-[#FEF3D0]"
+            className="mt-5 flex max-w-md flex-col items-center text-center"
             style={{ textShadow: '0 2px 8px hsl(10 70% 12% / 0.55)' }}
           >
-            Real-life safety scenarios. Your child chooses — then you talk it through, together.
-          </motion.p>
+            <h2 className="text-xl sm:text-2xl font-black leading-tight text-[#F2B80C]">
+              Are You Smart Under Pressure?
+            </h2>
+            <p className="mt-1 text-xs font-bold uppercase tracking-[0.14em] text-[#FEF3D0]/90">
+              A game of choice and consequence
+            </p>
+            <p className="mt-3 text-sm sm:text-base font-bold leading-snug text-[#FEF3D0]">
+              A card game for parents and kids to play together. Each card is a real-life situation. Your child picks what they would do, then you talk it through.
+            </p>
+            <p className="mt-3 inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-[11px] font-black uppercase tracking-wider text-[#142851]" style={{ background: '#F2B80C', textShadow: 'none' }}>
+              <span aria-hidden="true">👨‍👩‍👧</span> Play together · Ages 4 to teens · 10 minutes
+            </p>
+          </motion.div>
 
           {/* Primary CTA — one clear action */}
           <motion.div
@@ -173,7 +184,7 @@ const Index = () => {
                 <Zap className="h-5 w-5 transition-transform group-hover:rotate-12 group-hover:scale-110" />
                 Play Now
               </Button>
-              <span className="mt-1.5 text-[10px] font-bold uppercase tracking-wider text-[#FEF3D0]/85">10 random missions · ages 7–9</span>
+              <span className="mt-1.5 text-[11px] font-bold uppercase tracking-wider text-[#FEF3D0]/90">Starts a quick 10-card quiz for ages 7 to 9</span>
             </Link>
 
             <Link
