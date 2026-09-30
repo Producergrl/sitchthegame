@@ -319,7 +319,6 @@ const PlaySession = () => {
     setSelectedOption(null);
     setCustomAnswer('');
     setCustomAnswerSubmitted(false);
-    setShowLevelUp(false);
     requestAnimationFrame(() => window.scrollTo({ top: 0, behavior: 'smooth' }));
   };
 
