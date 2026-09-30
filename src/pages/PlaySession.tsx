@@ -667,6 +667,7 @@ const PlaySession = () => {
 
           {activeMode === 'quiz' && (
             <div className="space-y-2 text-center">
+              <p className="text-2xl font-black text-foreground">{score} out of {sessionCards.length} correct</p>
               <p className="text-lg font-bold text-primary">Score: {score + bonusPoints - demerits} pts</p>
               <div className="flex justify-center gap-4 text-sm">
                 <span className="text-safe">✅ Correct: {score}</span>
@@ -834,12 +835,18 @@ const PlaySession = () => {
 
           <div className="flex flex-col gap-2">
             <Link to="/play">
-              <Button className="w-full gap-2 font-bold"><RotateCcw className="h-4 w-4" /> New Mission</Button>
+              <Button className="w-full gap-2 font-bold"><RotateCcw className="h-4 w-4" /> Play Again</Button>
+            </Link>
+            <Link to="/decks">
+              <Button variant="outline" className="w-full font-bold">Try a Different Deck</Button>
             </Link>
             <Link to="/">
               <Button variant="outline" className="w-full font-bold">Home</Button>
             </Link>
           </div>
+          <p className="pb-4 text-center text-xs text-muted-foreground">
+            Remember: it's not just about the score. It's the conversation that counts. 💬
+          </p>
         </div>
       </div>
     );
