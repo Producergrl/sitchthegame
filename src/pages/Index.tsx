@@ -9,7 +9,7 @@ import ShareInviteButton from '@/components/ShareInviteButton';
 
 
 // MissionProgress moved to /stickers (Profile tab)
-import { loadProgress, getCurrentLevel, type PlayerProgress } from '@/lib/progression';
+import { loadProgress, getCurrentLevel, getNextLevel, type PlayerProgress } from '@/lib/progression';
 import sitchThumbnail from '@/assets/sitch-family-edition.png.asset.json';
 
 /* ── floating particle field ── */
@@ -223,6 +223,31 @@ const Index = () => {
             ))}
             {progress.missionsCompleted >= 5 && <span className="inline-flex items-center"><ShareInviteButton /></span>}
           </motion.div>
+
+          {/* Player progress: always visible */}
+          {(() => {
+            const next = getNextLevel(progress.totalXP);
+            const span = next ? next.xpRequired - level.xpRequired : 1;
+            const pct = next ? Math.min(100, Math.round(((progress.totalXP - level.xpRequired) / span) * 100)) : 100;
+            return (
+              <Link
+                to="/stickers"
+                aria-label={`Your progress: ${level.title}, ${progress.totalXP} XP. Open profile`}
+                className="mt-4 block w-full max-w-xs min-h-[44px] rounded-2xl bg-card/90 px-4 py-3 text-left shadow-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+              >
+                <div className="flex items-center justify-between text-xs font-black text-foreground">
+                  <span>{level.icon} {level.title}</span>
+                  <span>{progress.totalXP} XP</span>
+                </div>
+                <div className="mt-2 h-2 w-full overflow-hidden rounded-full bg-muted">
+                  <div className="h-full rounded-full bg-primary transition-all" style={{ width: `${pct}%` }} />
+                </div>
+                <p className="mt-1 text-[11px] font-semibold text-muted-foreground">
+                  {next ? `${next.xpRequired - progress.totalXP} XP to ${next.title}` : 'Top level reached!'}
+                </p>
+              </Link>
+            );
+          })()}
 
         </motion.div>
 

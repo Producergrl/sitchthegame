@@ -265,6 +265,7 @@ const PlaySession = () => {
     }
     if (result.levelledUp) {
       setShowLevelUp(true);
+      window.setTimeout(() => setShowLevelUp(false), 1500);
       const newLvl = getCurrentLevel(result.progress.totalXP);
       toast({ title: `🎉 Level Up!`, description: `You're now a ${newLvl.title}!` });
     }
@@ -959,10 +960,18 @@ const PlaySession = () => {
 
       {/* Level up moment */}
       {showLevelUp && (
-        <div className="mx-auto max-w-2xl px-4 pt-4">
-          <div className="flex items-center justify-between gap-3 rounded-2xl border-2 border-primary bg-primary/10 p-4">
-            <p className="text-sm font-black text-primary">🎉 Level up! You're now a {getCurrentLevel(playerProgress.totalXP).title}.</p>
-            <Button size="sm" variant="ghost" className="min-h-[44px]" onClick={() => setShowLevelUp(false)} aria-label="Close level up message">OK</Button>
+        <div
+          role="status"
+          aria-live="polite"
+          onClick={() => setShowLevelUp(false)}
+          className="fixed inset-0 z-[100] flex items-center justify-center bg-background/90 backdrop-blur-sm animate-fade-in"
+        >
+          <div className="text-center animate-scale-in px-6">
+            <div className="text-7xl mb-3" aria-hidden="true">🎉</div>
+            <p className="text-3xl font-black text-primary">Level up!</p>
+            <p className="mt-2 text-lg font-bold text-foreground">
+              {getCurrentLevel(playerProgress.totalXP).icon} You're now a {getCurrentLevel(playerProgress.totalXP).title}.
+            </p>
           </div>
         </div>
       )}
