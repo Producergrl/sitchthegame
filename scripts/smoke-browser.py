@@ -31,6 +31,7 @@ IGNORED_CONSOLE = (
     "Download the React DevTools",
     "ResizeObserver loop",
     "preload",
+    "Warning: ",  # dev-only React warnings, never shown on the live site
 )
 
 
@@ -100,6 +101,15 @@ async def run() -> list[str]:
             await page.get_by_text("Card 1 of").wait_for(timeout=25000)
         except Exception:
             problems.append("First card did not render (no 'Card 1 of N' progress indicator)")
+
+        # First-time "How Sitch works" intro overlays the card on fresh browsers.
+        intro_btn = page.get_by_role("button", name="Let's play")
+        try:
+            await intro_btn.first.wait_for(state="visible", timeout=4000)
+            await intro_btn.first.click()
+            await page.wait_for_timeout(600)
+        except Exception:
+            pass
 
         # A resume prompt can sit in front of the card on repeat runs.
         start_fresh = page.get_by_role("button", name="Start over")
