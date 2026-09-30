@@ -912,7 +912,7 @@ const PlaySession = () => {
       <div className="mx-auto max-w-2xl px-4 py-6">
         <AnimatePresence mode="wait">
           <motion.div
-            key={card.id}
+            key={`${index}-${card.id}`}
             initial={{ opacity: 0, x: 40 }}
             animate={{ opacity: 1, x: 0 }}
             exit={{ opacity: 0, x: -40 }}
