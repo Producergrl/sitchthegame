@@ -25,6 +25,7 @@ import {
 import { saveWowResponse, getSessionResponses } from '@/lib/wowReview';
 import { saveSession, loadSession, clearSession } from '@/lib/sessionResume';
 import { getActiveProfile } from '@/lib/profiles';
+import ReadAloudButton from '@/components/ReadAloudButton';
 import SessionRecap, { type RecapEntry } from '@/components/SessionRecap';
 import AdultGate from '@/components/AdultGate';
 import SEO from '@/components/SEO';
@@ -785,6 +786,30 @@ const PlaySession = () => {
               <p className="text-sm text-primary">✨ Critical thinking answers: {bonusPoints}</p>
             )}
           </div>
+          {/* One to revisit + next topic */}
+          {(() => {
+            const revisit = recapLog.find(e => e.outcome === 'risky') || recapLog.find(e => e.outcome === 'skipped');
+            const played = new Set(sessionCards.map(c => c.deck_id));
+            const nextDeck = decks.find(d => d.age_band === activeAge && !played.has(d.id));
+            return (
+              <>
+                {revisit && (
+                  <div className="rounded-2xl border-2 border-accent/50 bg-accent/10 p-4 text-left">
+                    <p className="mb-1 text-sm font-black text-accent-foreground">🔁 One to talk about again</p>
+                    <p className="text-sm text-card-foreground">{revisit.scenario}</p>
+                    {revisit.prompts[0] && <p className="mt-2 text-sm italic text-muted-foreground">💬 {revisit.prompts[0]}</p>}
+                  </div>
+                )}
+                {nextDeck && (
+                  <Link to={`/play?decks=${nextDeck.id}&age=${activeAge}&mode=${activeMode}`} className="block">
+                    <Button className="w-full min-h-[44px] justify-start gap-2 font-bold">
+                      {nextDeck.icon} Nice work. Try {nextDeck.name} next
+                    </Button>
+                  </Link>
+                )}
+              </>
+            );
+          })()}
           {/* Try this next — recommend a different mode/deck combo */}
           <div className="rounded-2xl border-2 border-primary/30 bg-primary/5 p-4 text-left">
             <p className="mb-2 text-sm font-black text-primary">🎯 Try this next</p>
@@ -983,6 +1008,12 @@ const PlaySession = () => {
                   </p>
                 </>
               )}
+              <div className="mt-4">
+                <ReadAloudButton
+                  resetKey={`${index}-${card.id}`}
+                  text={`${card.scenario}. What would you do? ${displayOptions.map((o, i) => `Choice ${i + 1}. ${o.text}.`).join(' ')} Or, choose your own answer.`}
+                />
+              </div>
             </div>
 
             {/* Options */}
