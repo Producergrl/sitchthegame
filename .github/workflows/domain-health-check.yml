@@ -10,17 +10,24 @@ on:
 
 jobs:
   domain-health:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
+    permissions:
+      contents: read
+      issues: write
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
 
-      - uses: actions/setup-node@v4
+      - uses: actions/setup-node@v5
         with:
-          node-version: "20"
+          node-version: "24"
+          package-manager-cache: false
 
-      - uses: actions/setup-python@v5
+      - uses: actions/setup-python@v6
         with:
           python-version: "3.12"
+
+      - name: Test build comparison logic
+        run: node --test scripts/domain-health-check.test.mjs
 
       - name: Wait for deployment to propagate
         if: github.event_name == 'push'
@@ -39,11 +46,13 @@ jobs:
         id: browser
         env:
           SITCH_SMOKE_LICENSE_KEY: ${{ secrets.SITCH_SMOKE_LICENSE_KEY }}
-        run: python scripts/smoke-browser.py
+        run: |
+          rm -f scripts/smoke-screenshots/*.png
+          python scripts/smoke-browser.py
 
       - name: Upload screenshots
-        if: always()
-        uses: actions/upload-artifact@v4
+        if: always() && (steps.browser.outcome == 'success' || steps.browser.outcome == 'failure')
+        uses: actions/upload-artifact@v6
         with:
           name: smoke-screenshots
           path: scripts/smoke-screenshots/
@@ -54,7 +63,7 @@ jobs:
       # Only runs if the MAIL_USERNAME / MAIL_PASSWORD repository secrets are set
       # (a Gmail address plus a Google "App Password").
       - name: Email alert on failure
-        if: failure() && env.MAIL_USERNAME != ''
+        if: failure() && github.ref == 'refs/heads/main' && env.MAIL_USERNAME != ''
         env:
           MAIL_USERNAME: ${{ secrets.MAIL_USERNAME }}
         uses: dawidd6/action-send-mail@v3
@@ -77,8 +86,8 @@ jobs:
 
 
       - name: Open a GitHub issue on failure
-        if: failure()
-        uses: actions/github-script@v7
+        if: failure() && github.ref == 'refs/heads/main'
+        uses: actions/github-script@v8
         with:
           script: |
             const title = 'Domain health check failed: play.sitchthegame.com';
@@ -89,7 +98,7 @@ jobs:
               state: 'open',
               labels: 'domain-health',
             });
-            const body = `The automated smoke test failed.\n\nRun: ${runUrl}\n\nChecks covered: HTTP 200, correct build/deployment ID, SSL expiry, homepage load, session start, first card render.`;
+            const body = `The automated smoke test failed.\n\nRun: ${runUrl}\n\nChecks covered: HTTP 200, matching built assets, SSL expiry, homepage load, session start, first card render.`;
             if (existing.length) {
               await github.rest.issues.createComment({
                 owner: context.repo.owner,

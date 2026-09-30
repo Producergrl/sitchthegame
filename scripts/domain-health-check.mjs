@@ -5,7 +5,7 @@
  * Verifies that the live custom domain:
  *  1. Responds with HTTP 200
  *  2. Serves the expected app (title + built JS bundle present)
- *  3. Serves the SAME deployment as the Lovable published URL
+ *  3. Serves the same fingerprinted assets as the Lovable published URL
  *  4. Has a valid SSL certificate that is not close to expiring
  *
  * Usage: node scripts/domain-health-check.mjs
@@ -13,6 +13,7 @@
  */
 
 import tls from "node:tls";
+import { pathToFileURL } from "node:url";
 
 const CUSTOM_DOMAIN = process.env.SITCH_DOMAIN_URL || "https://play.sitchthegame.com";
 const LOVABLE_URL = process.env.SITCH_LOVABLE_URL || "https://sitchthegame.lovable.app";
@@ -74,6 +75,39 @@ export function checkSsl(hostname, port = 443) {
   });
 }
 
+// Hosting response headers can differ between domains for the same app. Compare
+// Vite's fingerprinted entry JS/CSS paths instead, retaining headers for diagnosis.
+export function buildAssets(html, baseUrl) {
+  const assets = new Set();
+  for (const tag of html.matchAll(/<(script|link)\b[^>]*>/gi)) {
+    const attribute = tag[1].toLowerCase() === "script" ? "src" : "href";
+    const match = tag[0].match(new RegExp(`\\s${attribute}\\s*=\\s*(["'])(.*?)\\1`, "i"));
+    if (!match) continue;
+    try {
+      const url = new URL(match[2], baseUrl);
+      if (url.origin === new URL(baseUrl).origin && /^\/assets\/.+\.(js|css)$/.test(url.pathname)) {
+        assets.add(url.pathname);
+      }
+    } catch { /* Invalid asset URLs cannot establish a matching build. */ }
+  }
+  return [...assets].sort();
+}
+
+export function compareDeployments(domain, reference) {
+  if (!reference || reference.status !== 200) {
+    return ["Cannot confirm the published build: Lovable reference is unavailable"];
+  }
+  const actual = buildAssets(domain.html, domain.url);
+  const expected = buildAssets(reference.html, reference.url);
+  if (!actual.some(path => path.endsWith(".js")) || !expected.some(path => path.endsWith(".js"))) {
+    return ["Cannot compare builds: a page is missing its built JavaScript assets"];
+  }
+  if (JSON.stringify(actual) !== JSON.stringify(expected)) {
+    return [`Build mismatch: custom domain assets ${actual.join(", ")} differ from Lovable assets ${expected.join(", ")}`];
+  }
+  return [];
+}
+
 export async function runDomainHealthCheck() {
   const problems = [];
   const hostname = new URL(CUSTOM_DOMAIN).hostname;
@@ -96,11 +130,7 @@ export async function runDomainHealthCheck() {
   if (!/src="\/assets\/[^"]+\.js"/.test(domain.html)) {
     problems.push(`${CUSTOM_DOMAIN} is not serving a built JS bundle from /assets`);
   }
-  if (lovable && lovable.deploymentId && domain.deploymentId && lovable.deploymentId !== domain.deploymentId) {
-    problems.push(
-      `Deployment mismatch: custom domain is on ${domain.deploymentId} but ${LOVABLE_URL} is on ${lovable.deploymentId}`,
-    );
-  }
+  problems.push(...compareDeployments(domain, lovable));
 
   if (ssl.error) {
     problems.push(`SSL check failed for ${hostname}: ${ssl.error}`);
@@ -123,11 +153,13 @@ export async function runDomainHealthCheck() {
     status: domain.status,
     deploymentId: domain.deploymentId,
     lovableDeploymentId: lovable?.deploymentId ?? null,
+    assets: buildAssets(domain.html, domain.url),
+    lovableAssets: lovable ? buildAssets(lovable.html, lovable.url) : [],
     ssl,
   };
 }
 
-const isDirectRun = process.argv[1] && import.meta.url.endsWith(process.argv[1].split("/").pop());
+const isDirectRun = process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href;
 
 if (isDirectRun) {
   runDomainHealthCheck()
@@ -136,6 +168,8 @@ if (isDirectRun) {
       console.log(`HTTP status: ${result.status}`);
       console.log(`Deployment: ${result.deploymentId ?? "unknown"}`);
       console.log(`Lovable deployment: ${result.lovableDeploymentId ?? "unknown"}`);
+      console.log(`Build assets: ${result.assets.join(", ") || "missing"}`);
+      console.log(`Lovable assets: ${result.lovableAssets.join(", ") || "missing"}`);
       if (result.ssl?.error) {
         console.log(`SSL: could not check (${result.ssl.error})`);
       } else {

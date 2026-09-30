@@ -1,0 +1,28 @@
+name: Domain monitor tests
+
+on:
+  pull_request:
+    paths:
+      - 'scripts/domain-health-check*'
+      - '.github/workflows/domain*'
+  push:
+    branches: [main]
+    paths:
+      - 'scripts/domain-health-check*'
+      - '.github/workflows/domain*'
+
+permissions:
+  contents: read
+
+jobs:
+  monitor-tests:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@v5
+        with:
+          node-version: '24'
+          package-manager-cache: false
+      - run: node --test scripts/domain-health-check.test.mjs
