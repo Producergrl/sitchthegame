@@ -1,4 +1,5 @@
 import { useState, useMemo, useCallback, useEffect, useRef } from 'react';
+import { safeGetItem, safeSetItem } from '@/lib/safeStorage';
 import { Link, useSearchParams, useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { ArrowLeft, ChevronRight, Eye, CheckCircle2, Flag, RotateCcw, Share2, Lock, Mic, MicOff } from 'lucide-react';
@@ -911,6 +912,32 @@ const PlaySession = () => {
           )}
         </div>
       </div>
+
+      {/* First-time how-to-play */}
+      {showIntro && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-foreground/50 p-4" role="dialog" aria-modal="true" aria-labelledby="intro-title">
+          <div className="w-full max-w-md space-y-4 rounded-2xl bg-card p-6 shadow-xl">
+            <h2 id="intro-title" className="text-2xl font-black text-card-foreground">How Sitch works</h2>
+            <ol className="space-y-3 text-sm text-card-foreground">
+              <li><span className="font-black text-primary">1. Read the sitch together.</span> Each card is a real-life situation.</li>
+              <li><span className="font-black text-primary">2. Your child picks what they would do.</span> Or taps the last choice to give their own answer.</li>
+              <li><span className="font-black text-primary">3. Reveal the guidance and talk it through.</span> There are notes and questions just for the grown-up.</li>
+              <li><span className="font-black text-primary">4. Earn points and stickers.</span> Safe choices earn XP to level up. Each round is {sessionCards.length || 10} cards.</li>
+            </ol>
+            <Button className="w-full min-h-[44px] font-black" onClick={dismissIntro}>Let's play</Button>
+          </div>
+        </div>
+      )}
+
+      {/* Level up moment */}
+      {showLevelUp && (
+        <div className="mx-auto max-w-2xl px-4 pt-4">
+          <div className="flex items-center justify-between gap-3 rounded-2xl border-2 border-primary bg-primary/10 p-4">
+            <p className="text-sm font-black text-primary">🎉 Level up! You're now a {getCurrentLevel(playerProgress.totalXP).title}.</p>
+            <Button size="sm" variant="ghost" className="min-h-[44px]" onClick={() => setShowLevelUp(false)} aria-label="Close level up message">OK</Button>
+          </div>
+        </div>
+      )}
 
       {/* Resume prompt */}
       {canResume && savedSession && (
