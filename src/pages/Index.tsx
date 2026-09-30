@@ -184,7 +184,7 @@ const Index = () => {
                 <Zap className="h-5 w-5 transition-transform group-hover:rotate-12 group-hover:scale-110" />
                 Play Now
               </Button>
-              <span className="mt-1.5 text-[11px] font-bold uppercase tracking-wider text-[#FEF3D0]/90">Starts a quick 10-card quiz for ages 7 to 9</span>
+              <span className="mt-1.5 text-[11px] font-bold uppercase tracking-wider text-[#FEF3D0]/90">Jump straight in: 10 mixed cards, ages 7 to 9, with scoring</span>
             </Link>
 
             <Link
@@ -193,7 +193,7 @@ const Index = () => {
               style={{ textShadow: '0 2px 8px hsl(10 70% 12% / 0.55)' }}
             >
               <Sparkles className="h-3.5 w-3.5" />
-              Custom game: pick age, mode &amp; decks
+              Custom game: choose your child's age, how to play, and topics
             </Link>
           </motion.div>
 

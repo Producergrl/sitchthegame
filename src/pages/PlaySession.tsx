@@ -848,9 +848,6 @@ const PlaySession = () => {
             >
               <Share2 className="h-4 w-4" />
             </Button>
-            <span className="rounded-full bg-primary-foreground/20 px-2.5 py-1 text-xs sm:text-sm font-bold whitespace-nowrap">
-              {index + 1}/{sessionCards.length}
-            </span>
           </div>
         </div>
         {/* Progress bar */}
@@ -968,9 +965,8 @@ const PlaySession = () => {
             <div className="rounded-2xl card-edge-lit bg-card p-6">
               <div className="mb-2 flex items-center gap-2">
                 <span className="rounded-full bg-primary/15 px-2.5 py-0.5 text-xs font-bold text-primary uppercase tracking-wider">
-                  Mission {index + 1}
+                  {deck?.name ?? 'Mission'}
                 </span>
-                <span className="text-xs text-muted-foreground">{deck?.name}</span>
               </div>
               {/* Only show title as heading if it differs meaningfully from the scenario */}
               {card.scenario.toLowerCase().startsWith(card.title.toLowerCase().replace(/…$/, '')) ? (

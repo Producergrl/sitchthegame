@@ -15,9 +15,9 @@ const ageBands: { value: AgeBand; label: string }[] = [
 ];
 
 const playStyles: { value: PlayStyle; label: string; desc: string; icon: string }[] = [
-  { value: 'discussion', label: 'Discussion', desc: 'Talk through scenarios together', icon: '💬' },
-  { value: 'quiz', label: 'Quiz', desc: 'Light scoring for fun', icon: '🎯' },
-  { value: 'roleplay', label: 'Roleplay', desc: 'Act out your responses', icon: '🎭' },
+  { value: 'discussion', label: 'Discussion', desc: 'No scores. Your child picks an answer, then you talk it through together. Best for younger kids or first games.', icon: '💬' },
+  { value: 'quiz', label: 'Quiz', desc: 'Points for safe choices, feedback on each answer, streaks and XP. Best once you know how it works.', icon: '🎯' },
+  { value: 'roleplay', label: 'Roleplay', desc: 'Act it out. You play the other person, your child practises saying their answer out loud.', icon: '🎭' },
 ];
 
 const SessionSetup = () => {
