@@ -31,6 +31,7 @@ IGNORED_CONSOLE = (
     "Download the React DevTools",
     "ResizeObserver loop",
     "preload",
+    "Function components cannot be given refs",  # dev-only React warning
 )
 
 
