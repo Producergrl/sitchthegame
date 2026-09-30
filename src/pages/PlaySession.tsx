@@ -119,6 +119,8 @@ const PlaySession = () => {
   const [sessionXP, setSessionXP] = useState(0);
   const [newBadgesThisSession, setNewBadgesThisSession] = useState<BadgeDef[]>([]);
   const [showLevelUp, setShowLevelUp] = useState(false);
+  const [showIntro, setShowIntro] = useState(() => safeGetItem('sitch_intro_seen_v1') !== '1');
+  const dismissIntro = () => { safeSetItem('sitch_intro_seen_v1', '1'); setShowIntro(false); };
   const [missionXPEarned, setMissionXPEarned] = useState(0);
 
   // Sticker state
@@ -869,13 +871,31 @@ const PlaySession = () => {
             />
           </div>
 
-          {activeMode === 'quiz' && (
-            <div className="mt-2 flex justify-center">
+          <div className="mt-2 flex flex-wrap items-center justify-center gap-2">
+            {activeMode === 'quiz' && (
               <span className="rounded-full bg-primary-foreground/20 px-3 py-1 text-sm font-black text-primary-foreground">
                 ⭐ {score + bonusPoints - demerits} pts
               </span>
-            </div>
-          )}
+            )}
+            {(() => {
+              const lvl = getCurrentLevel(playerProgress.totalXP);
+              const xp = getXPProgress(playerProgress.totalXP);
+              const toGo = xp.max - xp.current;
+              return (
+                <Link
+                  to="/stickers"
+                  aria-label={`Level ${lvl.level} ${lvl.title}. ${toGo > 0 ? `${toGo} XP to next level.` : 'Top level.'} Open profile.`}
+                  className="inline-flex min-h-[44px] items-center gap-2 rounded-full bg-primary-foreground/20 px-3 py-1 text-xs font-black text-primary-foreground hover:bg-primary-foreground/30 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary-foreground"
+                >
+                  <span>{lvl.icon} {lvl.title}</span>
+                  <span className="h-1.5 w-14 overflow-hidden rounded-full bg-primary-foreground/25">
+                    <span className="block h-full rounded-full bg-primary-foreground" style={{ width: `${xp.percent}%` }} />
+                  </span>
+                  <span>{toGo > 0 ? `${toGo} XP to go` : 'Max'}</span>
+                </Link>
+              );
+            })()}
+          </div>
           {/* Streak counter */}
           {activeMode === 'quiz' && streak >= 2 && (
             <motion.div
@@ -1140,8 +1160,17 @@ const PlaySession = () => {
                           <p className="mb-2 text-xs italic text-muted-foreground">You chose: "{chosen.text}"</p>
                         )}
                         <p className="text-sm text-card-foreground">
-                          In this sitch, that's the riskiest move.{card.why_text ? ` ${card.why_text}` : ''}
+                          That choice can feel easier in the moment, but here it leaves you on your own with the problem.
+                          {card.why_text ? ` ${card.why_text}` : ''}
                         </p>
+                        {(() => {
+                          const best = card.options.find(o => o.label === card.correct_option);
+                          return best ? (
+                            <p className="mt-2 text-sm font-bold text-card-foreground">
+                              A safer move: "{best.text}"
+                            </p>
+                          ) : null;
+                        })()}
                       </motion.div>
                     );
                   })()}
@@ -1207,7 +1236,15 @@ const PlaySession = () => {
                       ))}
                       <li className="flex items-start gap-2 text-sm text-card-foreground">
                         <span className="mt-0.5 text-gentle">•</span>
-                        <span>How could I show you support in a situation like this?</span>
+                        <span>{[
+                          'What would you want me to do if you told me about this?',
+                          'What part of this would feel hardest to say out loud?',
+                          'What would you tell a younger kid to do here?',
+                          'How would you know this situation was getting worse?',
+                          'What could we practise saying together right now?',
+                          'Who else would you want on your side in this sitch?',
+                          'What would make it easier to come to me with this?',
+                        ][index % 7]}</span>
                       </li>
                     </ul>
                   </div>
