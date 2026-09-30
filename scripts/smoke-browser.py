@@ -107,6 +107,12 @@ async def run() -> list[str]:
             await start_fresh.first.click()
             await page.wait_for_timeout(1200)
 
+        # First-time "How Sitch works" intro overlays the card on fresh browsers.
+        intro_btn = page.get_by_role("button", name="Let's play")
+        if await intro_btn.count() and await intro_btn.first.is_visible():
+            await intro_btn.first.click()
+            await page.wait_for_timeout(600)
+
         await page.wait_for_timeout(1500)
         await page.screenshot(path=str(SHOTS / "3_first_card.png"))
 
