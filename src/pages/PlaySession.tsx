@@ -1,4 +1,5 @@
 import { useState, useMemo, useCallback, useEffect, useRef } from 'react';
+import { safeGetItem, safeSetItem } from '@/lib/safeStorage';
 import { Link, useSearchParams, useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { ArrowLeft, ChevronRight, Eye, CheckCircle2, Flag, RotateCcw, Share2, Lock, Mic, MicOff } from 'lucide-react';
@@ -119,6 +120,8 @@ const PlaySession = () => {
   const [sessionXP, setSessionXP] = useState(0);
   const [newBadgesThisSession, setNewBadgesThisSession] = useState<BadgeDef[]>([]);
   const [showLevelUp, setShowLevelUp] = useState(false);
+  const [showIntro, setShowIntro] = useState(() => safeGetItem('sitch_intro_seen_v1') !== '1');
+  const dismissIntro = () => { safeSetItem('sitch_intro_seen_v1', '1'); setShowIntro(false); };
   const [missionXPEarned, setMissionXPEarned] = useState(0);
 
   // Sticker state
@@ -316,7 +319,6 @@ const PlaySession = () => {
     setSelectedOption(null);
     setCustomAnswer('');
     setCustomAnswerSubmitted(false);
-    setShowLevelUp(false);
     requestAnimationFrame(() => window.scrollTo({ top: 0, behavior: 'smooth' }));
   };
 
@@ -869,13 +871,31 @@ const PlaySession = () => {
             />
           </div>
 
-          {activeMode === 'quiz' && (
-            <div className="mt-2 flex justify-center">
+          <div className="mt-2 flex flex-wrap items-center justify-center gap-2">
+            {activeMode === 'quiz' && (
               <span className="rounded-full bg-primary-foreground/20 px-3 py-1 text-sm font-black text-primary-foreground">
                 ⭐ {score + bonusPoints - demerits} pts
               </span>
-            </div>
-          )}
+            )}
+            {(() => {
+              const lvl = getCurrentLevel(playerProgress.totalXP);
+              const xp = getXPProgress(playerProgress.totalXP);
+              const toGo = xp.max - xp.current;
+              return (
+                <Link
+                  to="/stickers"
+                  aria-label={`Level ${lvl.level} ${lvl.title}. ${toGo > 0 ? `${toGo} XP to next level.` : 'Top level.'} Open profile.`}
+                  className="inline-flex min-h-[44px] items-center gap-2 rounded-full bg-primary-foreground/20 px-3 py-1 text-xs font-black text-primary-foreground hover:bg-primary-foreground/30 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary-foreground"
+                >
+                  <span>{lvl.icon} {lvl.title}</span>
+                  <span className="h-1.5 w-14 overflow-hidden rounded-full bg-primary-foreground/25">
+                    <span className="block h-full rounded-full bg-primary-foreground" style={{ width: `${xp.percent}%` }} />
+                  </span>
+                  <span>{toGo > 0 ? `${toGo} XP to go` : 'Max'}</span>
+                </Link>
+              );
+            })()}
+          </div>
           {/* Streak counter */}
           {activeMode === 'quiz' && streak >= 2 && (
             <motion.div
@@ -891,6 +911,32 @@ const PlaySession = () => {
           )}
         </div>
       </div>
+
+      {/* First-time how-to-play */}
+      {showIntro && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-foreground/50 p-4" role="dialog" aria-modal="true" aria-labelledby="intro-title">
+          <div className="w-full max-w-md space-y-4 rounded-2xl bg-card p-6 shadow-xl">
+            <h2 id="intro-title" className="text-2xl font-black text-card-foreground">How Sitch works</h2>
+            <ol className="space-y-3 text-sm text-card-foreground">
+              <li><span className="font-black text-primary">1. Read the sitch together.</span> Each card is a real-life situation.</li>
+              <li><span className="font-black text-primary">2. Your child picks what they would do.</span> Or taps the last choice to give their own answer.</li>
+              <li><span className="font-black text-primary">3. Reveal the guidance and talk it through.</span> There are notes and questions just for the grown-up.</li>
+              <li><span className="font-black text-primary">4. Earn points and stickers.</span> Safe choices earn XP to level up. Each round is {sessionCards.length || 10} cards.</li>
+            </ol>
+            <Button className="w-full min-h-[44px] font-black" onClick={dismissIntro}>Let's play</Button>
+          </div>
+        </div>
+      )}
+
+      {/* Level up moment */}
+      {showLevelUp && (
+        <div className="mx-auto max-w-2xl px-4 pt-4">
+          <div className="flex items-center justify-between gap-3 rounded-2xl border-2 border-primary bg-primary/10 p-4">
+            <p className="text-sm font-black text-primary">🎉 Level up! You're now a {getCurrentLevel(playerProgress.totalXP).title}.</p>
+            <Button size="sm" variant="ghost" className="min-h-[44px]" onClick={() => setShowLevelUp(false)} aria-label="Close level up message">OK</Button>
+          </div>
+        </div>
+      )}
 
       {/* Resume prompt */}
       {canResume && savedSession && (
@@ -1140,8 +1186,17 @@ const PlaySession = () => {
                           <p className="mb-2 text-xs italic text-muted-foreground">You chose: "{chosen.text}"</p>
                         )}
                         <p className="text-sm text-card-foreground">
-                          In this sitch, that's the riskiest move.{card.why_text ? ` ${card.why_text}` : ''}
+                          That choice can feel easier in the moment, but here it leaves you on your own with the problem.
+                          {card.why_text ? ` ${card.why_text}` : ''}
                         </p>
+                        {(() => {
+                          const best = card.options.find(o => o.label === card.correct_option);
+                          return best ? (
+                            <p className="mt-2 text-sm font-bold text-card-foreground">
+                              A safer move: "{best.text}"
+                            </p>
+                          ) : null;
+                        })()}
                       </motion.div>
                     );
                   })()}
@@ -1207,7 +1262,15 @@ const PlaySession = () => {
                       ))}
                       <li className="flex items-start gap-2 text-sm text-card-foreground">
                         <span className="mt-0.5 text-gentle">•</span>
-                        <span>How could I show you support in a situation like this?</span>
+                        <span>{[
+                          'What would you want me to do if you told me about this?',
+                          'What part of this would feel hardest to say out loud?',
+                          'What would you tell a younger kid to do here?',
+                          'How would you know this situation was getting worse?',
+                          'What could we practise saying together right now?',
+                          'Who else would you want on your side in this sitch?',
+                          'What would make it easier to come to me with this?',
+                        ][index % 7]}</span>
                       </li>
                     </ul>
                   </div>

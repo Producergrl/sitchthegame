@@ -220,7 +220,8 @@ const reflectionPromptsFor = (age: AgeBand, scenario = ''): string[] => {
   else
     specific = 'Has anything like this ever happened to you, or to someone you know?';
 
-  return [specific, ageBaseline];
+  void ageBaseline;
+  return [specific];
 };
 
 const deckFor_4_6 = (scenario: string) => {
