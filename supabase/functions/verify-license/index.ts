@@ -42,10 +42,16 @@ Deno.serve(async (req) => {
 
   try {
     // Per-IP rate limiting (max 10 attempts/minute) to deter brute force.
-    const ip =
-      (req.headers.get("x-forwarded-for") ?? "").split(",")[0].trim() ||
-      req.headers.get("cf-connecting-ip") ||
+    // Use proxy-set values only. The first x-forwarded-for entry is caller-controlled,
+    // so we take cf-connecting-ip, or the LAST x-forwarded-for hop (appended by the edge proxy).
+    const xffParts = (req.headers.get("x-forwarded-for") ?? "")
+      .split(",").map((s) => s.trim()).filter(Boolean);
+    const rawIp =
+      req.headers.get("cf-connecting-ip")?.trim() ||
+      xffParts[xffParts.length - 1] ||
       "unknown";
+    // Only accept something shaped like an IP address, so arbitrary keys can't be stored.
+    const ip = /^[0-9a-fA-F:.]{2,45}$/.test(rawIp) ? rawIp : "unknown";
     try {
       const SUPABASE_URL = Deno.env.get("SUPABASE_URL");
       const SERVICE = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY");
