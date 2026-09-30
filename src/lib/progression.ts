@@ -62,11 +62,30 @@ const STORAGE_KEY = () => profileKey(BASE_STORAGE_KEY);
 
 const DEFAULT_PROGRESS: PlayerProgress = { totalXP: 0, missionsCompleted: 0, badgesEarned: [], completedCardIds: [] };
 
+const MAX_XP_PER_CARD = 40; // generous ceiling per completed card
+
+/** Validates saved progress so hand-edited values can't unlock things they haven't earned. */
+function sanitizeProgress(p: unknown): PlayerProgress {
+  if (!p || typeof p !== 'object') return { ...DEFAULT_PROGRESS };
+  const o = p as Record<string, unknown>;
+  const completedCardIds = Array.isArray(o.completedCardIds)
+    ? o.completedCardIds.filter((x): x is string => typeof x === 'string' && x.length < 120).slice(-20000)
+    : [];
+  const badgesEarned = Array.isArray(o.badgesEarned)
+    ? Array.from(new Set(o.badgesEarned.filter((x): x is string => typeof x === 'string' && x.length < 80))).slice(0, 100)
+    : [];
+  const num = (v: unknown) => (typeof v === 'number' && Number.isFinite(v) ? Math.floor(v) : 0);
+  // Missions can't exceed the cards actually recorded as played.
+  const missionsCompleted = Math.max(0, Math.min(num(o.missionsCompleted), completedCardIds.length));
+  const totalXP = Math.max(0, Math.min(num(o.totalXP), missionsCompleted * MAX_XP_PER_CARD));
+  return { ...o, totalXP, missionsCompleted, badgesEarned, completedCardIds } as PlayerProgress;
+}
+
 export function loadProgress(): PlayerProgress {
   const raw = safeGetItem(STORAGE_KEY());
   if (raw) {
     try {
-      return JSON.parse(raw);
+      return sanitizeProgress(JSON.parse(raw));
     } catch { /* corrupted data */ }
   }
   return { ...DEFAULT_PROGRESS };
