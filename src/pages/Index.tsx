@@ -204,12 +204,14 @@ const Index = () => {
             transition={{ delay: 1.7, duration: 0.55 }}
             className="mt-5 flex w-full max-w-md flex-wrap items-center justify-center gap-x-3 gap-y-1 text-[11px] font-bold uppercase tracking-wider"
           >
-            {[
+            {(progress.missionsCompleted >= 5 ? [
               { label: 'How to Play', to: '/how-to-play' },
               { label: 'Mission Packs', to: '/decks' },
               { label: `Profile · ${level.icon} ${progress.totalXP} XP`, to: '/stickers' },
               { label: 'Safety Hub', to: '/resources' },
-            ].map(link => (
+            ] : [
+              { label: 'How to Play', to: '/how-to-play' },
+            ]).map(link => (
               <Link
                 key={link.to}
                 to={link.to}
@@ -219,7 +221,7 @@ const Index = () => {
                 {link.label}
               </Link>
             ))}
-            <span className="inline-flex items-center"><ShareInviteButton /></span>
+            {progress.missionsCompleted >= 5 && <span className="inline-flex items-center"><ShareInviteButton /></span>}
           </motion.div>
 
         </motion.div>
