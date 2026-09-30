@@ -1244,7 +1244,7 @@ const PlaySession = () => {
                   <div className="rounded-2xl border border-safe/30 bg-safe/5 p-5 space-y-3">
                     <p className="text-sm font-bold text-safe">✅ Best Next Step</p>
                     <p className="text-sm text-card-foreground">{card.guidance_text}</p>
-                    <p className="text-sm text-card-foreground opacity-80">💡 {card.why_text}</p>
+                    {card.why_text && <p className="text-sm text-card-foreground opacity-80">💡 {card.why_text}</p>}
                   </div>
                   {/* Parent view: how each answer rates. Hidden until the child has answered. */}
                   {displayOptions.some(o => o.quality) && (
