@@ -3,16 +3,15 @@ import { HelmetProvider } from "react-helmet-async";
 import App from "./App.tsx";
 import "./index.css";
 
-// Restore theme from localStorage (default: dark)
+// Restore theme from localStorage (default: bright)
 try {
-  const stored = localStorage.getItem('theme');
-  if (stored === 'light') {
-    document.documentElement.classList.remove('dark');
-  } else {
+  if (localStorage.getItem('theme') === 'dark') {
     document.documentElement.classList.add('dark');
+  } else {
+    document.documentElement.classList.remove('dark');
   }
 } catch {
-  document.documentElement.classList.add('dark');
+  document.documentElement.classList.remove('dark');
 }
 
 createRoot(document.getElementById("root")!).render(

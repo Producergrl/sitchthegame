@@ -1114,8 +1114,8 @@ const PlaySession = () => {
                       </span>
                       <span className="font-semibold text-card-foreground">
                         {isSelected && !customAnswerSubmitted
-                          ? "Your turn — tell us your idea below ↓"
-                          : "None of the above — I'm going to wow you with my answer!"}
+                          ? "Your turn. Tell us your idea below ↓"
+                          : "None of the above, I'm going to wow you with my answer!"}
                       </span>
                       {showGuidance && isSelected && customAnswerSubmitted && (
                         <span className="ml-2 inline-flex items-center gap-1 rounded-full bg-primary/20 px-2 py-0.5 text-xs font-bold text-primary">
