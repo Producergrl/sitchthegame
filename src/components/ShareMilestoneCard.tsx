@@ -206,7 +206,7 @@ const ShareMilestoneCard = ({
               </div>
 
               <p className="text-[10px] text-muted-foreground text-center">
-                No personal data is shared — only your milestone achievement.
+                No personal data is shared. Only your milestone achievement.
               </p>
             </div>
           </motion.div>
