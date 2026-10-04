@@ -30,10 +30,10 @@ const ShareMilestoneCard = ({
   const [copied, setCopied] = useState(false);
 
   const shareMessage = milestoneText
-    ?? `How safe is your child? 🛡️ My child just became a ${levelTitle} in "What Would You Do?" — the child safety game! 🎮✨ ${missionsCompleted} missions completed, ${totalXP} XP earned.`;
+    ?? `How safe is your child? 🛡️ My child just became a ${levelTitle} in Sitch, the family safety card game! 🎮✨ ${missionsCompleted} missions completed, ${totalXP} XP earned.`;
 
   const shareUrl = typeof window !== 'undefined' ? window.location.origin : '';
-  const fullShareText = `${shareMessage}\n\nPlay free → ${shareUrl}`;
+  const fullShareText = `${shareMessage}\n\nFind out more: ${shareUrl}`;
 
   const handleCopy = () => {
     navigator.clipboard.writeText(fullShareText).then(() => {
@@ -46,7 +46,7 @@ const ShareMilestoneCard = ({
   const handleNativeShare = () => {
     if (navigator.share) {
       navigator.share({
-        title: `${levelTitle} — What Would You Do?`,
+        title: `${levelTitle} in Sitch`,
         text: shareMessage,
         url: shareUrl,
       }).catch(() => {});
@@ -93,7 +93,7 @@ const ShareMilestoneCard = ({
         <div className="relative z-10">
           {/* Header badge */}
           <div className="mb-4 inline-flex items-center gap-1.5 rounded-full bg-white/20 px-3 py-1 backdrop-blur-sm">
-            <span className="text-xs font-bold tracking-wider uppercase">🛡️ What Would You Do?</span>
+            <span className="text-xs font-bold tracking-wider uppercase">🛡️ Sitch: Family Edition</span>
           </div>
 
           {/* Level icon & title */}
@@ -125,7 +125,7 @@ const ShareMilestoneCard = ({
 
           {/* Message */}
           <p className="text-sm text-white/90 leading-relaxed">
-            "My child is learning to stay safe with <span className="font-bold">What Would You Do?</span> — the child safety game that makes tough conversations easier."
+            "My child is learning to stay safe with <span className="font-bold">Sitch</span>, the family card game that makes tough conversations easier."
           </p>
         </div>
       </motion.div>
@@ -206,7 +206,7 @@ const ShareMilestoneCard = ({
               </div>
 
               <p className="text-[10px] text-muted-foreground text-center">
-                No personal data is shared — only your milestone achievement.
+                No personal data is shared. Only your milestone achievement.
               </p>
             </div>
           </motion.div>
