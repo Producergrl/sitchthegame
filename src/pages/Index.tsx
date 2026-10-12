@@ -156,7 +156,7 @@ const Index = () => {
               A game of choice and consequence
             </p>
             <p className="mt-3 text-sm sm:text-base font-bold leading-snug text-[#FEF3D0]">
-              A card game for parents and kids to play together. Each card is a real-life situation. Your child picks what they would do, then you talk it through.
+              Play together as a family. Build the safety instincts that matter most.
             </p>
             <p className="mt-3 inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-[11px] font-black uppercase tracking-wider text-[#142851]" style={{ background: '#F2B80C', textShadow: 'none' }}>
               <span aria-hidden="true">👨‍👩‍👧</span> Play together · Ages 4 to teens · 10 minutes
