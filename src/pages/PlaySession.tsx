@@ -1141,7 +1141,7 @@ const PlaySession = () => {
                             value={customAnswer}
                             onChange={e => setCustomAnswer(e.target.value.slice(0, 500))}
                             maxLength={500}
-                            placeholder={speechSupported ? "Type your idea, or tap 🎤 to speak it…" : "Type your idea here…"}
+                            placeholder={speechSupported ? "What would YOU do? Type your answer, or tap 🎤 to say it..." : "What would YOU do? Type your answer..."}
                             className="w-full rounded-lg border border-border bg-background p-3 pr-12 text-sm text-foreground placeholder:text-muted-foreground focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/40 min-h-[80px] resize-none"
                           />
                           {speechSupported && !customAnswerSubmitted && (
@@ -1171,7 +1171,7 @@ const PlaySession = () => {
                               disabled={customAnswer.trim().length < 10}
                               className="gap-1 font-bold"
                             >
-                              <CheckCircle2 className="h-4 w-4" /> Submit Answer
+                              <CheckCircle2 className="h-4 w-4" /> Submit My Answer
                             </Button>
                           ) : (
                             <motion.span
@@ -1180,7 +1180,7 @@ const PlaySession = () => {
                               transition={{ type: 'spring', bounce: 0.55 }}
                               className="text-sm font-bold text-safe"
                             >
-                              ✨ Nice thinking — answer locked in!
+                              ✨ Love that thinking!
                             </motion.span>
                           )}
                         </div>
@@ -1191,7 +1191,7 @@ const PlaySession = () => {
                             transition={{ delay: 0.15 }}
                             className="rounded-lg bg-primary/10 px-3 py-2 text-xs font-medium text-primary"
                           >
-                            👇 Now tap <span className="font-black">Reveal Guidance</span> to compare your idea.
+                            👇 Tap <span className="font-black">Reveal Guidance</span> to see the safest choice for this situation, and how it compares to yours.
                           </motion.p>
                         )}
                       </motion.div>
