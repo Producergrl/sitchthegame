@@ -10,7 +10,7 @@
 /safety               /resources   301
 /terms                /legal       301
 /privacy              /legal       301
-/buy                  https://sitchthegame.gumroad.com/l/Sitch 302
+/buy                  https://kdcandfilms.gumroad.com/l/Sitch 302
 
 # SPA fallback (must stay last)
 /*                    /index.html  200
