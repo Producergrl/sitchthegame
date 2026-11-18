@@ -26,7 +26,7 @@ describe('public information and paid routes', () => {
   it('opens the holiday landing page without a purchase', () => {
     window.history.replaceState({}, '', '/holiday');
     render(<HelmetProvider><App /></HelmetProvider>);
-    expect(screen.getByRole('heading', { name: "This year's holiday table talk, without the lecture." })).toBeInTheDocument();
+    expect(screen.getByRole('heading', { name: "Would your kids make safe choices when you're not around?" })).toBeInTheDocument();
     expect(invoke).not.toHaveBeenCalled();
   });
   it.each(['/', '/play', '/decks'])('keeps %s gated', async path => {
