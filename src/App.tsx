@@ -16,6 +16,7 @@ import StickerCollection from "./pages/StickerCollection";
 import HowToPlay from "./pages/HowToPlay";
 import AccessHelp from "./pages/AccessHelp";
 import Legal from "./pages/Legal";
+import Holiday from "./pages/Holiday";
 
 import NotFound from "./pages/NotFound";
 
@@ -33,6 +34,7 @@ const App = () => (
             <Route path="/privacy" element={<Legal />} />
             <Route path="/terms" element={<Legal />} />
             <Route path="/access-help" element={<AccessHelp />} />
+            <Route path="/holiday" element={<Holiday />} />
             <Route element={<UnlockGate><Outlet /></UnlockGate>}>
               <Route path="/" element={<Index />} />
               <Route path="/decks" element={<BrowseDecks />} />

@@ -3,13 +3,17 @@
   Sitch is a paid game: every route behind "/" renders the same license gate
   until a key is entered, so only the home page has unique content a crawler
   can read. Listing the gated routes made Google see a dozen duplicate pages.
-  If marketing pages (how-to-play, decks, legal) are ever moved outside the
-  gate, add them back here.
+  Public marketing pages that sit outside the license gate can be listed.
 -->
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
     <loc>https://play.sitchthegame.com/</loc>
     <changefreq>weekly</changefreq>
     <priority>1.0</priority>
+  </url>
+  <url>
+    <loc>https://play.sitchthegame.com/holiday</loc>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
   </url>
 </urlset>
