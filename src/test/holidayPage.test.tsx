@@ -12,7 +12,7 @@ const renderHoliday = () =>
 const LONG_DASH = /[—–]/;
 
 describe('holiday landing page', () => {
-  it("uses Kerry's sales copy, four draft table-card questions, and no long dashes", () => {
+  it("uses Kerry's sales copy, four approved table-card questions, and no long dashes", () => {
     renderHoliday();
 
     expect(screen.getByText('Holiday family game night')).toBeInTheDocument();
@@ -33,10 +33,13 @@ describe('holiday landing page', () => {
     expect(screen.getByText('Sitch is a game, not a replacement for therapy or a medically endorsed product.')).toBeInTheDocument();
     expect(screen.getByText(/20% of net proceeds are donated to completing/)).toBeInTheDocument();
 
-    expect(screen.getByText('Draft')).toBeInTheDocument();
+    expect(screen.queryByText('Draft')).not.toBeInTheDocument();
+    expect(screen.queryByText(/placeholder/i)).not.toBeInTheDocument();
+    expect(screen.queryByText(/pending approval/i)).not.toBeInTheDocument();
     expect(screen.getByText(/A classmate shows you a group chat making fun of another kid/)).toBeInTheDocument();
     expect(screen.getByText(/Someone you met in a game says they're your age/)).toBeInTheDocument();
-    expect(screen.getByText(/A grown-up you don't know says Mom sent them to pick you up/)).toBeInTheDocument();
+    expect(screen.getByText(/A grown-up you don't know says Mom sent them to pick you up, and they know your name. What do you do\?$/)).toBeInTheDocument();
+    expect(screen.queryByText(/family code word/i)).not.toBeInTheDocument();
     expect(screen.getByText(/An adult you know asks you to keep something "just between us"/)).toBeInTheDocument();
     expect(screen.queryByText(/Sleepover/)).not.toBeInTheDocument();
     expect(screen.queryByText(/At a friend's sleepover/)).not.toBeInTheDocument();
@@ -63,8 +66,7 @@ describe('holiday landing page', () => {
       expect(link).toHaveAttribute('href', 'https://opensecretthefilm.com');
     }
 
-    const download = screen.getByRole('button', { name: 'Download table card, coming soon' });
-    expect(download).toBeDisabled();
+    expect(screen.queryByRole('button', { name: /download table card/i })).not.toBeInTheDocument();
     expect(screen.queryByRole('link', { name: /download/i })).not.toBeInTheDocument();
     expect(document.querySelector('a[href$=".pdf"]')).toBeNull();
   });

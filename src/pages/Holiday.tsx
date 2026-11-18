@@ -7,11 +7,11 @@ export const HOLIDAY_CHECKOUT_URL =
 
 const OPEN_SECRET_URL = 'https://opensecretthefilm.com';
 
-/** Kerry's table-card set, minus Sleepover (her Nov 18 edit). Still pending her yes, shown as draft only. */
+/** Kerry's approved table-card questions (Nov 18). Sleepover was removed; the family-code-word prompt was dropped. */
 const TABLE_CARD_QUESTIONS = [
   'School: A classmate shows you a group chat making fun of another kid and asks you to add a laughing emoji. What do you do?',
   "Online: Someone you met in a game says they're your age and asks you to move to a private app and send a photo. What's your move?",
-  "Stranger danger: A grown-up you don't know says Mom sent them to pick you up, and they know your name. What do you do? (Pick a family code word.)",
+  "Stranger danger: A grown-up you don't know says Mom sent them to pick you up, and they know your name. What do you do?",
   'Secrets: An adult you know asks you to keep something "just between us" and not tell your parents. Is that a safe secret or an unsafe one?',
 ] as const;
 
@@ -47,7 +47,6 @@ const Holiday = () => (
       title="Would your kids make safe choices when you're not around? | Sitch, Family Edition"
       description="Play Sitch, the fun family game that turns real-life possible situations into valuable conversations."
       path="/holiday"
-      noindex
     />
 
     <header className="px-4 pt-8 pb-16 text-center">
@@ -108,17 +107,13 @@ const Holiday = () => (
 
       <section className="mt-8">
         <div
-          className="relative rounded-2xl bg-white px-5 py-6 sm:px-6"
+          className="rounded-2xl bg-white px-5 py-6 sm:px-6"
           style={{
-            border: '2px dashed #FDB913',
+            border: '2px solid #FDB913',
             boxShadow: '0 8px 24px hsl(15 40% 20% / 0.08)',
           }}
         >
-          <span className="absolute right-4 top-4 rounded-full bg-[#F2B80C] px-2.5 py-0.5 text-[10px] font-black uppercase tracking-wider text-[#142851]">
-            Draft
-          </span>
-          <p className="pr-16 text-sm font-black uppercase tracking-wider text-[#B8261A]">Holiday table card</p>
-          <p className="mt-1 text-xs font-bold text-[#2D5F8A]">Placeholder questions, pending approval. Not a downloadable card yet.</p>
+          <p className="text-sm font-black uppercase tracking-wider text-[#B8261A]">Holiday table card</p>
           <ol className="mt-4 space-y-3">
             {TABLE_CARD_QUESTIONS.map((question, index) => (
               <li key={question} className="flex gap-3 text-sm leading-relaxed text-[#1E3A5F] sm:text-base">
@@ -129,14 +124,6 @@ const Holiday = () => (
               </li>
             ))}
           </ol>
-          <button
-            type="button"
-            disabled
-            aria-disabled="true"
-            className="mt-6 flex w-full cursor-not-allowed items-center justify-center rounded-xl border-2 border-[#1E3A5F]/25 bg-[#FEF3D0]/60 py-3 px-4 text-sm font-bold uppercase tracking-wide text-[#1E3A5F]/50"
-          >
-            Download table card, coming soon
-          </button>
         </div>
       </section>
 
